@@ -1,10 +1,231 @@
-# Local LLM Benchmark for Biomedical Research
+# Local LLM Benchmark for Biomedical Research / 本地 LLM 生物医学基准测试
+
+> **Languages / 语言:** [中文](#中文版) · [English](#english-version)
 
 A reproducible benchmark to evaluate **local LLMs on real biomedical tasks**, so
-we can pick the best hardware + engine combo for our group's biology / medicine
-work.
+we can pick the best hardware + engine combo for biology / medicine work.
+Three machines, two chip architectures, two inference engines — all running the
+**same model (DeepSeek V4 Flash 0731)**.
+
+一套可复现的基准测试，在**真实生物医学任务**上评估本地 LLM，帮我们为科研工作挑出最合适的
+"硬件 + 引擎"组合。三台机器、两种芯片架构、两套推理引擎——跑的是**同一个模型（DeepSeek V4 Flash 0731）**。
+
+- 📄 **Full report / 完整报告:** [`results/biomedical_benchmark_report_v2.html`](results/biomedical_benchmark_report_v2.html)
+  (open locally, or [preview on HTMLPreview](https://htmlpreview.github.io/?https://github.com/dalianblue/biomedical-llm-benchmark/main/results/biomedical_benchmark_report_v2.html))
+- 🧪 9 biomedical tasks / 9 个生物医学任务 · 4 result runs / 4 份跑分结果
+- 🔒 Frozen inputs (`test_data/`, seed=42) — no network at runtime / 输入冻结，运行时无需联网
+
+---
+
+## 中文版
+
+三台参与对比的机器（都跑同一份 DeepSeek V4 Flash 0731 权重）：
+
+- **mac-m3max**：Apple M3 Max / 128 GB，`ds4-server` —— 老 Mac，做基线
+- **mac-m5max**：Apple M5 Max / 128 GB，`ds4-server` —— 吞吐王
+- **dgx-spark**：NVIDIA DGX Spark (GB10) / 128 GB，`vLLM` —— 跑了两次，升级 vLLM recipe 前后各一次（见 [MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark](https://github.com/MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark)）
+
+本测试同时衡量**性能**（TTFT、吞吐）和**质量**（对照 ground truth 的准确率），覆盖 9 个任务，
+最终生成一张横向对比图。
+
+### 结果速览（4 次跑分）
+
+完整报告见 [`results/biomedical_benchmark_report_v2.html`](results/biomedical_benchmark_report_v2.html)。
+综合分 = `质量×50% + 吞吐×30% + TTFT×10% + 稳定性×10%`。
+
+| 跑次 | 机器 | 引擎 | runs/task | 综合分 | 质量 | 吞吐 | TTFT |
+|------|------|------|-----------|--------|------|------|------|
+| 1 | M3 Max | ds4-server | 5 | **54.9** | 70.6 | 24.6 | 22.3 |
+| 2 | M5 Max | ds4-server | 5 | **72.9** | 71.7 | 70.4 | 59.7 |
+| 3 | DGX Spark（升级前） | vLLM | 2 | **67.1** | 75.8 | 45.3 | 55.5 |
+| 4 | DGX Spark（升级后） | vLLM | 5 | **73.5** | 76.9 | 61.8 | 65.7 |
+
+### 核心结论
+
+- **模型决定质量上限，硬件只决定你多快够到这个上限。** 四份质量分挤在 70.6–76.9（极差 ≤6），综合分却从 54.9 冲到 73.5（差 ≈19）。差距全在速度。想提升答案质量？换模型，别换机器。
+- **引擎×芯片的调优，可能比芯片代际本身还重要。** M3 Max → M5 Max（同引擎、升一代）：吞吐 ×3.9。DGX 升级前后（同机器、换 vLLM 配置）：`pubmedqa` 吞吐 ×14、TTFT ×28。
+- **长上下文 ≠ 长上下文跑得快。** 能装下 256K，不等于跑得动。M3 Max 在 8K 输入上 TTFT 飙到 52s；DGX（升级前）21s。买之前看真实长上下文 benchmark，别只看宣传的 ctx size。
+- **DGX 升级前后的跃升来自软件，不是硬件。** Mia 升级后的 recipe 把 GB10 专用路径全接上了：Anemll 的 GB10 vLLM 0.25 移植版、DSpark 投机解码（`MTP_NUM_TOKENS=5`）、NVFP4 DS-MLA KV cache（修好长 prefill 的就是它——`pubmedqa` TTFT 21.59s → 0.76s）、外加 2 节点 TP=2。第 2 次跑分才是 DGX 的可信数字（5 runs 对 2 runs，warmup 更充分）。
+- **有两个任务是诚实的设计翻车。** `mutation_call`（所有机器 P=0 R=0——LLM 做不了字符级对齐，用 BLAST/BWA）和 `expression_matrix`（1–2/4——LLM 做不了精确算术，让它写 pandas）。其余 5 个任务全场满分。
+
+### 快速开始（单机，约 5 分钟）
+
+```bash
+cd Local_LLM_test
+
+# 1. 建虚拟环境（uv 最快，pip 也行）
+uv venv .venv
+source .venv/bin/activate
+
+# 2. 装依赖
+uv pip install requests matplotlib
+# 或：pip install requests matplotlib
+
+# 3. 确保本地 LLM 服务已起且可达，然后：
+LLM_API_URL=http://127.0.0.1:8000/v1  \
+LLM_MODEL=deepseek-v4-flash           \
+LLM_LABEL=mac-m5max-ds4-0731          \
+LLM_CONTEXT=256000                    \
+RUNS=3                                \
+python test_dgx.py
+```
+
+输出：
+```
+results/bench_mac-m5max-ds4-0731_YYYYMMDD_HHMMSS.json   # 完整数据 + 环境快照
+results/bench_mac-m5max-ds4-0731_YYYYMMDD_HHMMSS.png    # 一眼速览图
+```
+
+### 三机对比流程
+
+1. **每台机器上**：各跑一次 `test_dgx.py`（见上文）。给每台机器起唯一的 `LLM_LABEL`（`mac-m5max`、`dgx-spark`、`linux-a100` …）。
+2. **收集**三份 `bench_*.json` 到同一个 `results/` 目录。
+3. **生成对比图**：
+
+   ```bash
+   python compare_bench.py results/bench_mac*.json results/bench_dgx*.json results/bench_linux*.json
+   ```
+
+   输出 `compare_YYYYMMDD_HHMMSS.png`，一张 2×2 面板：每任务 TTFT（越低越好）、每任务 tokens/s（越高越好）、每任务质量分（0–1，对照 ground truth）、环境对比表。
+
+   可选参数：
+   ```bash
+   python compare_bench.py results/*.json --metric ttft       # 只画 TTFT
+   python compare_bench.py results/*.json --metric quality    # 只画质量
+   python compare_bench.py results/*.json -o my_compare.png   # 自定义输出名
+   ```
+
+### 目录结构
+
+```
+Local_LLM_test/
+├── README.md                          # 本文件（中英双语）
+├── test_dgx.py                        # ⚠ 主 HTTP 基准脚本，兼容任何
+│                                      #   OpenAI 服务（ds4-server / vLLM /
+│                                      #   llama.cpp / Ollama …）——名字虽叫
+│                                      #   dgx，但并非 DGX 专用
+├── test_mac.py                        # CLI 变体，subprocess 调 ds4 二进制，
+│                                      #   无 HTTP，只跑 1 个任务
+├── compare_bench.py                   # 多机对比图生成器
+├── test_data/                         # 所有测试输入（冻结，~3.4 MB）
+│   ├── README.md                      # 数据来源与出处
+│   ├── mutation/                      # BRCA1 参考 + 20 突变序列
+│   ├── expression/                    # GSE100866 单细胞 top500 基因
+│   ├── protein/                       # BRCA1 p53 结合域 + UniProt 特征
+│   └── benchmark/                     # PubMedQA + MedMCQA 题库（40 题）
+└── results/                           # 运行后生成（json + png）
+                                      #   + biomedical_benchmark_report_v2.html
+                                      #     （4 次跑分的完整报告，浏览器打开）
+```
+
+运行时无需任何外部下载——所有任务输入都在 `test_data/` 里，整个包 < 5 MB。
+
+### 环境要求
+
+- **Python**：3.10+（开发用 3.11；3.14 也能跑，但 `uv venv` 会自动选 3.11）
+- **依赖**：`requests`、`matplotlib`（仅生成图用）
+- **可达的 LLM 端点**：任何 OpenAI 兼容的 `/v1/chat/completions` 服务
+  - `ds4-server`、`vLLM`、`llama.cpp server`、`Ollama`、LM Studio 等
+  - 需支持 `stream: true` 和 `stream_options.include_usage`（以上都支持）
+- **可选**：`uv` 快速建虚拟环境（macOS 上 `brew install uv`）
+
+基准客户端不需要 GPU/CUDA/PyTorch——它只发 HTTP 请求。
+
+### 9 个任务
+
+每个任务瞄准一种能力维度。最右列带**质量评估**的有 ground truth 自动评估器。
+
+| # | 任务 | 输入大小 | 测什么 | 质量评估 |
+|---|------|----------|--------|----------|
+| 1 | `mutation_call` | ~15 KB（BRCA1 7088 nt ×2） | 长上下文 + 核苷酸级推理 | 位置 P/R vs 20 个已知位点 |
+| 2 | `expression_genes` | ~1.7 KB（top30 基因） | 单细胞领域知识 | — |
+| 3 | `expression_matrix` | ~1.6 KB（20×10 子矩阵） | 表格数值推理 | 4 项子检查 vs 计算真值 |
+| 4 | `expression_code` | ~1.4 KB（数据集描述） | Scanpy 代码生成 | 12 个代码关键点检查 |
+| 5 | `protein_function` | ~3.3 KB（p53 结构域 + 二级结构） | 结构生物学知识 | 4 个子问题关键词匹配 |
+| 6 | `pubmedqa` | ~33 KB（20 篇摘要） | 文献理解 + yes/no 推理 | 准确率 vs 标注答案 |
+| 7 | `medmcqa` | ~4 KB（20 道选择题） | 医学领域知识（4 选 1） | 准确率 vs 标注答案 |
+| 8 | `json_output` | ~625 B（5 个已知变异） | 结构化输出可靠性 | 6 项 schema/正确性检查 |
+| 9 | `long_generation` | ~1 KB（综述 prompt） | **持续 decode 吞吐**——就 PARP/BRCA 写 600–800 字综述 | 长度 + 4 章节 + 主题覆盖 |
+
+**关于任务 1**：这是 `test_dgx.py`（HTTP）和 `test_mac.py`（CLI）唯一共享的任务，prompt **逐字节相同**（脚本验证过），所以 HTTP 路径和 CLI 路径在该任务上可直接对比（含 HTTP 开销）。
+
+### 配置（环境变量）
+
+都在 `test_dgx.py` 里：
+
+| 变量 | 默认值 | 用途 |
+|------|--------|------|
+| `LLM_API_URL` | `http://localhost:8000/v1` | OpenAI 兼容 API 根地址 |
+| `LLM_MODEL` | `deepseek-v4-flash` | 请求里带的模型 id |
+| `LLM_LABEL` | `unknown` | 跑分标签，写进结果文件名 |
+| `LLM_CONTEXT` | `unknown` | 引擎配置的上下文大小（用于环境快照） |
+| `RUNS` | `5` | 每任务重复次数（首次为 warmup，不计入） |
+| `OUTPUT_DIR` | `./results` | JSON + PNG 写到哪 |
+| `PLOT` | `1` | 设 `0` 跳过出图（无头/CI 环境） |
+
+### 综合分（0–100）
+
+`test_dgx.py`（单机）和 `compare_bench.py`（多机）都会算一个 **0–100 的综合分**，
+用四个子分加权：
+
+| 子分 | 权重 | 衡量什么 | 锚点 |
+|------|------|----------|------|
+| **质量** | 50% | 所有任务质量评估器的均值（准确率、JSON 正确性等） | 0–100（原始 0–1，等比放大） |
+| **吞吐** | 30% | 各任务 tokens/s 中位数，对数归一化 | 5 tok/s=30，30=70，60=90，100=100 |
+| **TTFT** | 10% | 各任务 TTFT 中位数，对数归一化（越低越好） | 0.1s=95，1s=80，5s=50，15s=20 |
+| **稳定性** | 10% | `long_generation` 跨 run 运行时间的 CV（变异系数） | CV<1%=100，CV=10%=0 |
+
+每个子分**按机器独立计算**（不做跨机归一化），所以单机分数本身就有意义。缺失数据（比如只有 1 run 算不出稳定性）按 0 计——这会故意惩罚不完整的跑分。
+
+**质量占比最大**，因为生物医学里答错比答慢代价高得多；**吞吐其次**，因为它卡的是真实科研节奏；**TTFT 和稳定性**权重小，因为它们影响体验、不影响正确性。
+
+分数出现在：终端（`test_dgx.py` 结尾打印、`compare_bench.py` 排名表）、单机 PNG 顶部、对比 PNG 顶部、JSON 的 `overall_score` 字段。配色：**绿 ≥70（好）/ 橙 40–69（一般）/ 红 <40（弱）**。
+
+### 脚本命名：`test_dgx.py` vs `test_mac.py`
+
+**名字有误导**——按开发顺序起的，真正区别是 **HTTP 对 CLI**，不是 **DGX 对 Mac**：
+
+| 脚本 | 真实角色 | 何时用 |
+|------|----------|--------|
+| `test_dgx.py` | 通用 HTTP 基准，9 个任务全跑 | **只要有任何 HTTP 服务在跑就用它**（ds4-server、vLLM、llama.cpp、Ollama、LM Studio、SGLang、TGI……）——Mac/Linux/DGX 通吃 |
+| `test_mac.py` | CLI subprocess 包装，只跑任务 1（`mutation_call`） | 只有 `ds4` 二进制、没起服务，想测裸 CLI 速度（无 HTTP 开销）时 |
+
+`test_mac.py` 从 `test_dgx.py` 导入全部任务/评估器/计分逻辑，只换调用方式。**任何完整跑分都用 `test_dgx.py`**，不分硬件。名字是历史遗留，理想情况应改名 `bench_http.py` / `bench_ds4_cli.py`，但改名会破坏已有结果引用。
+
+`test_mac.py` 的注意事项：只跑任务 1；运行前需改硬编码路径 `DS4_PATH`、`MODEL_PATH`；prompt 与 `test_dgx.py` 逐字节相同，可直接对比；用 `subprocess.run`（非流式），只报总时间——无 TTFT、无质量评估。
+
+### 数据来源
+
+全部在 `test_data/` 下，出处详见 `test_data/README.md`。
+
+| 数据集 | 来源 | 协议/引用 |
+|--------|------|-----------|
+| BRCA1 NM_007294.4 + 20 突变 | NCBI Nucleotide + 合成模拟（仅替换，seed=42） | NCBI public |
+| GSE100866 CD8 CITE-seq | GEO（Stoeckius et al. 2017） | GEO public, CC BY 4.0 |
+| BRCA1 P38398 + p53 结构域 | UniProt + Zhang et al. 1998（PMID 9582019） | UniProt CC BY 4.0 |
+| PubMedQA（抽 20 题） | `qiaojin/PubMedQA` `pqa_labeled`，seed=42 | Jin et al. 2019 |
+| MedMCQA（抽 20 题） | `openlifescienceai/medmcqa` `validation`，seed=42 | Pal et al. 2012 |
+
+**采样是确定性的**（seed=42）——每台机器拿到同样的 40 题。子集已 check-in 到 `test_data/benchmark/*.json`，**跑分时无需联网**。
+
+### 已知限制
+
+- **温度固定为 0**（确定性），不测跨温度稳定性。需要的话自己加 `temperature in [0, 0.3, 0.7]` 循环。
+- **仅单轮**。真实科研是多轮迭代对话，本测试只测单轮质量。
+- **PubMedQA / MedMCQA 各 20 题**。够给机器排序，不足以做可发表对比。需要更窄误差棒就改 `test_data/benchmark/*.json` 扩容。
+- **不测工具调用 / agent loop**。测了 JSON 输出，但没测函数调用语义。
+- **成本/能耗未归一化**。`tok/s` 是裸吞吐；要比 `tok/s/$` 自己在环境快照里填硬件成本。
+
+### 复现对比
+
+要让结果可比：用**同一个** `test_data/`；用**同一个** `RUNS`（默认 3 够，1 也行做快检）；在**安静的机器**上跑（关浏览器、无其它 GPU 任务）；让 warmup 跑完（别把第一次当卡死杀掉——冷启动 GPU 上首条 prompt 可能要 30–60s 做内核编译）；分享 **JSON**（不只是 PNG），它有完整每轮样本，同事能重画或自分析。
+
+---
+
+## English version
 
 Three machines in this comparison (all running the same DeepSeek V4 Flash 0731 weights):
+
 - **mac-m3max**: Apple M3 Max / 128 GB, `ds4-server` — the older Mac, baseline
 - **mac-m5max**: Apple M5 Max / 128 GB, `ds4-server` — throughput winner
 - **dgx-spark**: NVIDIA DGX Spark (GB10) / 128 GB, `vLLM` — ran twice, before & after a vLLM recipe upgrade (see [MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark](https://github.com/MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark))
@@ -13,11 +234,10 @@ The benchmark measures **performance** (TTFT, throughput) AND **quality**
 (accuracy against ground truth) across 9 tasks, then produces a single
 side-by-side chart for cross-machine comparison.
 
----
+### Results at a glance (4 runs)
 
-## Results at a glance (4 runs)
-
-Full write-up: `results/biomedical_benchmark_report_v2.html`. Overall score = `quality×50% + throughput×30% + ttft×10% + stability×10%`.
+Full write-up: [`results/biomedical_benchmark_report_v2.html`](results/biomedical_benchmark_report_v2.html).
+Overall score = `quality×50% + throughput×30% + ttft×10% + stability×10%`.
 
 | Run | Machine | Engine | runs/task | Overall | Quality | Throughput | TTFT |
 |-----|---------|--------|-----------|---------|---------|------------|------|
@@ -34,9 +254,7 @@ Full write-up: `results/biomedical_benchmark_report_v2.html`. Overall score = `q
 - **The DGX before→after jump came from software, not hardware.** Mia's upgraded recipe wired up the GB10-specific paths: Anemll's GB10 vLLM 0.25 port, DSpark speculative decoding (`MTP_NUM_TOKENS=5`), NVFP4 DS-MLA KV cache (this is what fixed long prefill — `pubmedqa` TTFT 21.59s → 0.76s), and 2-node TP=2. The run-2 score is the trustworthy DGX number (5 runs vs 2, proper warmup).
 - **Two tasks were honest design failures.** `mutation_call` (P=0 R=0 on all machines — LLMs can't do character-level alignment, use BLAST/BWA) and `expression_matrix` (1–2/4 — LLMs can't do exact arithmetic, have them write pandas instead). Five other tasks scored full marks everywhere.
 
----
-
-## Quick start (single machine, ~5 min)
+### Quick start (single machine, ~5 min)
 
 ```bash
 cd Local_LLM_test
@@ -64,9 +282,7 @@ results/bench_mac-m5max-ds4-0731_YYYYMMDD_HHMMSS.json   # full numbers + env sna
 results/bench_mac-m5max-ds4-0731_YYYYMMDD_HHMMSS.png    # one-glance summary chart
 ```
 
----
-
-## Three-machine comparison workflow
+### Three-machine comparison workflow
 
 1. **On each machine**: run `test_dgx.py` once (Quick start above). Pick a unique
    `LLM_LABEL` per machine (`mac-m5max`, `dgx-spark`, `linux-a100`, ...).
@@ -90,13 +306,11 @@ results/bench_mac-m5max-ds4-0731_YYYYMMDD_HHMMSS.png    # one-glance summary cha
    python compare_bench.py results/*.json -o my_compare.png   # custom output name
    ```
 
----
-
-## Directory layout
+### Directory layout
 
 ```
 Local_LLM_test/
-├── README.md                          # this file
+├── README.md                          # this file (bilingual CN/EN)
 ├── test_dgx.py                        # ⚠ main HTTP benchmark, works with ANY
 │                                      #   OpenAI-compatible server (ds4-server,
 │                                      #   vLLM, llama.cpp, Ollama, …) — NOT
@@ -118,9 +332,7 @@ Local_LLM_test/
 No external downloads needed at runtime — all task inputs are bundled in
 `test_data/`. The full package is < 5 MB.
 
----
-
-## Environment requirements
+### Environment requirements
 
 - **Python**: 3.10+ (developed on 3.11; 3.14 works but `uv venv` will pick 3.11
   automatically if available)
@@ -133,9 +345,7 @@ No external downloads needed at runtime — all task inputs are bundled in
 
 No GPU/CUDA/PyTorch needed on the benchmark client — it just sends HTTP.
 
----
-
-## The 9 tasks
+### The 9 tasks
 
 Each task targets a different capability dimension. Tasks with **Quality** in the
 rightmost column have automated evaluators with ground truth.
@@ -157,9 +367,7 @@ and `test_mac.py` (CLI). The prompt is **byte-identical** (verified by script),
 so the HTTP path and the CLI path can be compared directly on this task —
 HTTP overhead included.
 
----
-
-## Configuration (environment variables)
+### Configuration (environment variables)
 
 All in `test_dgx.py`:
 
@@ -173,9 +381,7 @@ All in `test_dgx.py`:
 | `OUTPUT_DIR` | `./results` | Where to write JSON + PNG |
 | `PLOT` | `1` | Set to `0` to skip chart generation (headless / CI) |
 
----
-
-## Overall score (0-100)
+### Overall score (0-100)
 
 Both `test_dgx.py` (single machine) and `compare_bench.py` (multi-machine)
 compute a single **overall score from 0 to 100** that captures "fitness for
@@ -206,35 +412,7 @@ The score shows up:
 
 Color coding: **green ≥70 (good)**, **orange 40-69 (fair)**, **red <40 (weak)**.
 
----
-
-## Output files
-
-### `bench_<label>_<timestamp>.json`
-
-Full results, including:
-- `environment`: hardware + engine snapshot (chip, memory, GPU, engine type
-  auto-detected from `/v1/models`, ctx, etc.)
-- `tasks.<name>`: per-task stats — TTFT/total/tok-per-s mean/min/max across
-  runs, plus full sample-by-sample raw data
-- `tasks.<name>.quality`: evaluator output (varies by task)
-
-### `bench_<label>_<timestamp>.png` (single-machine summary)
-
-A 2x2 panel:
-- TTFT per task (lower better)
-- tokens/s per task (higher better)
-- Quality per task (0-1, with random/majority baselines as reference lines)
-- Environment info table
-
-### `compare_<timestamp>.png` (multi-machine, from `compare_bench.py`)
-
-A 2x2 panel with grouped bar charts (one bar per machine per task) and an
-environment comparison table. Suitable for sharing in chat / slides.
-
----
-
-## Script naming: `test_dgx.py` vs `test_mac.py`
+### Script naming: `test_dgx.py` vs `test_mac.py`
 
 **The names are misleading** — they were chosen by development order, not by
 purpose. The real distinction is **HTTP vs CLI**, not **DGX vs Mac**:
@@ -248,35 +426,9 @@ purpose. The real distinction is **HTTP vs CLI**, not **DGX vs Mac**:
 it's a thin wrapper that only swaps the LLM calling method. **For any full
 benchmark run, use `test_dgx.py`**, regardless of hardware.
 
-The names are legacy and should ideally become `bench_http.py` /
-`bench_ds4_cli.py`, but renaming would break existing results references.
+`test_mac.py` caveats: runs only task 1; edit hard-coded `DS4_PATH` / `MODEL_PATH` first; prompt byte-identical to `test_dgx.py` (directly comparable); uses `subprocess.run` (not streaming), so only total time — no TTFT, no quality eval.
 
----
-
-## `test_mac.py` — when to use it
-
-`test_dgx.py` covers everything via HTTP. `test_mac.py` exists for **one
-specific purpose**: measuring the `ds4` **command-line binary** directly
-(no HTTP layer) on the `mutation_call` task. Use it when:
-
-- You want to isolate raw inference speed from server overhead
-- The machine doesn't have `ds4-server` running, only the `ds4` binary
-- You want to compare CLI invocation overhead between machines
-
-**Caveats**:
-- `test_mac.py` only runs task 1 (`mutation_call`). For all 9 tasks use
-  `test_dgx.py`.
-- `test_mac.py` has hard-coded paths in its config section that need editing
-  before running: `DS4_PATH`, `MODEL_PATH`. Set these to your `ds4` binary and
-  GGUF model file.
-- The prompt is byte-identical to `test_dgx.py`'s `mutation_call` task, so the
-  two are directly comparable on this task.
-- `test_mac.py` uses `subprocess.run` (not streaming), so it reports only total
-  time — no TTFT, no quality evaluation. Use it for raw timing only.
-
----
-
-## Data sources and provenance
+### Data sources and provenance
 
 All under `test_data/`, with full provenance in `test_data/README.md`.
 
@@ -292,44 +444,7 @@ All under `test_data/`, with full provenance in `test_data/README.md`.
 questions. The sampled subsets are checked into `test_data/benchmark/*.json`
 so **no internet access is needed at benchmark time**.
 
----
-
-## Troubleshooting
-
-**`Connection refused` / `404 unknown endpoint`**
-- Verify your LLM server is running: `curl http://127.0.0.1:8000/v1/models`
-- The API URL should be the root, no trailing `/v1/chat/completions` — the
-  script appends the path itself
-- If running on a remote machine, make sure the port is reachable:
-  `curl http://<host>:8000/v1/models`
-
-**`stream error` / empty content with `finish_reason=length`**
-- Your server is spending all `max_tokens` on reasoning. The script sends
-  `reasoning_effort: none` to disable this — verify your server honors it.
-  ds4-server, vLLM, and llama.cpp do. If yours doesn't, increase `max_tokens`
-  in the relevant `task_*` builder function.
-
-**First run is much slower than later runs**
-- Normal. First call triggers GPU kernel JIT compilation (especially
-  Metal/CUDA). The script does 1 warmup run before the counted `RUNS` runs to
-  keep stats clean.
-
-**Chart shows Chinese squares / missing glyphs**
-- The chart uses English labels only, so this shouldn't happen. If it does,
-  install a fallback font: `matplotlib` usually picks one up automatically.
-
-**`compare_bench.py` shows `?` for some machines**
-- That JSON was produced by an older script version without the environment
-  snapshot. Re-run `test_dgx.py` on that machine with the current script.
-
-**Python 3.14 venv missing packages**
-- `uv venv` defaults to a stable Python (3.11). If you only have 3.14,
-  `torch`-style deps may not have wheels yet — but this benchmark only needs
-  `requests` + `matplotlib`, both of which work fine on 3.14.
-
----
-
-## Known limitations
+### Known limitations
 
 - **Temperature is fixed at 0** (deterministic). Stability across temperatures
   is not measured. Add a loop over `temperature in [0, 0.3, 0.7]` if you care.
@@ -343,9 +458,7 @@ so **no internet access is needed at benchmark time**.
 - **Cost / energy not normalized**. `tok/s` is raw throughput; to compare
   `tok/s/$` you need to fill in hardware cost yourself in the env snapshot.
 
----
-
-## Reproducing the comparison
+### Reproducing the comparison
 
 To make results comparable across machines:
 
@@ -356,3 +469,12 @@ To make results comparable across machines:
    prompt can take 30-60 s on a cold GPU due to kernel compilation).
 5. Share the **JSON** (not just the PNG) — it has the full per-run samples,
    so colleagues can re-plot or do their own analysis.
+
+---
+
+## License / 许可
+
+Code released under the MIT License. Benchmark data under each upstream source's
+respective license (see `test_data/README.md`).
+
+代码遵循 MIT 协议。测试数据遵循各上游数据源的原协议（见 `test_data/README.md`）。
