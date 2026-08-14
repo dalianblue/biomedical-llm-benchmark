@@ -122,7 +122,7 @@ def snapshot_environment():
         "llm_api_url": "local CLI (subprocess)",
         "llm_model": os.path.basename(MODEL_PATH),
         "llm_engine": "ds4 binary (CLI)",
-        "llm_context": os.environ.get("LLM_CONTEXT", "256000"),
+        "llm_context": os.environ.get("LLM_CONTEXT", "unknown"),
     }
     if _p.system() == "Darwin":
         try:

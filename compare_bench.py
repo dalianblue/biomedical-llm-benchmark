@@ -206,10 +206,10 @@ def main():
         print(f"   - {d.get('label', '?'):<20} {env.get('chip', '?'):<14}"
               f"  {env.get('llm_engine', '?'):<12}  ({Path(p).name})")
 
-    # 任务集合：所有结果出现的任务（按 TASKS 顺序优先）
+    # 任务集合：所有结果出现的任务（按 TASKS 顺序优先）——必须与 test_dgx.py 的 9 个任务一致
     TASK_ORDER = ["mutation_call", "expression_genes", "expression_matrix",
                   "expression_code", "protein_function",
-                  "pubmedqa", "medmcqa", "json_output"]
+                  "pubmedqa", "medmcqa", "json_output", "long_generation"]
     seen = set()
     for _, d in results:
         seen.update(d.get("tasks", {}).keys())

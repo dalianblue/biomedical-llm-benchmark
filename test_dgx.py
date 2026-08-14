@@ -38,7 +38,9 @@ from pathlib import Path
 import requests
 
 # ============ 配置 ============
-API_URL = os.environ.get("LLM_API_URL", "http://localhost:8000/v1")
+API_URL = os.environ.get("LLM_API_URL", "http://localhost:8000/v1").rstrip("/")
+# ponytail: 只防尾斜杠（…/v1/ → …/v1//chat/completions 双斜杠多数服务容忍但脆）。
+# 不自动补 /v1 —— 那是用户该填的，README 已说明。
 MODEL_NAME = os.environ.get("LLM_MODEL", "deepseek-v4-flash")
 LLM_LABEL = os.environ.get("LLM_LABEL", "unknown")
 RUNS = int(os.environ.get("RUNS", "5"))  # 3 太少看不出短任务差异；5 是统计/耗时的折中
