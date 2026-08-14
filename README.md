@@ -62,9 +62,10 @@ uv pip install requests matplotlib
 # 或：pip install requests matplotlib
 
 # 3. 确保本地 LLM 服务已起且可达，然后：
+# LLM_LABEL 每台机器起一个唯一标签，如 mac-m5max-ds4-0731 / dgx-spark-vllm / linux-a100
 LLM_API_URL=http://127.0.0.1:8000/v1  \
 LLM_MODEL=deepseek-v4-flash           \
-LLM_LABEL=mac-m5max-ds4-0731          \
+LLM_LABEL=<机器-引擎-模型>             \
 LLM_CONTEXT=256000                    \
 RUNS=5                                \
 python test_dgx.py
@@ -72,11 +73,12 @@ python test_dgx.py
 
 > `RUNS=5` 是脚本默认值，也是本仓库 4 份跑分用的设置（首次额外 1 次预热不计入）。
 > 只想冒烟测试可设 `RUNS=1`，约 5 分钟跑完。
+> `LLM_LABEL` 会写进结果文件名，所以每台机器要用不同的值——横评时就是靠它区分谁的跑分。
 
-输出：
+输出（文件名里的 `<机器-引擎-模型>` 就是上面设的 `LLM_LABEL`）：
 ```
-results/bench_mac-m5max-ds4-0731_YYYYMMDD_HHMMSS.json   # 完整数据 + 环境快照
-results/bench_mac-m5max-ds4-0731_YYYYMMDD_HHMMSS.png    # 一眼速览图
+results/bench_<机器-引擎-模型>_YYYYMMDD_HHMMSS.json   # 完整数据 + 环境快照
+results/bench_<机器-引擎-模型>_YYYYMMDD_HHMMSS.png    # 一眼速览图
 ```
 
 ### 三机对比流程
@@ -275,9 +277,10 @@ uv pip install requests matplotlib
 # or: pip install requests matplotlib
 
 # 3. Make sure your local LLM server is running and reachable, then:
+# LLM_LABEL: one unique label per machine, e.g. mac-m5max-ds4-0731 / dgx-spark-vllm / linux-a100
 LLM_API_URL=http://127.0.0.1:8000/v1  \
 LLM_MODEL=deepseek-v4-flash           \
-LLM_LABEL=mac-m5max-ds4-0731          \
+LLM_LABEL=<machine-engine-model>       \
 LLM_CONTEXT=256000                    \
 RUNS=5                                \
 python test_dgx.py
@@ -285,11 +288,13 @@ python test_dgx.py
 
 > `RUNS=5` is the script default and what the 4 runs in this repo used (plus 1
 > warmup, not counted). For a smoke test set `RUNS=1` — finishes in ~5 min.
+> `LLM_LABEL` goes into the result filename, so give each machine a different
+> value — that's how runs are told apart in a cross-machine comparison.
 
-Output:
+Output (the `<machine-engine-model>` in the filename is the `LLM_LABEL` you set):
 ```
-results/bench_mac-m5max-ds4-0731_YYYYMMDD_HHMMSS.json   # full numbers + env snapshot
-results/bench_mac-m5max-ds4-0731_YYYYMMDD_HHMMSS.png    # one-glance summary chart
+results/bench_<machine-engine-model>_YYYYMMDD_HHMMSS.json   # full numbers + env snapshot
+results/bench_<machine-engine-model>_YYYYMMDD_HHMMSS.png    # one-glance summary chart
 ```
 
 ### Three-machine comparison workflow
