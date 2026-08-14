@@ -1,0 +1,14 @@
+key	value
+accession	P38398
+entry_name	BRCA1_HUMAN
+gene	BRCA1
+protein_length_aa	1863
+p53_binding_domain_range	224-500
+p53_binding_domain_length_aa	277
+p53_binding_domain_source	Zhang et al. 1998, Oncogene 16:1713-1721, PMID 9582019 (in vitro, aa 224-500 of BRCA1 binds the C-terminal domain of p53)
+secondary_structure_source	UniProt P38398 feature table (HELIX/STRAND/TURN, derived from PDB structures)
+n_helix	19
+n_strand	18
+n_turn	5
+ss_features_overlapping_p53_domain	0
+note	No HELIX/STRAND/TURN annotation overlaps aa 224-500 in UniProt; the p53-binding domain is an intrinsically disordered region with no experimentally resolved secondary structure.

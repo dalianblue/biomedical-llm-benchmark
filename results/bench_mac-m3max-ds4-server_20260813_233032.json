@@ -1,0 +1,1290 @@
+{
+  "label": "mac-m3max-ds4-server",
+  "api_url": "http://127.0.0.1:8000/v1",
+  "model": "deepseek-v4-flash",
+  "runs": 5,
+  "timestamp": "2026-08-13T22:38:30.407640",
+  "tasks": {
+    "mutation_call": {
+      "runs": 5,
+      "ok": 5,
+      "samples": [
+        {
+          "output": "Based on the analysis of the reference and mutated sequences, I have identified 20 point mutations. The variants and their predicted functional impacts are detailed below.\n\n### Variant Analysis Summary\n\n**Note on Variant Naming:** The reference sequence provided is the full mRNA transcript. The position numbering in the VCF file is based on the provided reference sequence, starting from 1. The protein change is based on the canonical BRCA1 ORF (NP_009225.1), which starts at position 1 of the reference sequence.\n\nHere is the detailed breakdown of each variant:\n\n1.  **chr17:1236 G>A**\n    *   **Type:** SNP\n    *   **Codon Change:** GTT -> ATT\n    *   **Protein Change:** V16I\n    *   **Prediction:** Tolerated (Conservative substitution, similar hydrophobic properties)\n\n2.  **chr17:1252 T>G**\n    *   **Type:** SNP\n    *   **Codon Change:** TGC -> GGC\n    *   **Protein Change:** C21G\n    *   **Prediction:** Deleterious (Loss of disulfide bond, significant size and property change)\n\n3.  **chr17:1283 C>A**\n    *   **Type:** SNP\n    *   **Codon Change:** CTG -> ATG\n    *   **Protein Change:** L31M\n    *   **Prediction:** Tolerated (Conservative substitution, similar hydrophobic properties)\n\n4.  **chr17:1306 G>A**\n    *   **Type:** SNP\n    *   **Codon Change:** GAA -> AAA\n    *   **Protein Change:** E39K\n    *   **Prediction:** Tolerated (Conservative substitution, similar charge and size)\n\n5.  **chr17:1330 C>T**\n    *   **Type:** SNP\n    *   **Codon Change:** TGC -> TGT\n    *   **Protein Change:** C47C\n    *   **Prediction:** Synonymous (No amino acid change)\n\n6.  **chr17:1348 G>A**\n    *   **Type:** SNP\n    *   **Codon Change:** GTT -> ATT\n    *   **Protein Change:** V53I\n    *   **Prediction:** Tolerated (Conservative substitution, similar hydrophobic properties)\n\n7.  **chr17:1357 G>A**\n    *   **Type:** SNP\n    *   **Codon Change:** GAT -> AAT\n    *   **Protein Change:** D56N\n    *   **Prediction:** Deleterious (Loss of negative charge, change in size and polarity)\n\n8.  **chr17:1366 C>T**\n    *   **Type:** SNP\n    *   **Codon Change:** TTG -> TTT\n    *   **Protein Change:** L59F\n    *   **Prediction:** Deleterious (Change in hydrophobic side chain size, potential to disrupt packing)\n\n9.  **chr17:1375 G>A**\n    *   **Type:** SNP\n    *   **Codon Change:** GAA -> AAA\n    *   **Protein Change:** E62K\n    *   **Prediction:** Tolerated (Conservative substitution, similar charge and size)\n\n10. **chr17:1384 G>A**\n    *   **Type:** SNP\n    *   *Codon Change:** GTT -> ATT\n    *   **Protein Change:** V65I\n    *   **Prediction:** Tolerated (Conservative substitution, similar hydrophobic properties)\n\n11. **chr17:1393 C>T**\n    *   **Type:** SNP\n    *   **Codon Change:** TGC -> TGT\n    *   **Protein Change:** C68C\n    *   **Prediction:** Synonymous (No amino acid change)\n\n12. **chr17:1402 G>A**\n    *   **Type:** SNP\n    *   **Codon Change:** GAA -> AAA\n    *   **Protein Change:** E71K\n    *   **Prediction:** Tolerated (Conservative substitution, similar charge and size)\n\n13. **chr17:1411 G>A**\n    *   **Type:** SNP\n    *   **Codon Change:** GTT -> ATT\n    *   **Protein Change:** V74I\n    *   **Prediction:** Tolerated (Conservative substitution, similar hydrophobic properties)\n\n14. **chr17:1420 C>T**\n    *   **Type:** SNP\n    *   **Codon Change:** TGC -> TGT\n    *   **Protein Change:** C77C\n    *   **Prediction:** Synonymous (No amino acid change)\n\n15. **chr17:1429 G>A**\n    *   **Type:** SNP\n    *   **Codon Change:** GAA -> AAA\n    *   **Protein Change:** E80K\n    *   **Prediction:** Tolerated (Conservative substitution, similar charge and size)\n\n16. **chr17:1438 G>A**\n    *   **Type:** SNP\n    *   **Codon Change:** GTT -> ATT\n    *   **Protein Change:** V83I\n    *   **Prediction:** Tolerated (Conservative substitution, similar hydrophobic properties)\n\n17. **chr17:1447 C>T**\n    *   **Type:** SNP\n    *   **Codon Change:** TGC -> TGT\n    *   **Protein Change:** C86C\n    *   **Prediction:** Synonymous (No amino acid change)\n\n18. **chr17:1456 G>A**\n    *   **Type:** SNP\n    *   **Codon Change:** GAA -> AAA\n    *   **Protein Change:** E89K\n    *   **Prediction:** Tolerated (Conservative substitution, similar charge and size)\n\n19. **chr17:1465 G>A**\n    *   **Type:** SNP\n    *   **Codon Change:** GTT -> ATT\n    *   **Protein Change:** V92I\n    *   **Prediction:** Tolerated (Conservative substitution, similar hydrophobic properties)\n\n20. **chr17:1474 C>T**\n    *   **Type:** SNP\n    *   **Codon Change:** TGC -> TGT\n    *   **Protein Change:** C95C\n    *   **Prediction:** Synonymous (No amino acid change)\n\n---\n\n### Final VCF Output\n\n```vcf\n##fileformat=VCFv4.2\n##source=BRCA1_annotator\n##INFO=<ID.TYPE,Number=1,Type=String,Description=\"Variant type\">\n##INFO=<ID.PROTEIN_CHANGE,Number=1,Type=String,Description=\"Protein sequence change\">\n##INFO=<ID.FUNCTIONAL_PREDICTION,Number=1,Type=String,Description=\"Predicted functional impact\">\n##contig=<ID=chr17,length=1000000>\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\nchr17\t1236\t.\tG\tA",
+          "ttft_s": 43.501,
+          "total_s": 192.726,
+          "prompt_tokens": 6820,
+          "completion_tokens": 1500,
+          "finish_reason": "length",
+          "tok_per_s": 7.78
+        },
+        {
+          "output": "Based on the analysis of the provided reference and mutated sequences, I have identified 20 point mutations. The variants are all SNPs, and their positions are based on the provided reference sequence. The analysis includes their effect on the protein sequence and a functional prediction.\n\nHere is the final output in VCF format:\n\n```vcf\n##fileformat=VCFv4.2\n##source=BRCA1_annotator\n##INFO=<ID.TYPE,Number=1,Type=String,Description=\"Variant type\">\n##INFO=<ID.PROTEIN_CHANGE,Number=1,Type=String,Description=\"Protein sequence change\">\n##INFO=<ID.FUNCTIONAL_PREDICTION,Number=1,Type=String,Description=\"Functional prediction\">\n##contig=<ID=NM_007294.4,length=5592>\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\nNM_007294.4\t130\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Gly16Asp;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t181\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu33Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t260\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Ile60Thr;FUNCTIONAL_PREDICTION=tolerated\nNM_007294.4\t268\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Thr63Ile;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t280\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Gly67Arg;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t286\t.\tA\tG\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Ile85Val;FUNCTIONAL_PREDICTION=tolerated\nNM_007294.4\t290\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Thr97Ile;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t295\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Gly101Arg;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t301\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Pro101Ser;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t304\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Gly102Arg;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t310\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Pro104Ser;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t313\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Gly105Arg;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t316\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Pro106Ser;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t319\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Gly107Arg;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t322\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Pro108Ser;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t325\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Gly109Arg;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t328\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Pro110Ser;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t331\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Gly111Arg;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t334\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Pro112Ser;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t337\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Gly113Arg;FUNCTIONAL_PREDICTION=deleterious\n```",
+          "ttft_s": 44.825,
+          "total_s": 126.3,
+          "prompt_tokens": 6820,
+          "completion_tokens": 1077,
+          "finish_reason": "stop",
+          "tok_per_s": 8.53
+        },
+        {
+          "output": "Based on the analysis of the provided reference and mutated sequences, I have identified 20 point mutations. The variants are all SNPs, and their positions are based on the provided reference sequence coordinates. The analysis includes the corresponding protein changes and functional predictions for the coding variants.\n\nHere is the final output in VCF format:\n\n```vcf\n##fileformat=VCFv4.2\n##source=BRCA1_annotator\n##INFO=<ID.TYPE,Number=1,Type=String,Description=\"Variant type\">\n##INFO=<ID.PROTEIN_CHANGE,Number=1,Type=String,Description=\"Protein sequence change\">\n##INFO=<ID.FUNCTIONAL_PREDICTION,Number=1,Type=String,Description=\"Functional prediction\">\n##contig=<ID=NM_007294.4,length=6389>\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\nNM_007294.4\t120\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Ile40Thr;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t180\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu60Phe;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t240\t.\tA\tG\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Glu80Gly;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t300\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Val100Met;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t360\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Thr120Ile;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t420\t.\tA\tG\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Lys140Arg;FUNCTIONAL_PREDICTION=missense(tolerated)\nNM_007294.4\t480\t.\tG\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Glu160Gln;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t540\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Ile180Thr;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t600\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu200Phe;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t660\t.\tA\tG\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Glu220Gly;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t720\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Val240Met;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t780\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Thr260Ile;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t840\t.\tA\tG\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Lys280Arg;FUNCTIONAL_PREDICTION=missense(tolerated)\nNM_007294.4\t900\t.\tG\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Glu300Gln;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t960\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Ile320Thr;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t1020\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu340Phe;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t1080\t.\tA\tG\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Glu360Gly;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t1140\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Val380Met;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t1200\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Thr400Ile;FUNCTIONAL_PREDICTION=missense(deleterious)\nNM_007294.4\t1260\t.\tA\tG\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Lys420Arg;FUNCTIONAL_PREDICTION=missense(tolerated)\n```\n\n**Note on the analysis:**\n- The positions are based on the provided reference sequence, starting from position 1 at the first nucleotide of the sequence.\n- All identified variants are SNPs (single nucleotide polymorphisms).\n- The protein changes are deduced based on the BRCA1 ORF, and the functional predictions are based on the nature of the amino acid substitution (e.g., changes in charge, polarity, or size are often predicted to be deleterious).\n- The variants are predicted to be missense mutations, and the functional impact is predicted to be either \"deleterious\" or \"tolerated\" based on the properties of the amino acid change.",
+          "ttft_s": 46.07,
+          "total_s": 135.562,
+          "prompt_tokens": 6820,
+          "completion_tokens": 1266,
+          "finish_reason": "stop",
+          "tok_per_s": 9.34
+        },
+        {
+          "output": "Based on the analysis of the provided reference and mutated sequences, I have identified 20 point mutations. The variants are distributed across the transcript, with several located within the coding region (CDS) of the BRCA1 gene.\n\nHere is the detailed breakdown of the identified variants:\n\n1.  **Variant 1 (g.1114G>A)**: This is a missense mutation in the coding region. The reference codon is `GTT` (Valine), and the mutated codon is `ATT` (Isoleucine). This results in a Valine to Isoleucine change at position 372 of the protein. This is predicted to be a tolerated substitution.\n2.  **Variant 2 (g.1185A>T)**: This is a missense mutation in the coding region. The reference codon is `TGC` (Cysteine), and the mutated codon is `TGA` (Stop codon). This results in a Cysteine to Stop codon change at position 396, creating a premature stop codon (nonsense mutation).\n3.  **Variant 3 (g.1338C>T)**: This is a missense mutation in the coding region. The reference codon is `GCT` (Alanine), and the mutated codon is `GTT` (Valine). This results in an Alanine to Valine change at position 446. This is predicted to be a deleterious substitution.\n4.  **Variant 4 (g.1475A>G)**: This is a missense mutation in the coding region. The reference codon is `GAT` (Aspartic acid), and the mutated codon is `GGT` (Glycine). This results in an Aspartic acid to Glycine change at position 492. This is predicted to be a deleterious substitution.\n5.  **Variant 5 (g.1522A>G)**: This is a missense mutation in the coding region. The reference codon is `GTT` (Valine), and the mutated codon is `GCT` (Alanine). This results in a Valine to Alanine change at position 508. This is predicted to be a tolerated substitution.\n6.  **Variant 6 (g.1535A>T)**: This is a missense mutation in the coding region. The reference codon is `TCA` (Serine), and the mutated codon is `TGA` (Stop codon). This results in a Serine to Stop codon change at position 512, creating a premature stop codon (nonsense mutation).\n7.  **Variant 7 (g.1612G>C)**: This is a missense mutation in the coding region. The reference codon is `GAT` (Aspartic acid), and the mutated codon is `CAT` (Histidine). This results in an Aspartic acid to Histidine change at position 538. This is predicted to be a deleterious substitution.\n8.  **Variant 8 (g.1635G>T)**: This is a missense mutation in the coding region. The reference codon is `GAA` (Glutamic acid), and the mutated codon is `TAA` (Stop codon). This results in a Glutamic acid to Stop codon change at position 545, creating a premature stop codon (nonsense mutation).\n9.  **Variant 9 (g.1708T>G)**: This is a missense mutation in the coding region. The reference codon is `TGT` (Cysteine), and the mutated codon is `GGT` (Glycine). This results in a Cysteine to Glycine change at position 570. This is predicted to be a deleterious substitution.\n10. **Variant 10 (g.1790T>C)**: This is a missense mutation in the coding region. The reference codon is `TTG` (Leucine), and the mutated codon is `TCG` (Serine). This results in a Leucine to Serine change at position 597. This is predicted to be a deleterious substitution.\n11. **Variant 11 (g.1808C>T)**: This is a missense mutation in the coding region. The reference codon is `GCT` (Alanine), and the mutated codon is `GTT` (Valine). This results in an Alanine to Valine change at position 603. This is predicted to be a tolerated substitution.\n12. **Variant 12 (g.1875A>G)**: This is a missense mutation in the coding region. The reference codon is `AAT` (Asparagine), and the mutated codon is `AGT` (Serine). This results in an Asparagine to Serine change at position 625. This is predicted to be a tolerated substitution.\n13. **Variant 13 (g.2082T>C)**: This is a missense mutation in the coding region. The reference codon is `TTG` (Leucine), and the mutated codon is `CTG` (Leucine). This is a synonymous mutation, resulting in no change to the protein sequence.\n14. **Variant 14 (g.2114A>C)**: This is a missense mutation in the coding region. The reference codon is `TTA` (Leucine), and the mutated codon is `TCA` (Serine). This results in a Leucine to Serine change at position 705. This is predicted to be a deleterious substitution.\n15. **Variant 15 (g.2191G>A)**: This is a missense mutation in the coding region. The reference codon is `GAA` (Glutamic acid), and the mutated codon is `AAA` (Lysine). This results in a Glutamic acid to Lysine change at position 731. This is predicted to be a tolerated substitution.\n16. **Variant 16 (g.2245T>C)**: This is a missense mutation in the coding region. The reference codon is `TTT` (Phenylalanine), and the mutated codon is `TCT` (Serine). This results in a Phenylalanine to Serine change at position 749. This is predicted to be a deleterious substitution.\n17. **Variant 17 (g.2251C>T)**: This is a missense mutation in the coding region. The reference codon is `CCA` (Proline), and the mutated codon is `CTA` (Leucine). This results in a Proline to Leucine change at position 751. This is predicted to be a deleterious substitution.\n18. **Variant 18 (g.2611G>C)**: This is a missense mutation in the coding region. The reference codon is `GAG` (Glutamic acid), and the mutated codon is `CAG` (Glutamine). This results in a Glutamic acid to Glutamine change at position 871. This is predicted to be a deleterious substitution.\n19. **Variant 19 (g.2634G>T)**: This is a missense mutation in the coding region. The reference codon is `GTT` (",
+          "ttft_s": 39.417,
+          "total_s": 143.874,
+          "prompt_tokens": 6820,
+          "completion_tokens": 1500,
+          "finish_reason": "length",
+          "tok_per_s": 10.43
+        },
+        {
+          "output": "Based on the analysis of the provided reference and mutated sequences, I have identified 20 point mutations. The variants are all SNPs, and their positions are based on the provided reference sequence. The analysis includes their effect on the protein sequence and a functional prediction.\n\nHere is the final output in VCF format:\n\n```vcf\n##fileformat=VCFv4.2\n##source=BRCA1_annotator\n##INFO=<ID.TYPE,Number=1,Type=String,Description=\"Variant type\">\n##INFO=<ID.PROTEIN_CHANGE,Number=1,Type=String,Description=\"Protein sequence change\">\n##INFO=<ID.FUNCTIONAL_PREDICTION,Number=1,Type=String,Description=\"Functional prediction\">\n##contig=<ID=NM_007294.4,length=5592>\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\nNM_007294.4\t130\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Gly17Glu;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t169\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t172\t.\tA\tG\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t175\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t178\t.\tG\tA\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t181\t.\tA\tG\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t184\t.\tA\tG\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t187\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t190\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t193\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t196\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t199\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t202\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t205\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t208\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t211\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t214\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t217\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t220\t.\tC\tT\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\nNM_007294.4\t223\t.\tT\tC\t.\t.\tTYPE=SNP;PROTEIN_CHANGE=p.Leu30Phe;FUNCTIONAL_PREDICTION=deleterious\n```",
+          "ttft_s": 41.31,
+          "total_s": 119.334,
+          "prompt_tokens": 6820,
+          "completion_tokens": 1111,
+          "finish_reason": "stop",
+          "tok_per_s": 9.31
+        }
+      ],
+      "ttft_s": {
+        "mean": 43.025,
+        "min": 39.417,
+        "max": 46.07
+      },
+      "total_s": {
+        "mean": 143.559,
+        "min": 119.334,
+        "max": 192.726
+      },
+      "tok_per_s": {
+        "mean": 9.078,
+        "min": 7.78,
+        "max": 10.43
+      },
+      "prompt_tokens": 6820,
+      "completion_tokens": {
+        "mean": 1290.8,
+        "min": 1077,
+        "max": 1500
+      },
+      "quality": {
+        "truth_count": 20,
+        "found_count": 20,
+        "hit_count": 1,
+        "recall": 0.05,
+        "precision": 0.05,
+        "hits": [
+          205
+        ],
+        "missed": [
+          245,
+          261,
+          713,
+          768,
+          840,
+          913,
+          1144,
+          1792,
+          1829,
+          2007,
+          2254,
+          3457,
+          4468,
+          4838,
+          5239,
+          5544,
+          6034,
+          6068,
+          6075
+        ],
+        "wrong": [
+          130,
+          169,
+          172,
+          175,
+          178,
+          181,
+          184,
+          187,
+          190,
+          193,
+          196,
+          199,
+          202,
+          208,
+          211,
+          214,
+          217,
+          220,
+          223
+        ]
+      }
+    },
+    "expression_genes": {
+      "runs": 5,
+      "ok": 5,
+      "samples": [
+        {
+          "output": "1. **Sample identity**: This dataset most likely represents CD8+ T cells. Marker genes supporting this call include:  \n   - **PTPRC** (CD45, pan-leukocyte marker)  \n   - **GNLY** (granzyme B, cytotoxic T/NK cell marker)  \n   - **HLA-B** (MHC class I, highly expressed in activated T cells)  \n\n2. **Ribosomal / mitochondrial content**:  \n   - Ribosomal proteins (RPL/RPS): ~15 genes in the top-30, contributing roughly **25â30%** of top-30 UMI mass (e.g., RPS6, RPL13, RPS29, etc.).  \n   - Mitochondrial genes (MT-): ~6 genes (MT-RNR2, MT-RNR1, MT-ND5, MT-ND4, MT-CO3, MT-CO1), contributing **~50%** of top-30 UMI mass (dominated by MT-RNR2).  \n   This is **not typical** for healthy CD8+ T cellsâhealthy cells usually show <10% mitochondrial UMI fraction. The high mitochondrial content suggests stressed or dying cells.\n\n3. **MT-RNR2 anomaly**:  \n   High MT-RNR2 (16S rRNA) is **likely a library-prep artifact**, not necessarily cell stress. Mitochondrial rRNA is polyadenylated and can be captured by poly(A)-based protocols (e.g., CITE-seq), leading to over-representation. It does not reflect mitochondrial stress (which would elevate MT-ATPase/MT-CO genes), but rather technical capture bias.\n\n4. **One quality-control concern**:  \n   The **high mitochondrial UMI fraction** (especially MT-RNR2) indicates a substantial proportion of stressed or lysed cells. Standard QC would filter cells with >10â20% mitochondrial UMI content. Here, the top-30 genes alone show ~50% mitochondrial mass, so many cells likely fail this threshold. This could confound downstream analysis (e.g., cell-type clustering, differential expression) and should be addressed by removing low-quality cells or using mitochondrial gene exclusion.",
+          "ttft_s": 4.369,
+          "total_s": 32.687,
+          "prompt_tokens": 622,
+          "completion_tokens": 446,
+          "finish_reason": "stop",
+          "tok_per_s": 13.64
+        },
+        {
+          "output": "1. **Sample identity**: This dataset most likely represents CD8+ T cells. Marker genes supporting this call include:  \n   - **PTPRC** (CD45, pan-leukocyte marker)  \n   - **GNLY** (granzyme B, cytotoxic T/NK cell marker)  \n   - **HLA-B** (MHC class I, highly expressed in activated T cells)  \n\n2. **Ribosomal / mitochondrial content**:  \n   - Ribosomal proteins (RPL/RPS): ~15 genes in the top-30, contributing roughly **25â30%** of top-30 UMI mass (e.g., RPS6, RPL13, RPS29, etc.).  \n   - Mitochondrial genes (MT-): ~6 genes (MT-RNR2, MT-RNR1, MT-ND5, MT-ND4, MT-CO3, MT-CO1), contributing **~50%** of top-30 UMI mass (dominated by MT-RNR2).  \n   This is **not typical** for healthy CD8+ T cellsâhealthy cells usually show <10% mitochondrial UMI fraction. The high mitochondrial content suggests stressed or dying cells.\n\n3. **MT-RNR2 anomaly**:  \n   High MT-RNR2 (16S rRNA) is **likely a library-prep artifact**, not necessarily cell stress. Mitochondrial rRNA is polyadenylated and can be captured by poly(A)-based protocols (e.g., CITE-seq), leading to over-representation. It does not reflect mitochondrial stress (which would elevate MT-ATPase/MT-CO genes), but rather technical capture bias.\n\n4. **One quality-control concern**:  \n   The **high mitochondrial UMI fraction** (especially MT-RNR2) indicates a substantial proportion of stressed or lysed cells. Standard QC would filter cells with >10â20% mitochondrial UMI content. Here, the top-30 genes alone show ~50% mitochondrial mass, so many cells likely fail this threshold. This could confound downstream analysis (e.g., cell-type clustering, differential expression) and should be addressed by removing low-quality cells or using mitochondrial gene exclusion.",
+          "ttft_s": 5.077,
+          "total_s": 33.144,
+          "prompt_tokens": 622,
+          "completion_tokens": 446,
+          "finish_reason": "stop",
+          "tok_per_s": 13.46
+        },
+        {
+          "output": "1. **Sample identity**: This dataset most likely represents CD8+ T cells. Marker genes supporting this call include:  \n   - **PTPRC** (CD45, pan-leukocyte marker)  \n   - **GNLY** (granzyme B, cytotoxic T/NK cell marker)  \n   - **HLA-B** (MHC class I, highly expressed in activated T cells)  \n\n2. **Ribosomal / mitochondrial content**:  \n   - Ribosomal proteins (RPL/RPS): ~15 genes in the top-30, contributing roughly **25â30%** of top-30 UMI mass (e.g., RPS6, RPL13, RPS29, etc.).  \n   - Mitochondrial genes (MT-): ~6 genes (MT-RNR2, MT-RNR1, MT-ND5, MT-ND4, MT-CO3, MT-CO1), contributing **~50%** of top-30 UMI mass (dominated by MT-RNR2).  \n   This is **not typical** for healthy CD8+ T cellsâhealthy cells usually show <10% mitochondrial UMI fraction. The high mitochondrial content suggests stressed or dying cells.\n\n3. **MT-RNR2 anomaly**:  \n   High MT-RNR2 (16S rRNA) is **likely a library-prep artifact**, not necessarily cell stress. Mitochondrial rRNA is polyadenylated and can be captured by poly(A)-based protocols (e.g., CITE-seq), leading to over-representation. It does not reflect mitochondrial stress (which would elevate MT-ATPase/MT-CO genes), but rather technical capture bias.\n\n4. **One quality-control concern**:  \n   The **high mitochondrial UMI fraction** (especially MT-RNR2) indicates a substantial proportion of stressed or lysed cells. Standard QC would filter cells with >10â20% mitochondrial UMI content. Here, the top-30 genes alone show ~50% mitochondrial mass, so many cells likely fail this threshold. This could confound downstream analysis (e.g., cell-type clustering, differential expression) and should be addressed by removing low-quality cells or using mitochondrial gene exclusion.",
+          "ttft_s": 4.252,
+          "total_s": 32.521,
+          "prompt_tokens": 622,
+          "completion_tokens": 446,
+          "finish_reason": "stop",
+          "tok_per_s": 13.71
+        },
+        {
+          "output": "1. **Sample identity**: This dataset most likely represents CD8+ T cells. Marker genes supporting this call include:  \n   - **PTPRC** (CD45, pan-leukocyte marker)  \n   - **GNLY** (granzyme B, cytotoxic T/NK cell marker)  \n   - **HLA-B** (MHC class I, highly expressed in activated T cells)  \n\n2. **Ribosomal / mitochondrial content**:  \n   - Ribosomal proteins (RPL/RPS): ~15 genes in the top-30, contributing roughly **25â30%** of top-30 UMI mass (e.g., RPS6, RPL13, RPS29, etc.).  \n   - Mitochondrial genes (MT-): ~6 genes (MT-RNR2, MT-RNR1, MT-ND5, MT-ND4, MT-CO3, MT-CO1), contributing **~50%** of top-30 UMI mass (dominated by MT-RNR2).  \n   This is **not typical** for healthy CD8+ T cellsâhealthy cells usually show <10% mitochondrial UMI fraction. The high mitochondrial content suggests stressed or dying cells.\n\n3. **MT-RNR2 anomaly**:  \n   High MT-RNR2 (16S rRNA) is **likely a library-prep artifact**, not necessarily cell stress. Mitochondrial rRNA is polyadenylated and can be captured by poly(A)-based protocols (e.g., CITE-seq), leading to over-representation. It does not reflect mitochondrial stress (which would elevate MT-ATPase/MT-CO genes), but rather technical capture bias.\n\n4. **One quality-control concern**:  \n   The **high mitochondrial UMI fraction** (especially MT-RNR2) indicates a substantial proportion of stressed or lysed cells. Standard QC would filter cells with >10â20% mitochondrial UMI content. Here, the top-30 genes alone show ~50% mitochondrial mass, so many cells likely fail this threshold. This could confound downstream analysis (e.g., cell-type clustering, differential expression) and should be addressed by removing low-quality cells or using mitochondrial gene exclusion.",
+          "ttft_s": 4.451,
+          "total_s": 32.812,
+          "prompt_tokens": 622,
+          "completion_tokens": 446,
+          "finish_reason": "stop",
+          "tok_per_s": 13.59
+        },
+        {
+          "output": "1. **Sample identity**: This dataset most likely represents CD8+ T cells. Marker genes supporting this call include:  \n   - **PTPRC** (CD45, pan-leukocyte marker)  \n   - **GNLY** (granzyme B, cytotoxic T/NK cell marker)  \n   - **HLA-B** (MHC class I, highly expressed in activated T cells)  \n\n2. **Ribosomal / mitochondrial content**:  \n   - Ribosomal proteins (RPL/RPS): ~15 genes in the top-30, contributing roughly **25â30%** of top-30 UMI mass (e.g., RPS6, RPL13, RPS29, etc.).  \n   - Mitochondrial genes (MT-): ~6 genes (MT-RNR2, MT-RNR1, MT-ND5, MT-ND4, MT-CO3, MT-CO1), contributing **~50%** of top-30 UMI mass (dominated by MT-RNR2).  \n   This is **not typical** for healthy CD8+ T cellsâhealthy cells usually show <10% mitochondrial UMI fraction. The high mitochondrial content suggests stressed or dying cells.\n\n3. **MT-RNR2 anomaly**:  \n   High MT-RNR2 (16S rRNA) is **likely a library-prep artifact**, not necessarily cell stress. Mitochondrial rRNA is polyadenylated and can be captured by poly(A)-based protocols (e.g., CITE-seq), leading to over-representation. It does not reflect mitochondrial stress (which would elevate MT-ATPase/MT-CO genes), but rather technical capture bias.\n\n4. **One quality-control concern**:  \n   The **high mitochondrial UMI fraction** (especially MT-RNR2) indicates a substantial proportion of stressed or lysed cells. Standard QC would filter cells with >10â20% mitochondrial UMI content. Here, the top-30 genes alone show ~50% mitochondrial mass, so many cells likely fail this threshold. This could confound downstream analysis (e.g., cell-type clustering, differential expression) and should be addressed by removing low-quality cells or using mitochondrial gene exclusion.",
+          "ttft_s": 4.324,
+          "total_s": 32.474,
+          "prompt_tokens": 622,
+          "completion_tokens": 446,
+          "finish_reason": "stop",
+          "tok_per_s": 13.73
+        }
+      ],
+      "ttft_s": {
+        "mean": 4.495,
+        "min": 4.252,
+        "max": 5.077
+      },
+      "total_s": {
+        "mean": 32.728,
+        "min": 32.474,
+        "max": 33.144
+      },
+      "tok_per_s": {
+        "mean": 13.626,
+        "min": 13.46,
+        "max": 13.73
+      },
+      "prompt_tokens": 622,
+      "completion_tokens": {
+        "mean": 446.0,
+        "min": 446,
+        "max": 446
+      }
+    },
+    "expression_matrix": {
+      "runs": 5,
+      "ok": 5,
+      "samples": [
+        {
+          "output": "We have 20 genes and 10 cells, so 200 values total.\n\n---\n\n### Step 1 â Top-5 genes by row-sum\n\nLet's sum each gene across the 10 cells:\n\n**MT-RNR2**:  \n304 + 265 + 189 + 86 + 63 + 191 + 180 + 237 + 168 + 168  \n= 304+265=569  \n569+189=758  \n758+86=844  \n844+63=907  \n907+191=1098  \n1098+180=1278  \n1278+237=1515  \n1515+168=1683  \n1683+168=1851  \nSum = 1851, mean = 185.1, max = 304\n\n**MALAT1**:  \n111+69=180  \n180+79=259  \n259+101=360  \n360+123=483  \n483+63=546  \n546+181=727  \n727+131=858  \n858+117=975  \n975+71=1046  \nSum = 1046, mean = 104.6, max = 181\n\n**MT-RNR1**:  \n0+17=17  \n17+15=32  \n32+2=34  \n34+2=36  \n36+27=63  \n63+5=68  \n68+11=79  \n79+7=86  \n86+3=89  \nSum = 89, mean = 8.9, max = 27\n\n**RPS6**:  \n36+21=57  \n57+12=69  \n69+17=86  \n86+12=98  \n98+32=130  \n130+29=159  \n159+15=174  \n174+7=181  \n181+29=210  \nSum = 210, mean = 21.0, max = 36\n\n**B2M**:  \n8+4=12  \n12+1=13  \n13+5=18  \n18+18=36  \n36+5=41  \n41+6=47  \n47+1=48  \n48+5=53  \n53+0=53  \nSum = 53, mean = 5.3, max = 18\n\n**PABPC1**:  \n27+16=43  \n43+7=50  \n50+11=61  \n61+14=75  \n75+9=84  \n84+13=97  \n97+6=103  \n103+7=110  \n110+8=118  \nSum = 118, mean = 11.8, max = 27\n\n**TMSB4X**:  \n23+3=26  \n26+2=28  \n28+3=31  \n31+29=60  \n60+5=65  \n65+4=69  \n69+2=71  \n71+0=71  \n71+6=77  \nSum = 77, mean = 7.7, max = 29\n\n**MT-ND5**:  \n1+14=15  \n15+8=23  \n23+3=26  \n26+6=32  \n32+13=45  \n45+7=52  \n52+4=56  \n56+4=60  \n60+4=64  \nSum = 64, mean = 6.4, max = 14\n\n**RPL13**:  \n16+10=26  \n26+5=31  \n31+6=37  \n37+8=45  \n45+20=65  \n65+20=85  \n85+12=97  \n97+3=100  \n100+19=119  \nSum = 119, mean = 11.9, max = 20\n\n**MT-ND4**:  \n1+13=14  \n14+12",
+          "ttft_s": 6.288,
+          "total_s": 60.323,
+          "prompt_tokens": 819,
+          "completion_tokens": 800,
+          "finish_reason": "length",
+          "tok_per_s": 13.26
+        },
+        {
+          "output": "We have 20 genes and 10 cells, so 200 values total.\n\n---\n\n### Step 1 â Top-5 genes by row-sum\n\nLet's sum each gene across the 10 cells:\n\n**MT-RNR2**:  \n304 + 265 + 189 + 86 + 63 + 191 + 180 + 237 + 168 + 168  \n= 304+265=569  \n569+189=758  \n758+86=844  \n844+63=907  \n907+191=1098  \n1098+180=1278  \n1278+237=1515  \n1515+168=1683  \n1683+168=1851  \nSum = 1851, mean = 185.1, max = 304\n\n**MALAT1**:  \n111+69=180  \n180+79=259  \n259+101=360  \n360+123=483  \n483+63=546  \n546+181=727  \n727+131=858  \n858+117=975  \n975+71=1046  \nSum = 1046, mean = 104.6, max = 181\n\n**MT-RNR1**:  \n0+17=17  \n17+15=32  \n32+2=34  \n34+2=36  \n36+27=63  \n63+5=68  \n68+11=79  \n79+7=86  \n86+3=89  \nSum = 89, mean = 8.9, max = 27\n\n**RPS6**:  \n36+21=57  \n57+12=69  \n69+17=86  \n86+12=98  \n98+32=130  \n130+29=159  \n159+15=174  \n174+7=181  \n181+29=210  \nSum = 210, mean = 21.0, max = 36\n\n**B2M**:  \n8+4=12  \n12+1=13  \n13+5=18  \n18+18=36  \n36+5=41  \n41+6=47  \n47+1=48  \n48+5=53  \n53+0=53  \nSum = 53, mean = 5.3, max = 18\n\n**PABPC1**:  \n27+16=43  \n43+7=50  \n50+11=61  \n61+14=75  \n75+9=84  \n84+13=97  \n97+6=103  \n103+7=110  \n110+8=118  \nSum = 118, mean = 11.8, max = 27\n\n**TMSB4X**:  \n23+3=26  \n26+2=28  \n28+3=31  \n31+29=60  \n60+5=65  \n65+4=69  \n69+2=71  \n71+0=71  \n71+6=77  \nSum = 77, mean = 7.7, max = 29\n\n**MT-ND5**:  \n1+14=15  \n15+8=23  \n23+3=26  \n26+6=32  \n32+13=45  \n45+7=52  \n52+4=56  \n56+4=60  \n60+4=64  \nSum = 64, mean = 6.4, max = 14\n\n**RPL13**:  \n16+10=26  \n26+5=31  \n31+6=37  \n37+8=45  \n45+20=65  \n65+20=85  \n85+12=97  \n97+3=100  \n100+19=119  \nSum = 119, mean = 11.9, max = 20\n\n**MT-ND4**:  \n1+13=14  \n14+12",
+          "ttft_s": 5.149,
+          "total_s": 55.209,
+          "prompt_tokens": 819,
+          "completion_tokens": 800,
+          "finish_reason": "length",
+          "tok_per_s": 14.49
+        },
+        {
+          "output": "We have 20 genes and 10 cells, so 200 values total.\n\n---\n\n### Step 1 â Top-5 genes by row-sum\n\nLet's sum each gene across the 10 cells:\n\n**MT-RNR2**:  \n304 + 265 + 189 + 86 + 63 + 191 + 180 + 237 + 168 + 168  \n= 304+265=569  \n569+189=758  \n758+86=844  \n844+63=907  \n907+191=1098  \n1098+180=1278  \n1278+237=1515  \n1515+168=1683  \n1683+168=1851  \nSum = 1851, mean = 185.1, max = 304\n\n**MALAT1**:  \n111+69=180  \n180+79=259  \n259+101=360  \n360+123=483  \n483+63=546  \n546+181=727  \n727+131=858  \n858+117=975  \n975+71=1046  \nSum = 1046, mean = 104.6, max = 181\n\n**MT-RNR1**:  \n0+17=17  \n17+15=32  \n32+2=34  \n34+2=36  \n36+27=63  \n63+5=68  \n68+11=79  \n79+7=86  \n86+3=89  \nSum = 89, mean = 8.9, max = 27\n\n**RPS6**:  \n36+21=57  \n57+12=69  \n69+17=86  \n86+12=98  \n98+32=130  \n130+29=159  \n159+15=174  \n174+7=181  \n181+29=210  \nSum = 210, mean = 21.0, max = 36\n\n**B2M**:  \n8+4=12  \n12+1=13  \n13+5=18  \n18+18=36  \n36+5=41  \n41+6=47  \n47+1=48  \n48+5=53  \n53+0=53  \nSum = 53, mean = 5.3, max = 18\n\n**PABPC1**:  \n27+16=43  \n43+7=50  \n50+11=61  \n61+14=75  \n75+9=84  \n84+13=97  \n97+6=103  \n103+7=110  \n110+8=118  \nSum = 118, mean = 11.8, max = 27\n\n**TMSB4X**:  \n23+3=26  \n26+2=28  \n28+3=31  \n31+29=60  \n60+5=65  \n65+4=69  \n69+2=71  \n71+0=71  \n71+6=77  \nSum = 77, mean = 7.7, max = 29\n\n**MT-ND5**:  \n1+14=15  \n15+8=23  \n23+3=26  \n26+6=32  \n32+13=45  \n45+7=52  \n52+4=56  \n56+4=60  \n60+4=64  \nSum = 64, mean = 6.4, max = 14\n\n**RPL13**:  \n16+10=26  \n26+5=31  \n31+6=37  \n37+8=45  \n45+20=65  \n65+20=85  \n85+12=97  \n97+3=100  \n100+19=119  \nSum = 119, mean = 11.9, max = 20\n\n**MT-ND4**:  \n1+13=14  \n14+12",
+          "ttft_s": 5.551,
+          "total_s": 57.478,
+          "prompt_tokens": 819,
+          "completion_tokens": 800,
+          "finish_reason": "length",
+          "tok_per_s": 13.92
+        },
+        {
+          "output": "We have 20 genes and 10 cells, so 200 values total.\n\n---\n\n### Step 1 â Top-5 genes by row-sum\n\nLet's sum each gene across the 10 cells:\n\n**MT-RNR2**:  \n304 + 265 + 189 + 86 + 63 + 191 + 180 + 237 + 168 + 168  \n= 304+265=569  \n569+189=758  \n758+86=844  \n844+63=907  \n907+191=1098  \n1098+180=1278  \n1278+237=1515  \n1515+168=1683  \n1683+168=1851  \nSum = 1851, mean = 185.1, max = 304\n\n**MALAT1**:  \n111+69=180  \n180+79=259  \n259+101=360  \n360+123=483  \n483+63=546  \n546+181=727  \n727+131=858  \n858+117=975  \n975+71=1046  \nSum = 1046, mean = 104.6, max = 181\n\n**MT-RNR1**:  \n0+17=17  \n17+15=32  \n32+2=34  \n34+2=36  \n36+27=63  \n63+5=68  \n68+11=79  \n79+7=86  \n86+3=89  \nSum = 89, mean = 8.9, max = 27\n\n**RPS6**:  \n36+21=57  \n57+12=69  \n69+17=86  \n86+12=98  \n98+32=130  \n130+29=159  \n159+15=174  \n174+7=181  \n181+29=210  \nSum = 210, mean = 21.0, max = 36\n\n**B2M**:  \n8+4=12  \n12+1=13  \n13+5=18  \n18+18=36  \n36+5=41  \n41+6=47  \n47+1=48  \n48+5=53  \n53+0=53  \nSum = 53, mean = 5.3, max = 18\n\n**PABPC1**:  \n27+16=43  \n43+7=50  \n50+11=61  \n61+14=75  \n75+9=84  \n84+13=97  \n97+6=103  \n103+7=110  \n110+8=118  \nSum = 118, mean = 11.8, max = 27\n\n**TMSB4X**:  \n23+3=26  \n26+2=28  \n28+3=31  \n31+29=60  \n60+5=65  \n65+4=69  \n69+2=71  \n71+0=71  \n71+6=77  \nSum = 77, mean = 7.7, max = 29\n\n**MT-ND5**:  \n1+14=15  \n15+8=23  \n23+3=26  \n26+6=32  \n32+13=45  \n45+7=52  \n52+4=56  \n56+4=60  \n60+4=64  \nSum = 64, mean = 6.4, max = 14\n\n**RPL13**:  \n16+10=26  \n26+5=31  \n31+6=37  \n37+8=45  \n45+20=65  \n65+20=85  \n85+12=97  \n97+3=100  \n100+19=119  \nSum = 119, mean = 11.9, max = 20\n\n**MT-ND4**:  \n1+13=14  \n14+12",
+          "ttft_s": 6.942,
+          "total_s": 57.433,
+          "prompt_tokens": 819,
+          "completion_tokens": 800,
+          "finish_reason": "length",
+          "tok_per_s": 13.93
+        },
+        {
+          "output": "We have 20 genes and 10 cells, so 200 values total.\n\n---\n\n### Step 1 â Top-5 genes by row-sum\n\nLet's sum each gene across the 10 cells:\n\n**MT-RNR2**:  \n304 + 265 + 189 + 86 + 63 + 191 + 180 + 237 + 168 + 168  \n= 304+265=569  \n569+189=758  \n758+86=844  \n844+63=907  \n907+191=1098  \n1098+180=1278  \n1278+237=1515  \n1515+168=1683  \n1683+168=1851  \nSum = 1851, mean = 185.1, max = 304\n\n**MALAT1**:  \n111+69=180  \n180+79=259  \n259+101=360  \n360+123=483  \n483+63=546  \n546+181=727  \n727+131=858  \n858+117=975  \n975+71=1046  \nSum = 1046, mean = 104.6, max = 181\n\n**MT-RNR1**:  \n0+17=17  \n17+15=32  \n32+2=34  \n34+2=36  \n36+27=63  \n63+5=68  \n68+11=79  \n79+7=86  \n86+3=89  \nSum = 89, mean = 8.9, max = 27\n\n**RPS6**:  \n36+21=57  \n57+12=69  \n69+17=86  \n86+12=98  \n98+32=130  \n130+29=159  \n159+15=174  \n174+7=181  \n181+29=210  \nSum = 210, mean = 21.0, max = 36\n\n**B2M**:  \n8+4=12  \n12+1=13  \n13+5=18  \n18+18=36  \n36+5=41  \n41+6=47  \n47+1=48  \n48+5=53  \n53+0=53  \nSum = 53, mean = 5.3, max = 18\n\n**PABPC1**:  \n27+16=43  \n43+7=50  \n50+11=61  \n61+14=75  \n75+9=84  \n84+13=97  \n97+6=103  \n103+7=110  \n110+8=118  \nSum = 118, mean = 11.8, max = 27\n\n**TMSB4X**:  \n23+3=26  \n26+2=28  \n28+3=31  \n31+29=60  \n60+5=65  \n65+4=69  \n69+2=71  \n71+0=71  \n71+6=77  \nSum = 77, mean = 7.7, max = 29\n\n**MT-ND5**:  \n1+14=15  \n15+8=23  \n23+3=26  \n26+6=32  \n32+13=45  \n45+7=52  \n52+4=56  \n56+4=60  \n60+4=64  \nSum = 64, mean = 6.4, max = 14\n\n**RPL13**:  \n16+10=26  \n26+5=31  \n31+6=37  \n37+8=45  \n45+20=65  \n65+20=85  \n85+12=97  \n97+3=100  \n100+19=119  \nSum = 119, mean = 11.9, max = 20\n\n**MT-ND4**:  \n1+13=14  \n14+12",
+          "ttft_s": 6.66,
+          "total_s": 53.488,
+          "prompt_tokens": 819,
+          "completion_tokens": 800,
+          "finish_reason": "length",
+          "tok_per_s": 14.96
+        }
+      ],
+      "ttft_s": {
+        "mean": 6.118,
+        "min": 5.149,
+        "max": 6.942
+      },
+      "total_s": {
+        "mean": 56.786,
+        "min": 53.488,
+        "max": 60.323
+      },
+      "tok_per_s": {
+        "mean": 14.112,
+        "min": 13.26,
+        "max": 14.96
+      },
+      "prompt_tokens": 819,
+      "completion_tokens": {
+        "mean": 800.0,
+        "min": 800,
+        "max": 800
+      },
+      "quality": {
+        "max": 4,
+        "scored": 1,
+        "checks": {
+          "top5_genes": {
+            "expected": [
+              "MT-RNR2",
+              "MALAT1",
+              "RPS6",
+              "RPS8",
+              "RPL13A"
+            ],
+            "hit": [
+              "MT-RNR2",
+              "MALAT1",
+              "RPS6"
+            ],
+            "hit_count": 3,
+            "passed": false
+          },
+          "top3_variance": {
+            "expected": [
+              "MT-RNR2",
+              "MALAT1",
+              "RPS6"
+            ],
+            "hit": [
+              "MT-RNR2",
+              "MALAT1",
+              "RPS6"
+            ],
+            "hit_count": 3,
+            "passed": true
+          },
+          "sparsity": {
+            "expected": 0.015,
+            "got": null,
+            "passed": false
+          },
+          "top_cell": {
+            "expected": "CD8_off_GACCCCCCTTCT",
+            "got": null,
+            "passed": false
+          }
+        }
+      }
+    },
+    "expression_code": {
+      "runs": 5,
+      "ok": 5,
+      "samples": [
+        {
+          "output": "```python\n#!/usr/bin/env python3\n\"\"\"\nCITE-seq RNA analysis pipeline using scanpy and pandas.\n\nThis script processes the GSE100866 CD8+ T cell RNA UMI count matrix:\n1. Loads the gzipped CSV matrix (genes x cells), transposes to cells x genes,\n   and creates an AnnData object.\n2. Applies standard QC filters (cell gene count, gene cell count, mitochondrial content).\n3. Normalizes, log-transforms, and selects highly variable genes.\n4. Runs PCA, neighborhood graph, UMAP, and Leiden clustering.\n5. Ranks marker genes per cluster and saves the top 10 to a TSV file.\n6. Saves the annotated AnnData object to disk.\n\nNo plotting functions are called (no sc.pl.*).\n\"\"\"\n\nimport scanpy as sc\nimport pandas as pd\nimport numpy as np\n\n# ----------------------------------------------------------------------------\n# 1. Load data and create AnnData\n# ----------------------------------------------------------------------------\nprint(\"Loading data...\")\n\n# Read the gzipped CSV file. The matrix has genes in rows and cells in columns.\n# We transpose so that cells are rows and genes are columns (AnnData convention).\nrna_df = pd.read_csv(\n    \"GSE100866_CD8_merged-RNA_umi.csv.gz\",\n    index_col=0,          # first column is the gene names\n    compression=\"gzip\"\n).T  # transpose to cells x genes\n\n# Create AnnData object\nadata = sc.AnnData(rna_df)\n\n# Basic info\nprint(f\"AnnData shape (cells x genes): {adata.shape}\")\nprint(f\"Total UMIs in top 500 genes: {adata.X[:, :500].sum():.0f}\")\n\n# ----------------------------------------------------------------------------\n# 2. QC filtering\n# ----------------------------------------------------------------------------\nprint(\"\\nApplying QC filters...\")\n\n# Filter cells with fewer than 500 detected genes\nsc.pp.filter_cells(adata, min_counts=500)  # min_counts = min number of genes with counts\n\n# Filter genes detected in fewer than 3 cells\nsc.pp.filter_genes(adata, min_cells=3)\n\n# Calculate mitochondrial percentage for genes prefixed with MT-\nadata.var[\"mt\"] = adata.var_names.str.startswith(\"MT-\")\nsc.pp.calculate_qc_metrics(\n    adata,\n    qc_vars=[\"mt\"],\n    percentiles=None,\n    log1p=False,\n    inplace=True\n)\n\n# Flag cells with >20% mitochondrial counts\nadata.obs[\"mt_outlier\"] = adata.obs[\"pct_counts_mt\"] > 20\nprint(f\"Number of cells flagged as mitochondrial outliers: {adata.obs['mt_outlier'].sum()}\")\n\n# Remove mitochondrial outlier cells\nadata = adata[~adata.obs[\"mt_outlier\"]].copy()\n\nprint(f\"After QC: {adata.shape[0]} cells, {adata.shape[1]} genes\")\n\n# ----------------------------------------------------------------------------\n# 3. Normalization, log transform, and HVG selection\n# ----------------------------------------------------------------------------\nprint(\"\\nNormalizing and selecting highly variable genes...\")\n\n# Normalize to 10,000 counts per cell\nsc.pp.normalize_total(adata, target_sum=10_000)\n\n# Log-transform (log1p)\nsc.pp.log1p(adata)\n\n# Identify top 2,000 highly variable genes\nsc.pp.highly_variable_genes(\n    adata,\n    n_top_genes=2_000,\n    flavor=\"seurat\",\n    subset=False\n)\n\n# Keep only highly variable genes for downstream analysis\nadata_hvg = adata[:, adata.var[\"highly_variable\"]].copy()\n\nprint(f\"HVG subset shape: {adata_hvg.shape}\")\n\n# ----------------------------------------------------------------------------\n# 4. PCA, neighbors, UMAP, Leiden clustering\n# ----------------------------------------------------------------------------\nprint(\"\\nRunning dimensionality reduction and clustering...\")\n\n# PCA\nsc.pp.pca(adata_hvg, n_comps=50)\n\n# Neighborhood graph\nsc.pp.neighbors(adata_hvg, n_neighbors=15, n_pcs=30)\n\n# UMAP embedding\nsc.tl.umap(adata_hvg)\n\n# Leiden clustering\nsc.tl.leiden(adata_hvg, resolution=0.5)\n\n# Transfer cluster labels back to the full AnnData object\nadata.obs[\"leiden\"] = adata_hvg.obs[\"leiden\"]\n\nprint(f\"Number of clusters: {adata.obs['leiden'].nunique()}\")\n\n# ----------------------------------------------------------------------------\n# 5. Rank marker genes and save top 10 per cluster\n# ----------------------------------------------------------------------------\nprint(\"\\nRanking marker genes...\")\n\n# Rank genes for each cluster (using the full gene set, not just HVG)\nsc.tl.rank_genes_groups(adata, groupby=\"leiden\", method=\"wilcoxon\")\n\n# Extract top 10 markers per cluster\ntop_markers = pd.DataFrame(\n    adata.uns[\"rank_genes_groups\"][\"names\"],\n    index=adata.uns[\"rank_genes_groups\"][\"names\"].columns\n).iloc[:10]\n\n# Save to TSV\ntop_markers.to_csv(\"top10_markers_per_cluster.tsv\", sep=\"\\t\", index_label=\"rank\")\n\nprint(\"Saved top 10 markers per cluster to 'top10_markers_per_cluster.tsv'\")\n\n# ----------------------------------------------------------------------------\n# 6. Save annotated AnnData\n# ----------------------------------------------------------------------------\nprint(\"\\nSaving AnnData...\")\n\n# Save the full AnnData (with QC metrics, cluster labels, and marker results)\nadata.write(\"GSE100866_CD8_annotated.h5ad\")\n\nprint(\"Saved annotated AnnData to 'GSE100866_CD8_annotated.h5ad'\")\nprint(\"\\nAnalysis complete!\")\n```",
+          "ttft_s": 4.246,
+          "total_s": 81.5,
+          "prompt_tokens": 392,
+          "completion_tokens": 1218,
+          "finish_reason": "stop",
+          "tok_per_s": 14.94
+        },
+        {
+          "output": "```python\n#!/usr/bin/env python3\n\"\"\"\nCITE-seq RNA analysis pipeline using scanpy and pandas.\n\nThis script processes the GSE100866 CD8+ T cell RNA UMI count matrix:\n1. Loads the gzipped CSV matrix (genes x cells), transposes to cells x genes,\n   and creates an AnnData object.\n2. Applies standard QC filters (cell gene count, gene cell count, mitochondrial content).\n3. Normalizes, log-transforms, and selects highly variable genes.\n4. Runs PCA, neighborhood graph, UMAP, and Leiden clustering.\n5. Ranks marker genes per cluster and saves the top 10 to a TSV file.\n6. Saves the annotated AnnData object to disk.\n\nNo plotting functions are called (no sc.pl.*).\n\"\"\"\n\nimport scanpy as sc\nimport pandas as pd\nimport numpy as np\n\n# ----------------------------------------------------------------------------\n# 1. Load data and create AnnData\n# ----------------------------------------------------------------------------\nprint(\"Loading data...\")\n\n# Read the gzipped CSV file. The matrix has genes in rows and cells in columns.\n# We transpose so that cells are rows and genes are columns (AnnData convention).\nrna_df = pd.read_csv(\n    \"GSE100866_CD8_merged-RNA_umi.csv.gz\",\n    index_col=0,          # first column is the gene names\n    compression=\"gzip\"\n).T  # transpose to cells x genes\n\n# Create AnnData object\nadata = sc.AnnData(rna_df)\n\n# Basic info\nprint(f\"AnnData shape (cells x genes): {adata.shape}\")\nprint(f\"Total UMIs in top 500 genes: {adata.X[:, :500].sum():.0f}\")\n\n# ----------------------------------------------------------------------------\n# 2. QC filtering\n# ----------------------------------------------------------------------------\nprint(\"\\nApplying QC filters...\")\n\n# Filter cells with fewer than 500 detected genes\nsc.pp.filter_cells(adata, min_counts=500)  # min_counts = min number of genes with counts\n\n# Filter genes detected in fewer than 3 cells\nsc.pp.filter_genes(adata, min_cells=3)\n\n# Calculate mitochondrial percentage for genes prefixed with MT-\nadata.var[\"mt\"] = adata.var_names.str.startswith(\"MT-\")\nsc.pp.calculate_qc_metrics(\n    adata,\n    qc_vars=[\"mt\"],\n    percentiles=None,\n    log1p=False,\n    inplace=True\n)\n\n# Flag cells with >20% mitochondrial counts\nadata.obs[\"mt_outlier\"] = adata.obs[\"pct_counts_mt\"] > 20\nprint(f\"Number of cells flagged as mitochondrial outliers: {adata.obs['mt_outlier'].sum()}\")\n\n# Remove mitochondrial outlier cells\nadata = adata[~adata.obs[\"mt_outlier\"]].copy()\n\nprint(f\"After QC: {adata.shape[0]} cells, {adata.shape[1]} genes\")\n\n# ----------------------------------------------------------------------------\n# 3. Normalization, log transform, and HVG selection\n# ----------------------------------------------------------------------------\nprint(\"\\nNormalizing and selecting highly variable genes...\")\n\n# Normalize to 10,000 counts per cell\nsc.pp.normalize_total(adata, target_sum=10_000)\n\n# Log-transform (log1p)\nsc.pp.log1p(adata)\n\n# Identify top 2,000 highly variable genes\nsc.pp.highly_variable_genes(\n    adata,\n    n_top_genes=2_000,\n    flavor=\"seurat\",\n    subset=False\n)\n\n# Keep only highly variable genes for downstream analysis\nadata_hvg = adata[:, adata.var[\"highly_variable\"]].copy()\n\nprint(f\"HVG subset shape: {adata_hvg.shape}\")\n\n# ----------------------------------------------------------------------------\n# 4. PCA, neighbors, UMAP, Leiden clustering\n# ----------------------------------------------------------------------------\nprint(\"\\nRunning dimensionality reduction and clustering...\")\n\n# PCA\nsc.pp.pca(adata_hvg, n_comps=50)\n\n# Neighborhood graph\nsc.pp.neighbors(adata_hvg, n_neighbors=15, n_pcs=30)\n\n# UMAP embedding\nsc.tl.umap(adata_hvg)\n\n# Leiden clustering\nsc.tl.leiden(adata_hvg, resolution=0.5)\n\n# Transfer cluster labels back to the full AnnData object\nadata.obs[\"leiden\"] = adata_hvg.obs[\"leiden\"]\n\nprint(f\"Number of clusters: {adata.obs['leiden'].nunique()}\")\n\n# ----------------------------------------------------------------------------\n# 5. Rank marker genes and save top 10 per cluster\n# ----------------------------------------------------------------------------\nprint(\"\\nRanking marker genes...\")\n\n# Rank genes for each cluster (using the full gene set, not just HVG)\nsc.tl.rank_genes_groups(adata, groupby=\"leiden\", method=\"wilcoxon\")\n\n# Extract top 10 markers per cluster\ntop_markers = pd.DataFrame(\n    adata.uns[\"rank_genes_groups\"][\"names\"],\n    index=adata.uns[\"rank_genes_groups\"][\"names\"].columns\n).iloc[:10]\n\n# Save to TSV\ntop_markers.to_csv(\"top10_markers_per_cluster.tsv\", sep=\"\\t\", index_label=\"rank\")\n\nprint(\"Saved top 10 markers per cluster to 'top10_markers_per_cluster.tsv'\")\n\n# ----------------------------------------------------------------------------\n# 6. Save annotated AnnData\n# ----------------------------------------------------------------------------\nprint(\"\\nSaving AnnData...\")\n\n# Save the full AnnData (with QC metrics, cluster labels, and marker results)\nadata.write(\"GSE100866_CD8_annotated.h5ad\")\n\nprint(\"Saved annotated AnnData to 'GSE100866_CD8_annotated.h5ad'\")\nprint(\"\\nAnalysis complete!\")\n```",
+          "ttft_s": 3.351,
+          "total_s": 88.739,
+          "prompt_tokens": 392,
+          "completion_tokens": 1218,
+          "finish_reason": "stop",
+          "tok_per_s": 13.73
+        },
+        {
+          "output": "```python\n#!/usr/bin/env python3\n\"\"\"\nCITE-seq RNA analysis pipeline using scanpy and pandas.\n\nThis script processes the GSE100866 CD8+ T cell RNA UMI count matrix:\n1. Loads the gzipped CSV matrix (genes x cells), transposes to cells x genes,\n   and creates an AnnData object.\n2. Applies standard QC filters (cell gene count, gene cell count, mitochondrial content).\n3. Normalizes, log-transforms, and selects highly variable genes.\n4. Runs PCA, neighborhood graph, UMAP, and Leiden clustering.\n5. Ranks marker genes per cluster and saves the top 10 to a TSV file.\n6. Saves the annotated AnnData object to disk.\n\nNo plotting functions are called (no sc.pl.*).\n\"\"\"\n\nimport scanpy as sc\nimport pandas as pd\nimport numpy as np\n\n# ----------------------------------------------------------------------------\n# 1. Load data and create AnnData\n# ----------------------------------------------------------------------------\nprint(\"Loading data...\")\n\n# Read the gzipped CSV file. The matrix has genes in rows and cells in columns.\n# We transpose so that cells are rows and genes are columns (AnnData convention).\nrna_df = pd.read_csv(\n    \"GSE100866_CD8_merged-RNA_umi.csv.gz\",\n    index_col=0,          # first column is the gene names\n    compression=\"gzip\"\n).T  # transpose to cells x genes\n\n# Create AnnData object\nadata = sc.AnnData(rna_df)\n\n# Basic info\nprint(f\"AnnData shape (cells x genes): {adata.shape}\")\nprint(f\"Total UMIs in top 500 genes: {adata.X[:, :500].sum():.0f}\")\n\n# ----------------------------------------------------------------------------\n# 2. QC filtering\n# ----------------------------------------------------------------------------\nprint(\"\\nApplying QC filters...\")\n\n# Filter cells with fewer than 500 detected genes\nsc.pp.filter_cells(adata, min_counts=500)  # min_counts = min number of genes with counts\n\n# Filter genes detected in fewer than 3 cells\nsc.pp.filter_genes(adata, min_cells=3)\n\n# Calculate mitochondrial percentage for genes prefixed with MT-\nadata.var[\"mt\"] = adata.var_names.str.startswith(\"MT-\")\nsc.pp.calculate_qc_metrics(\n    adata,\n    qc_vars=[\"mt\"],\n    percentiles=None,\n    log1p=False,\n    inplace=True\n)\n\n# Flag cells with >20% mitochondrial counts\nadata.obs[\"mt_outlier\"] = adata.obs[\"pct_counts_mt\"] > 20\nprint(f\"Number of cells flagged as mitochondrial outliers: {adata.obs['mt_outlier'].sum()}\")\n\n# Remove mitochondrial outlier cells\nadata = adata[~adata.obs[\"mt_outlier\"]].copy()\n\nprint(f\"After QC: {adata.shape[0]} cells, {adata.shape[1]} genes\")\n\n# ----------------------------------------------------------------------------\n# 3. Normalization, log transform, and HVG selection\n# ----------------------------------------------------------------------------\nprint(\"\\nNormalizing and selecting highly variable genes...\")\n\n# Normalize to 10,000 counts per cell\nsc.pp.normalize_total(adata, target_sum=10_000)\n\n# Log-transform (log1p)\nsc.pp.log1p(adata)\n\n# Identify top 2,000 highly variable genes\nsc.pp.highly_variable_genes(\n    adata,\n    n_top_genes=2_000,\n    flavor=\"seurat\",\n    subset=False\n)\n\n# Keep only highly variable genes for downstream analysis\nadata_hvg = adata[:, adata.var[\"highly_variable\"]].copy()\n\nprint(f\"HVG subset shape: {adata_hvg.shape}\")\n\n# ----------------------------------------------------------------------------\n# 4. PCA, neighbors, UMAP, Leiden clustering\n# ----------------------------------------------------------------------------\nprint(\"\\nRunning dimensionality reduction and clustering...\")\n\n# PCA\nsc.pp.pca(adata_hvg, n_comps=50)\n\n# Neighborhood graph\nsc.pp.neighbors(adata_hvg, n_neighbors=15, n_pcs=30)\n\n# UMAP embedding\nsc.tl.umap(adata_hvg)\n\n# Leiden clustering\nsc.tl.leiden(adata_hvg, resolution=0.5)\n\n# Transfer cluster labels back to the full AnnData object\nadata.obs[\"leiden\"] = adata_hvg.obs[\"leiden\"]\n\nprint(f\"Number of clusters: {adata.obs['leiden'].nunique()}\")\n\n# ----------------------------------------------------------------------------\n# 5. Rank marker genes and save top 10 per cluster\n# ----------------------------------------------------------------------------\nprint(\"\\nRanking marker genes...\")\n\n# Rank genes for each cluster (using the full gene set, not just HVG)\nsc.tl.rank_genes_groups(adata, groupby=\"leiden\", method=\"wilcoxon\")\n\n# Extract top 10 markers per cluster\ntop_markers = pd.DataFrame(\n    adata.uns[\"rank_genes_groups\"][\"names\"],\n    index=adata.uns[\"rank_genes_groups\"][\"names\"].columns\n).iloc[:10]\n\n# Save to TSV\ntop_markers.to_csv(\"top10_markers_per_cluster.tsv\", sep=\"\\t\", index_label=\"rank\")\n\nprint(\"Saved top 10 markers per cluster to 'top10_markers_per_cluster.tsv'\")\n\n# ----------------------------------------------------------------------------\n# 6. Save annotated AnnData\n# ----------------------------------------------------------------------------\nprint(\"\\nSaving AnnData...\")\n\n# Save the full AnnData (with QC metrics, cluster labels, and marker results)\nadata.write(\"GSE100866_CD8_annotated.h5ad\")\n\nprint(\"Saved annotated AnnData to 'GSE100866_CD8_annotated.h5ad'\")\nprint(\"\\nAnalysis complete!\")\n```",
+          "ttft_s": 4.399,
+          "total_s": 86.48,
+          "prompt_tokens": 392,
+          "completion_tokens": 1218,
+          "finish_reason": "stop",
+          "tok_per_s": 14.08
+        },
+        {
+          "output": "```python\n#!/usr/bin/env python3\n\"\"\"\nCITE-seq RNA analysis pipeline using scanpy and pandas.\n\nThis script processes the GSE100866 CD8+ T cell RNA UMI count matrix:\n1. Loads the gzipped CSV matrix (genes x cells), transposes to cells x genes,\n   and creates an AnnData object.\n2. Applies standard QC filters (cell gene count, gene cell count, mitochondrial content).\n3. Normalizes, log-transforms, and selects highly variable genes.\n4. Runs PCA, neighborhood graph, UMAP, and Leiden clustering.\n5. Ranks marker genes per cluster and saves the top 10 to a TSV file.\n6. Saves the annotated AnnData object to disk.\n\nNo plotting functions are called (no sc.pl.*).\n\"\"\"\n\nimport scanpy as sc\nimport pandas as pd\nimport numpy as np\n\n# ----------------------------------------------------------------------------\n# 1. Load data and create AnnData\n# ----------------------------------------------------------------------------\nprint(\"Loading data...\")\n\n# Read the gzipped CSV file. The matrix has genes in rows and cells in columns.\n# We transpose so that cells are rows and genes are columns (AnnData convention).\nrna_df = pd.read_csv(\n    \"GSE100866_CD8_merged-RNA_umi.csv.gz\",\n    index_col=0,          # first column is the gene names\n    compression=\"gzip\"\n).T  # transpose to cells x genes\n\n# Create AnnData object\nadata = sc.AnnData(rna_df)\n\n# Basic info\nprint(f\"AnnData shape (cells x genes): {adata.shape}\")\nprint(f\"Total UMIs in top 500 genes: {adata.X[:, :500].sum():.0f}\")\n\n# ----------------------------------------------------------------------------\n# 2. QC filtering\n# ----------------------------------------------------------------------------\nprint(\"\\nApplying QC filters...\")\n\n# Filter cells with fewer than 500 detected genes\nsc.pp.filter_cells(adata, min_counts=500)  # min_counts = min number of genes with counts\n\n# Filter genes detected in fewer than 3 cells\nsc.pp.filter_genes(adata, min_cells=3)\n\n# Calculate mitochondrial percentage for genes prefixed with MT-\nadata.var[\"mt\"] = adata.var_names.str.startswith(\"MT-\")\nsc.pp.calculate_qc_metrics(\n    adata,\n    qc_vars=[\"mt\"],\n    percentiles=None,\n    log1p=False,\n    inplace=True\n)\n\n# Flag cells with >20% mitochondrial counts\nadata.obs[\"mt_outlier\"] = adata.obs[\"pct_counts_mt\"] > 20\nprint(f\"Number of cells flagged as mitochondrial outliers: {adata.obs['mt_outlier'].sum()}\")\n\n# Remove mitochondrial outlier cells\nadata = adata[~adata.obs[\"mt_outlier\"]].copy()\n\nprint(f\"After QC: {adata.shape[0]} cells, {adata.shape[1]} genes\")\n\n# ----------------------------------------------------------------------------\n# 3. Normalization, log transform, and HVG selection\n# ----------------------------------------------------------------------------\nprint(\"\\nNormalizing and selecting highly variable genes...\")\n\n# Normalize to 10,000 counts per cell\nsc.pp.normalize_total(adata, target_sum=10_000)\n\n# Log-transform (log1p)\nsc.pp.log1p(adata)\n\n# Identify top 2,000 highly variable genes\nsc.pp.highly_variable_genes(\n    adata,\n    n_top_genes=2_000,\n    flavor=\"seurat\",\n    subset=False\n)\n\n# Keep only highly variable genes for downstream analysis\nadata_hvg = adata[:, adata.var[\"highly_variable\"]].copy()\n\nprint(f\"HVG subset shape: {adata_hvg.shape}\")\n\n# ----------------------------------------------------------------------------\n# 4. PCA, neighbors, UMAP, Leiden clustering\n# ----------------------------------------------------------------------------\nprint(\"\\nRunning dimensionality reduction and clustering...\")\n\n# PCA\nsc.pp.pca(adata_hvg, n_comps=50)\n\n# Neighborhood graph\nsc.pp.neighbors(adata_hvg, n_neighbors=15, n_pcs=30)\n\n# UMAP embedding\nsc.tl.umap(adata_hvg)\n\n# Leiden clustering\nsc.tl.leiden(adata_hvg, resolution=0.5)\n\n# Transfer cluster labels back to the full AnnData object\nadata.obs[\"leiden\"] = adata_hvg.obs[\"leiden\"]\n\nprint(f\"Number of clusters: {adata.obs['leiden'].nunique()}\")\n\n# ----------------------------------------------------------------------------\n# 5. Rank marker genes and save top 10 per cluster\n# ----------------------------------------------------------------------------\nprint(\"\\nRanking marker genes...\")\n\n# Rank genes for each cluster (using the full gene set, not just HVG)\nsc.tl.rank_genes_groups(adata, groupby=\"leiden\", method=\"wilcoxon\")\n\n# Extract top 10 markers per cluster\ntop_markers = pd.DataFrame(\n    adata.uns[\"rank_genes_groups\"][\"names\"],\n    index=adata.uns[\"rank_genes_groups\"][\"names\"].columns\n).iloc[:10]\n\n# Save to TSV\ntop_markers.to_csv(\"top10_markers_per_cluster.tsv\", sep=\"\\t\", index_label=\"rank\")\n\nprint(\"Saved top 10 markers per cluster to 'top10_markers_per_cluster.tsv'\")\n\n# ----------------------------------------------------------------------------\n# 6. Save annotated AnnData\n# ----------------------------------------------------------------------------\nprint(\"\\nSaving AnnData...\")\n\n# Save the full AnnData (with QC metrics, cluster labels, and marker results)\nadata.write(\"GSE100866_CD8_annotated.h5ad\")\n\nprint(\"Saved annotated AnnData to 'GSE100866_CD8_annotated.h5ad'\")\nprint(\"\\nAnalysis complete!\")\n```",
+          "ttft_s": 4.6,
+          "total_s": 85.16,
+          "prompt_tokens": 392,
+          "completion_tokens": 1218,
+          "finish_reason": "stop",
+          "tok_per_s": 14.3
+        },
+        {
+          "output": "```python\n#!/usr/bin/env python3\n\"\"\"\nCITE-seq RNA analysis pipeline using scanpy and pandas.\n\nThis script processes the GSE100866 CD8+ T cell RNA UMI count matrix:\n1. Loads the gzipped CSV matrix (genes x cells), transposes to cells x genes,\n   and creates an AnnData object.\n2. Applies standard QC filters (cell gene count, gene cell count, mitochondrial content).\n3. Normalizes, log-transforms, and selects highly variable genes.\n4. Runs PCA, neighborhood graph, UMAP, and Leiden clustering.\n5. Ranks marker genes per cluster and saves the top 10 to a TSV file.\n6. Saves the annotated AnnData object to disk.\n\nNo plotting functions are called (no sc.pl.*).\n\"\"\"\n\nimport scanpy as sc\nimport pandas as pd\nimport numpy as np\n\n# ----------------------------------------------------------------------------\n# 1. Load data and create AnnData\n# ----------------------------------------------------------------------------\nprint(\"Loading data...\")\n\n# Read the gzipped CSV file. The matrix has genes in rows and cells in columns.\n# We transpose so that cells are rows and genes are columns (AnnData convention).\nrna_df = pd.read_csv(\n    \"GSE100866_CD8_merged-RNA_umi.csv.gz\",\n    index_col=0,          # first column is the gene names\n    compression=\"gzip\"\n).T  # transpose to cells x genes\n\n# Create AnnData object\nadata = sc.AnnData(rna_df)\n\n# Basic info\nprint(f\"AnnData shape (cells x genes): {adata.shape}\")\nprint(f\"Total UMIs in top 500 genes: {adata.X[:, :500].sum():.0f}\")\n\n# ----------------------------------------------------------------------------\n# 2. QC filtering\n# ----------------------------------------------------------------------------\nprint(\"\\nApplying QC filters...\")\n\n# Filter cells with fewer than 500 detected genes\nsc.pp.filter_cells(adata, min_counts=500)  # min_counts = min number of genes with counts\n\n# Filter genes detected in fewer than 3 cells\nsc.pp.filter_genes(adata, min_cells=3)\n\n# Calculate mitochondrial percentage for genes prefixed with MT-\nadata.var[\"mt\"] = adata.var_names.str.startswith(\"MT-\")\nsc.pp.calculate_qc_metrics(\n    adata,\n    qc_vars=[\"mt\"],\n    percentiles=None,\n    log1p=False,\n    inplace=True\n)\n\n# Flag cells with >20% mitochondrial counts\nadata.obs[\"mt_outlier\"] = adata.obs[\"pct_counts_mt\"] > 20\nprint(f\"Number of cells flagged as mitochondrial outliers: {adata.obs['mt_outlier'].sum()}\")\n\n# Remove mitochondrial outlier cells\nadata = adata[~adata.obs[\"mt_outlier\"]].copy()\n\nprint(f\"After QC: {adata.shape[0]} cells, {adata.shape[1]} genes\")\n\n# ----------------------------------------------------------------------------\n# 3. Normalization, log transform, and HVG selection\n# ----------------------------------------------------------------------------\nprint(\"\\nNormalizing and selecting highly variable genes...\")\n\n# Normalize to 10,000 counts per cell\nsc.pp.normalize_total(adata, target_sum=10_000)\n\n# Log-transform (log1p)\nsc.pp.log1p(adata)\n\n# Identify top 2,000 highly variable genes\nsc.pp.highly_variable_genes(\n    adata,\n    n_top_genes=2_000,\n    flavor=\"seurat\",\n    subset=False\n)\n\n# Keep only highly variable genes for downstream analysis\nadata_hvg = adata[:, adata.var[\"highly_variable\"]].copy()\n\nprint(f\"HVG subset shape: {adata_hvg.shape}\")\n\n# ----------------------------------------------------------------------------\n# 4. PCA, neighbors, UMAP, Leiden clustering\n# ----------------------------------------------------------------------------\nprint(\"\\nRunning dimensionality reduction and clustering...\")\n\n# PCA\nsc.pp.pca(adata_hvg, n_comps=50)\n\n# Neighborhood graph\nsc.pp.neighbors(adata_hvg, n_neighbors=15, n_pcs=30)\n\n# UMAP embedding\nsc.tl.umap(adata_hvg)\n\n# Leiden clustering\nsc.tl.leiden(adata_hvg, resolution=0.5)\n\n# Transfer cluster labels back to the full AnnData object\nadata.obs[\"leiden\"] = adata_hvg.obs[\"leiden\"]\n\nprint(f\"Number of clusters: {adata.obs['leiden'].nunique()}\")\n\n# ----------------------------------------------------------------------------\n# 5. Rank marker genes and save top 10 per cluster\n# ----------------------------------------------------------------------------\nprint(\"\\nRanking marker genes...\")\n\n# Rank genes for each cluster (using the full gene set, not just HVG)\nsc.tl.rank_genes_groups(adata, groupby=\"leiden\", method=\"wilcoxon\")\n\n# Extract top 10 markers per cluster\ntop_markers = pd.DataFrame(\n    adata.uns[\"rank_genes_groups\"][\"names\"],\n    index=adata.uns[\"rank_genes_groups\"][\"names\"].columns\n).iloc[:10]\n\n# Save to TSV\ntop_markers.to_csv(\"top10_markers_per_cluster.tsv\", sep=\"\\t\", index_label=\"rank\")\n\nprint(\"Saved top 10 markers per cluster to 'top10_markers_per_cluster.tsv'\")\n\n# ----------------------------------------------------------------------------\n# 6. Save annotated AnnData\n# ----------------------------------------------------------------------------\nprint(\"\\nSaving AnnData...\")\n\n# Save the full AnnData (with QC metrics, cluster labels, and marker results)\nadata.write(\"GSE100866_CD8_annotated.h5ad\")\n\nprint(\"Saved annotated AnnData to 'GSE100866_CD8_annotated.h5ad'\")\nprint(\"\\nAnalysis complete!\")\n```",
+          "ttft_s": 3.97,
+          "total_s": 87.202,
+          "prompt_tokens": 392,
+          "completion_tokens": 1218,
+          "finish_reason": "stop",
+          "tok_per_s": 13.97
+        }
+      ],
+      "ttft_s": {
+        "mean": 4.113,
+        "min": 3.351,
+        "max": 4.6
+      },
+      "total_s": {
+        "mean": 85.816,
+        "min": 81.5,
+        "max": 88.739
+      },
+      "tok_per_s": {
+        "mean": 14.204,
+        "min": 13.73,
+        "max": 14.94
+      },
+      "prompt_tokens": 392,
+      "completion_tokens": {
+        "mean": 1218.0,
+        "min": 1218,
+        "max": 1218
+      },
+      "quality": {
+        "max": 12,
+        "scored": 9,
+        "checks": {
+          "import_scanpy": {
+            "passed": true
+          },
+          "import_anndata": {
+            "passed": true
+          },
+          "read_csv": {
+            "passed": false
+          },
+          "transpose": {
+            "passed": true
+          },
+          "qc_filter_cells": {
+            "passed": true
+          },
+          "qc_filter_genes": {
+            "passed": true
+          },
+          "mito_pct": {
+            "passed": true
+          },
+          "normalize_log": {
+            "passed": true
+          },
+          "hv_genes": {
+            "passed": false
+          },
+          "pca_neighbors_umap_leiden": {
+            "passed": false
+          },
+          "rank_genes": {
+            "passed": true
+          },
+          "save_anndata": {
+            "passed": true
+          }
+        }
+      }
+    },
+    "protein_function": {
+      "runs": 5,
+      "ok": 5,
+      "samples": [
+        {
+          "output": "**1. Paradox:** IDPs can mediate specific interactions through conformational plasticity. The lack of stable secondary structure allows BRCA1's p53-binding domain to sample multiple conformations, enabling it to adopt a complementary shape upon encountering p53. This \"fuzzy\" complex formation achieves specificity through extensive, dynamic contacts rather than a rigid pre-formed interface.\n\n**2. Mechanism:** The most likely mechanism is **coupled folding-and-binding** (also called a molecular recognition feature/MoRF). BRCA1 residues 224-500 likely exist as a disordered region that undergoes induced folding upon binding the p53 C-terminal domain, forming a stable, structured complex. This conformational transition provides both high specificity and high affinity through an induced-fit interface.\n\n**3. Functional implication:** BRCA1 binding enhances p53's transcriptional activity. To distinguish activation from stabilization, measure p53 target gene mRNA levels (e.g., p21, PUMA) by qRT-PCRâactivation increases transcription, while stabilization alone would not. Alternatively, measure p53 protein half-life by cycloheximide chase; stabilization prolongs half-life without increasing target gene expression.\n\n**4. Experimental design:** I would use **alanine scanning mutagenesis**. This technique systematically mutates each residue to alanine, then assays binding to p53 (e.g., by pull-down or ITC). It directly identifies the minimal critical residues required for the interaction, providing sequence-level resolution that NMR or cryo-EM cannot achieve for a disordered region. HDX-MS would show conformational changes but not identify specific binding residues.",
+          "ttft_s": 9.021,
+          "total_s": 30.81,
+          "prompt_tokens": 1348,
+          "completion_tokens": 313,
+          "finish_reason": "stop",
+          "tok_per_s": 10.16
+        },
+        {
+          "output": "**1. Paradox:** IDPs can mediate specific interactions through conformational plasticity. The lack of stable secondary structure allows BRCA1's p53-binding domain to sample multiple conformations, enabling it to adopt a complementary shape upon encountering p53. This \"fuzzy\" complex formation achieves specificity through extensive, dynamic contacts rather than a rigid pre-formed interface.\n\n**2. Mechanism:** The most likely mechanism is **coupled folding-and-binding** (also called a molecular recognition feature/MoRF). BRCA1 residues 224-500 likely exist as a disordered region that undergoes induced folding upon binding the p53 C-terminal domain, forming a stable, structured complex. This conformational transition provides both high specificity and high affinity through an induced-fit interface.\n\n**3. Functional implication:** BRCA1 binding enhances p53's transcriptional activity. To distinguish activation from stabilization, measure p53 target gene mRNA levels (e.g., p21, PUMA) by qRT-PCRâactivation increases transcription, while stabilization alone would not. Alternatively, measure p53 protein half-life by cycloheximide chase; stabilization prolongs half-life without increasing target gene expression.\n\n**4. Experimental design:** I would use **alanine scanning mutagenesis**. This technique systematically mutates each residue to alanine, then assays binding to p53 (e.g., by pull-down or ITC). It directly identifies the minimal critical residues required for the interaction, providing sequence-level resolution that NMR or cryo-EM cannot achieve for a disordered region. HDX-MS would show conformational changes but not identify specific binding residues.",
+          "ttft_s": 8.893,
+          "total_s": 31.032,
+          "prompt_tokens": 1348,
+          "completion_tokens": 313,
+          "finish_reason": "stop",
+          "tok_per_s": 10.09
+        },
+        {
+          "output": "**1. Paradox:** IDPs can mediate specific interactions through conformational plasticity. The lack of stable secondary structure allows BRCA1's p53-binding domain to sample multiple conformations, enabling it to adopt a complementary shape upon encountering p53. This \"fuzzy\" complex formation achieves specificity through extensive, dynamic contacts rather than a rigid pre-formed interface.\n\n**2. Mechanism:** The most likely mechanism is **coupled folding-and-binding** (also called a molecular recognition feature/MoRF). BRCA1 residues 224-500 likely exist as a disordered region that undergoes induced folding upon binding the p53 C-terminal domain, forming a stable, structured complex. This conformational transition provides both high specificity and high affinity through an induced-fit interface.\n\n**3. Functional implication:** BRCA1 binding enhances p53's transcriptional activity. To distinguish activation from stabilization, measure p53 target gene mRNA levels (e.g., p21, PUMA) by qRT-PCRâactivation increases transcription, while stabilization alone would not. Alternatively, measure p53 protein half-life by cycloheximide chase; stabilization prolongs half-life without increasing target gene expression.\n\n**4. Experimental design:** I would use **alanine scanning mutagenesis**. This technique systematically mutates each residue to alanine, then assays binding to p53 (e.g., by pull-down or ITC). It directly identifies the minimal critical residues required for the interaction, providing sequence-level resolution that NMR or cryo-EM cannot achieve for a disordered region. HDX-MS would show conformational changes but not identify specific binding residues.",
+          "ttft_s": 9.922,
+          "total_s": 32.658,
+          "prompt_tokens": 1348,
+          "completion_tokens": 313,
+          "finish_reason": "stop",
+          "tok_per_s": 9.58
+        },
+        {
+          "output": "**1. Paradox:** IDPs can mediate specific interactions through conformational plasticity. The lack of stable secondary structure allows BRCA1's p53-binding domain to sample multiple conformations, enabling it to adopt a complementary shape upon encountering p53. This \"fuzzy\" complex formation achieves specificity through extensive, dynamic contacts rather than a rigid pre-formed interface.\n\n**2. Mechanism:** The most likely mechanism is **coupled folding-and-binding** (also called a molecular recognition feature/MoRF). BRCA1 residues 224-500 likely exist as a disordered region that undergoes induced folding upon binding the p53 C-terminal domain, forming a stable, structured complex. This conformational transition provides both high specificity and high affinity through an induced-fit interface.\n\n**3. Functional implication:** BRCA1 binding enhances p53's transcriptional activity. To distinguish activation from stabilization, measure p53 target gene mRNA levels (e.g., p21, PUMA) by qRT-PCRâactivation increases transcription, while stabilization alone would not. Alternatively, measure p53 protein half-life by cycloheximide chase; stabilization prolongs half-life without increasing target gene expression.\n\n**4. Experimental design:** I would use **alanine scanning mutagenesis**. This technique systematically mutates each residue to alanine, then assays binding to p53 (e.g., by pull-down or ITC). It directly identifies the minimal critical residues required for the interaction, providing sequence-level resolution that NMR or cryo-EM cannot achieve for a disordered region. HDX-MS would show conformational changes but not identify specific binding residues.",
+          "ttft_s": 9.191,
+          "total_s": 31.932,
+          "prompt_tokens": 1348,
+          "completion_tokens": 313,
+          "finish_reason": "stop",
+          "tok_per_s": 9.8
+        },
+        {
+          "output": "**1. Paradox:** IDPs can mediate specific interactions through conformational plasticity. The lack of stable secondary structure allows BRCA1's p53-binding domain to sample multiple conformations, enabling it to adopt a complementary shape upon encountering p53. This \"fuzzy\" complex formation achieves specificity through extensive, dynamic contacts rather than a rigid pre-formed interface.\n\n**2. Mechanism:** The most likely mechanism is **coupled folding-and-binding** (also called a molecular recognition feature/MoRF). BRCA1 residues 224-500 likely exist as a disordered region that undergoes induced folding upon binding the p53 C-terminal domain, forming a stable, structured complex. This conformational transition provides both high specificity and high affinity through an induced-fit interface.\n\n**3. Functional implication:** BRCA1 binding enhances p53's transcriptional activity. To distinguish activation from stabilization, measure p53 target gene mRNA levels (e.g., p21, PUMA) by qRT-PCRâactivation increases transcription, while stabilization alone would not. Alternatively, measure p53 protein half-life by cycloheximide chase; stabilization prolongs half-life without increasing target gene expression.\n\n**4. Experimental design:** I would use **alanine scanning mutagenesis**. This technique systematically mutates each residue to alanine, then assays binding to p53 (e.g., by pull-down or ITC). It directly identifies the minimal critical residues required for the interaction, providing sequence-level resolution that NMR or cryo-EM cannot achieve for a disordered region. HDX-MS would show conformational changes but not identify specific binding residues.",
+          "ttft_s": 9.354,
+          "total_s": 31.54,
+          "prompt_tokens": 1348,
+          "completion_tokens": 313,
+          "finish_reason": "stop",
+          "tok_per_s": 9.92
+        }
+      ],
+      "ttft_s": {
+        "mean": 9.276,
+        "min": 8.893,
+        "max": 9.922
+      },
+      "total_s": {
+        "mean": 31.594,
+        "min": 30.81,
+        "max": 32.658
+      },
+      "tok_per_s": {
+        "mean": 9.91,
+        "min": 9.58,
+        "max": 10.16
+      },
+      "prompt_tokens": 1348,
+      "completion_tokens": {
+        "mean": 313.0,
+        "min": 313,
+        "max": 313
+      },
+      "quality": {
+        "max": 4,
+        "scored": 4,
+        "checks": {
+          "q1_idp_mechanism": {
+            "hit_count": 2,
+            "passed": true,
+            "keywords_matched": [
+              "coupled folding",
+              "folding upon binding",
+              "morf",
+              "molecular recognition feature"
+            ]
+          },
+          "q2_mechanism_name": {
+            "hit_count": 4,
+            "keywords_matched": [
+              "morf",
+              "molecular recognition feature",
+              "coupled folding",
+              "folding upon binding"
+            ],
+            "passed": true
+          },
+          "q3_function": {
+            "hit_count": 2,
+            "keywords_matched": [
+              "transcription",
+              "stabiliz"
+            ],
+            "passed": true
+          },
+          "q4_experiment": {
+            "methods_matched": [
+              "nmr",
+              "hdx-ms",
+              "alanine",
+              "cryo-em"
+            ],
+            "passed": true
+          }
+        }
+      }
+    },
+    "pubmedqa": {
+      "runs": 5,
+      "ok": 5,
+      "samples": [
+        {
+          "output": "1. yes\n2. yes\n3. maybe\n4. no\n5. no\n6. yes\n7. yes\n8. no\n9. yes\n10. yes\n11. yes\n12. maybe\n13. yes\n14. yes\n15. maybe\n16. yes\n17. no\n18. yes\n19. no\n20. no",
+          "ttft_s": 50.818,
+          "total_s": 57.107,
+          "prompt_tokens": 7372,
+          "completion_tokens": 79,
+          "finish_reason": "stop",
+          "tok_per_s": 1.38
+        },
+        {
+          "output": "1. yes\n2. yes\n3. maybe\n4. no\n5. no\n6. yes\n7. yes\n8. no\n9. yes\n10. yes\n11. yes\n12. maybe\n13. yes\n14. yes\n15. maybe\n16. yes\n17. no\n18. yes\n19. no\n20. no",
+          "ttft_s": 55.74,
+          "total_s": 62.029,
+          "prompt_tokens": 7372,
+          "completion_tokens": 79,
+          "finish_reason": "stop",
+          "tok_per_s": 1.27
+        },
+        {
+          "output": "1. yes\n2. yes\n3. maybe\n4. no\n5. no\n6. yes\n7. yes\n8. no\n9. yes\n10. yes\n11. yes\n12. maybe\n13. yes\n14. yes\n15. maybe\n16. yes\n17. no\n18. yes\n19. no\n20. no",
+          "ttft_s": 51.643,
+          "total_s": 57.898,
+          "prompt_tokens": 7372,
+          "completion_tokens": 79,
+          "finish_reason": "stop",
+          "tok_per_s": 1.36
+        },
+        {
+          "output": "1. yes\n2. yes\n3. maybe\n4. no\n5. no\n6. yes\n7. yes\n8. no\n9. yes\n10. yes\n11. yes\n12. maybe\n13. yes\n14. yes\n15. maybe\n16. yes\n17. no\n18. yes\n19. no\n20. no",
+          "ttft_s": 52.299,
+          "total_s": 58.818,
+          "prompt_tokens": 7372,
+          "completion_tokens": 79,
+          "finish_reason": "stop",
+          "tok_per_s": 1.34
+        },
+        {
+          "output": "1. yes\n2. yes\n3. maybe\n4. no\n5. no\n6. yes\n7. yes\n8. no\n9. yes\n10. yes\n11. yes\n12. maybe\n13. yes\n14. yes\n15. maybe\n16. yes\n17. no\n18. yes\n19. no\n20. no",
+          "ttft_s": 50.798,
+          "total_s": 57.261,
+          "prompt_tokens": 7372,
+          "completion_tokens": 79,
+          "finish_reason": "stop",
+          "tok_per_s": 1.38
+        }
+      ],
+      "ttft_s": {
+        "mean": 52.26,
+        "min": 50.798,
+        "max": 55.74
+      },
+      "total_s": {
+        "mean": 58.623,
+        "min": 57.107,
+        "max": 62.029
+      },
+      "tok_per_s": {
+        "mean": 1.346,
+        "min": 1.27,
+        "max": 1.38
+      },
+      "prompt_tokens": 7372,
+      "completion_tokens": {
+        "mean": 79.0,
+        "min": 79,
+        "max": 79
+      },
+      "quality": {
+        "max": 20,
+        "scored": 15,
+        "answered": 20,
+        "accuracy": 0.75,
+        "majority_baseline_yes": 0.55,
+        "missing": [],
+        "per_item": [
+          {
+            "i": 1,
+            "truth": "yes",
+            "got": "yes",
+            "correct": true
+          },
+          {
+            "i": 2,
+            "truth": "yes",
+            "got": "yes",
+            "correct": true
+          },
+          {
+            "i": 3,
+            "truth": "yes",
+            "got": "maybe",
+            "correct": false
+          },
+          {
+            "i": 4,
+            "truth": "no",
+            "got": "no",
+            "correct": true
+          },
+          {
+            "i": 5,
+            "truth": "no",
+            "got": "no",
+            "correct": true
+          },
+          {
+            "i": 6,
+            "truth": "maybe",
+            "got": "yes",
+            "correct": false
+          },
+          {
+            "i": 7,
+            "truth": "yes",
+            "got": "yes",
+            "correct": true
+          },
+          {
+            "i": 8,
+            "truth": "no",
+            "got": "no",
+            "correct": true
+          },
+          {
+            "i": 9,
+            "truth": "yes",
+            "got": "yes",
+            "correct": true
+          },
+          {
+            "i": 10,
+            "truth": "yes",
+            "got": "yes",
+            "correct": true
+          },
+          {
+            "i": 11,
+            "truth": "yes",
+            "got": "yes",
+            "correct": true
+          },
+          {
+            "i": 12,
+            "truth": "yes",
+            "got": "maybe",
+            "correct": false
+          },
+          {
+            "i": 13,
+            "truth": "yes",
+            "got": "yes",
+            "correct": true
+          },
+          {
+            "i": 14,
+            "truth": "maybe",
+            "got": "yes",
+            "correct": false
+          },
+          {
+            "i": 15,
+            "truth": "no",
+            "got": "maybe",
+            "correct": false
+          },
+          {
+            "i": 16,
+            "truth": "yes",
+            "got": "yes",
+            "correct": true
+          },
+          {
+            "i": 17,
+            "truth": "no",
+            "got": "no",
+            "correct": true
+          },
+          {
+            "i": 18,
+            "truth": "yes",
+            "got": "yes",
+            "correct": true
+          },
+          {
+            "i": 19,
+            "truth": "no",
+            "got": "no",
+            "correct": true
+          },
+          {
+            "i": 20,
+            "truth": "no",
+            "got": "no",
+            "correct": true
+          }
+        ]
+      }
+    },
+    "medmcqa": {
+      "runs": 5,
+      "ok": 5,
+      "samples": [
+        {
+          "output": "1. B\n2. B\n3. A\n4. B\n5. A\n6. A\n7. B\n8. C\n9. A\n10. B\n11. D\n12. D\n13. A\n14. B\n15. B\n16. A\n17. B\n18. D\n19. B\n20. A",
+          "ttft_s": 9.196,
+          "total_s": 15.451,
+          "prompt_tokens": 1193,
+          "completion_tokens": 79,
+          "finish_reason": "stop",
+          "tok_per_s": 5.11
+        },
+        {
+          "output": "1. B\n2. B\n3. A\n4. B\n5. A\n6. A\n7. B\n8. C\n9. A\n10. B\n11. D\n12. D\n13. A\n14. B\n15. B\n16. A\n17. B\n18. D\n19. B\n20. A",
+          "ttft_s": 9.137,
+          "total_s": 15.356,
+          "prompt_tokens": 1193,
+          "completion_tokens": 79,
+          "finish_reason": "stop",
+          "tok_per_s": 5.14
+        },
+        {
+          "output": "1. B\n2. B\n3. A\n4. B\n5. A\n6. A\n7. B\n8. C\n9. A\n10. B\n11. D\n12. D\n13. A\n14. B\n15. B\n16. A\n17. B\n18. D\n19. B\n20. A",
+          "ttft_s": 9.761,
+          "total_s": 15.913,
+          "prompt_tokens": 1193,
+          "completion_tokens": 79,
+          "finish_reason": "stop",
+          "tok_per_s": 4.96
+        },
+        {
+          "output": "1. B\n2. B\n3. A\n4. B\n5. A\n6. A\n7. B\n8. C\n9. A\n10. B\n11. D\n12. D\n13. A\n14. B\n15. B\n16. A\n17. B\n18. D\n19. B\n20. A",
+          "ttft_s": 8.486,
+          "total_s": 14.517,
+          "prompt_tokens": 1193,
+          "completion_tokens": 79,
+          "finish_reason": "stop",
+          "tok_per_s": 5.44
+        },
+        {
+          "output": "1. B\n2. B\n3. A\n4. B\n5. A\n6. A\n7. B\n8. C\n9. A\n10. B\n11. D\n12. D\n13. A\n14. B\n15. B\n16. A\n17. B\n18. D\n19. B\n20. A",
+          "ttft_s": 9.014,
+          "total_s": 14.896,
+          "prompt_tokens": 1193,
+          "completion_tokens": 79,
+          "finish_reason": "stop",
+          "tok_per_s": 5.3
+        }
+      ],
+      "ttft_s": {
+        "mean": 9.119,
+        "min": 8.486,
+        "max": 9.761
+      },
+      "total_s": {
+        "mean": 15.227,
+        "min": 14.517,
+        "max": 15.913
+      },
+      "tok_per_s": {
+        "mean": 5.19,
+        "min": 4.96,
+        "max": 5.44
+      },
+      "prompt_tokens": 1193,
+      "completion_tokens": {
+        "mean": 79.0,
+        "min": 79,
+        "max": 79
+      },
+      "quality": {
+        "max": 20,
+        "scored": 17,
+        "answered": 20,
+        "accuracy": 0.85,
+        "random_baseline": 0.25,
+        "majority_baseline": 0.45,
+        "missing": [],
+        "per_item": [
+          {
+            "i": 1,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 2,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 3,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          },
+          {
+            "i": 4,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 5,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          },
+          {
+            "i": 6,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          },
+          {
+            "i": 7,
+            "truth": "a",
+            "got": "b",
+            "correct": false
+          },
+          {
+            "i": 8,
+            "truth": "c",
+            "got": "c",
+            "correct": true
+          },
+          {
+            "i": 9,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          },
+          {
+            "i": 10,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 11,
+            "truth": "d",
+            "got": "d",
+            "correct": true
+          },
+          {
+            "i": 12,
+            "truth": "b",
+            "got": "d",
+            "correct": false
+          },
+          {
+            "i": 13,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          },
+          {
+            "i": 14,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 15,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 16,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          },
+          {
+            "i": 17,
+            "truth": "a",
+            "got": "b",
+            "correct": false
+          },
+          {
+            "i": 18,
+            "truth": "d",
+            "got": "d",
+            "correct": true
+          },
+          {
+            "i": 19,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 20,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          }
+        ]
+      }
+    },
+    "json_output": {
+      "runs": 5,
+      "ok": 5,
+      "samples": [
+        {
+          "output": "{\n  \"gene\": \"BRCA1\",\n  \"variants\": [\n    {\"position\": 205, \"ref\": \"T\", \"alt\": \"C\", \"type\": \"SNP\"},\n    {\"position\": 245, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 713, \"ref\": \"A\", \"alt\": \"T\", \"type\": \"SNP\"},\n    {\"position\": 913, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 5544, \"ref\": \"C\", \"alt\": \"T\", \"type\": \"SNP\"}\n  ],\n  \"count\": 5\n}",
+          "ttft_s": 2.732,
+          "total_s": 14.573,
+          "prompt_tokens": 218,
+          "completion_tokens": 157,
+          "finish_reason": "stop",
+          "tok_per_s": 10.77
+        },
+        {
+          "output": "{\n  \"gene\": \"BRCA1\",\n  \"variants\": [\n    {\"position\": 205, \"ref\": \"T\", \"alt\": \"C\", \"type\": \"SNP\"},\n    {\"position\": 245, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 713, \"ref\": \"A\", \"alt\": \"T\", \"type\": \"SNP\"},\n    {\"position\": 913, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 5544, \"ref\": \"C\", \"alt\": \"T\", \"type\": \"SNP\"}\n  ],\n  \"count\": 5\n}",
+          "ttft_s": 2.729,
+          "total_s": 14.964,
+          "prompt_tokens": 218,
+          "completion_tokens": 157,
+          "finish_reason": "stop",
+          "tok_per_s": 10.49
+        },
+        {
+          "output": "{\n  \"gene\": \"BRCA1\",\n  \"variants\": [\n    {\"position\": 205, \"ref\": \"T\", \"alt\": \"C\", \"type\": \"SNP\"},\n    {\"position\": 245, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 713, \"ref\": \"A\", \"alt\": \"T\", \"type\": \"SNP\"},\n    {\"position\": 913, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 5544, \"ref\": \"C\", \"alt\": \"T\", \"type\": \"SNP\"}\n  ],\n  \"count\": 5\n}",
+          "ttft_s": 3.262,
+          "total_s": 15.294,
+          "prompt_tokens": 218,
+          "completion_tokens": 157,
+          "finish_reason": "stop",
+          "tok_per_s": 10.27
+        },
+        {
+          "output": "{\n  \"gene\": \"BRCA1\",\n  \"variants\": [\n    {\"position\": 205, \"ref\": \"T\", \"alt\": \"C\", \"type\": \"SNP\"},\n    {\"position\": 245, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 713, \"ref\": \"A\", \"alt\": \"T\", \"type\": \"SNP\"},\n    {\"position\": 913, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 5544, \"ref\": \"C\", \"alt\": \"T\", \"type\": \"SNP\"}\n  ],\n  \"count\": 5\n}",
+          "ttft_s": 2.715,
+          "total_s": 14.242,
+          "prompt_tokens": 218,
+          "completion_tokens": 157,
+          "finish_reason": "stop",
+          "tok_per_s": 11.02
+        },
+        {
+          "output": "{\n  \"gene\": \"BRCA1\",\n  \"variants\": [\n    {\"position\": 205, \"ref\": \"T\", \"alt\": \"C\", \"type\": \"SNP\"},\n    {\"position\": 245, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 713, \"ref\": \"A\", \"alt\": \"T\", \"type\": \"SNP\"},\n    {\"position\": 913, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 5544, \"ref\": \"C\", \"alt\": \"T\", \"type\": \"SNP\"}\n  ],\n  \"count\": 5\n}",
+          "ttft_s": 3.57,
+          "total_s": 15.929,
+          "prompt_tokens": 218,
+          "completion_tokens": 157,
+          "finish_reason": "stop",
+          "tok_per_s": 9.86
+        }
+      ],
+      "ttft_s": {
+        "mean": 3.002,
+        "min": 2.715,
+        "max": 3.57
+      },
+      "total_s": {
+        "mean": 15.0,
+        "min": 14.242,
+        "max": 15.929
+      },
+      "tok_per_s": {
+        "mean": 10.482,
+        "min": 9.86,
+        "max": 11.02
+      },
+      "prompt_tokens": 218,
+      "completion_tokens": {
+        "mean": 157.0,
+        "min": 157,
+        "max": 157
+      },
+      "quality": {
+        "max": 6,
+        "scored": 6,
+        "checks": {
+          "parse": {
+            "passed": true
+          },
+          "schema": {
+            "passed": true
+          },
+          "count_eq_5": {
+            "passed": true,
+            "got": 5
+          },
+          "variants_len_5": {
+            "passed": true,
+            "got": 5
+          },
+          "positions": {
+            "passed": true,
+            "expected": [
+              205,
+              245,
+              713,
+              913,
+              5544
+            ],
+            "got": [
+              205,
+              245,
+              713,
+              913,
+              5544
+            ]
+          },
+          "ref_alt": {
+            "passed": true,
+            "correct_count": 5
+          }
+        }
+      }
+    },
+    "long_generation": {
+      "runs": 5,
+      "ok": 5,
+      "samples": [
+        {
+          "output": "### Mechanism\n\nThe concept of synthetic lethality underpins the clinical utility of PARP inhibitors (PARPis) in BRCA1/2-deficient malignancies. This phenomenon arises from the functional interdependence of two DNA repair pathways: base excision repair (BER), which relies on PARP, and homologous recombination repair (HRR), which is critically dependent on BRCA1/2. Under normal conditions, PARP1/2 enzymes recognize and bind single-strand breaks (SSBs) and certain base adducts, recruiting downstream effectors to facilitate repair. Upon PARPi treatment, the enzymatic activity of PARP is inhibited, but more importantly, the drug physically traps PARP on the damaged DNA site, forming a cytotoxic PARP-DNA complex. This \"PARP trapping\" prevents the dissociation of the enzyme, thereby stalling replication forks and generating persistent DNA damage.\n\nIn a BRCA-proficient cell, these stalled forks and unrepaired SSBs are converted into double-strand breaks (DSBs) during DNA replication. These DSBs are then resolved with high fidelity via HRR, a process requiring BRCA1 for DNA-end resection and BRCA2 for RAD51 loading and filament stabilization. However, in BRCA1/2-deficient tumors, HRR is non-functional. Consequently, the DSBs generated from unrepaired SSBs or collapsed replication forks must be channeled into error-prone pathways like non-homologous end joining (NHEJ) or single-strand annealing. This leads to gross chromosomal rearrangements, centrosome amplification, and ultimately, cell cycle arrest and apoptosis. Thus, PARPi treatment creates lethal DNA damage specifically in cells lacking HRR, while sparing normal, BRCA-proficient tissues, which can still repair the damage via HR.\n\n### Clinical Evidence\n\nThe synthetic lethality paradigm has been translated into significant clinical efficacy, leading to the FDA approval of multiple PARPis. **Olaparib** was the first to be approved, based on the phase III SOLO-1 trial in advanced BRCA-mutated (BRCAm) ovarian cancer. In SOLO-1, maintenance olaparib following first-line platinum-based chemotherapy demonstrated a remarkable improvement in progression-free survival (PFS) compared to placebo (hazard ratio [HR] 0.30; 95% CI 0.23-0.41). The median PFS was not reached in the olaparib arm versus 13.8 months in the placebo arm, establishing a new standard of care.\n\n**Niraparib** , a potent PARP1/2 inhibitor with high trapping ability, was approved for maintenance treatment of recurrent platinum-sensitive ovarian cancer based on the phase III NOVA trial. In the BRCAm cohort, niraparib maintenance significantly improved PFS (HR 0.27; 95% CI 0.21-0.34), with a median PFS of 21.0 months versus 11.1 months for placebo. Beyond ovarian cancer, **talazoparib** demonstrated efficacy in germline BRCAm breast cancer. The phase III EMBRACA trial showed a statistically significant improvement in PFS for talazoparib versus physician's choice of chemotherapy (HR 0.43; 95% CI 0.31-0.58), with a median PFS of 8.6 months versus 5.5 months. These pivotal trials collectively validate the synthetic lethality concept, showing that PARPis provide substantial clinical benefit in BRCA1/2-deficient tumors across different disease contexts.\n\n### Resistance Mechanisms\n\nDespite the profound initial responses, acquired resistance to PARPis remains a major clinical challenge. A primary mechanism is the restoration of HRR function. This most commonly occurs via **reversion mutations** in *BRCA1* or *BRCA2*, where secondary frameshift or nonsense mutations restore the open reading frame, allowing for the expression of a functional, albeit truncated, protein. This re-establishes HRR, enabling cells to accurately repair PARPi-induced DSBs, thereby negating the synthetic lethal effect.\n\nA second, distinct mechanism involves the stabilization of replication forks. In BRCA-deficient cells, the RAD51-independent pathway of fork remodeling is dysregulated, leading to uncontrolled fork degradation by nucleases like MRE11. Resistance can arise through the loss of proteins that protect stalled forks, such as the helicase **ZRANB1** or the tumor suppressor **PTIP**. By stabilizing the replication fork, cells prevent the accumulation of DSBs, reducing the dependency on HRR for survival. Additionally, upregulation of drug efflux pumps, such as P-glycoprotein (MDR1), can reduce intracellular PARPi concentrations, diminishing drug efficacy. These mechanisms highlight the plasticity of tumor cells in circumventing the very vulnerability that PARPis exploit.\n\n### Open Question\n\nA critical open question is: **How can we effectively target PARPis in tumors with *BRCA1/2* promoter methylation, which are HRD but lack a germline mutation?** While these tumors exhibit a BRCA-deficient phenotype, they are often not captured by genetic testing. The clinical response to PARPis in this subgroup is variable and often inferior to that of tumors with deleterious mutations. This variability may stem from partial methylation, heterogeneity in methylation status across tumor cells, or the presence of other HRD mechanisms. Understanding the precise genomic and epigenetic determinants of response in this population is crucial. It would allow for the development of predictive biomarkers, such as a refined HRD score that incorporates methylation-specific signatures, to better select patients who will truly benefit from PARPi therapy. This is of paramount importance for patient care, as it could expand the population of responders beyond those with germline mutations, potentially offering a highly effective, oral, and less toxic treatment option to a larger cohort of patients with ovarian, breast, and pancreatic cancers.",
+          "ttft_s": 3.941,
+          "total_s": 88.409,
+          "prompt_tokens": 267,
+          "completion_tokens": 1185,
+          "finish_reason": "stop",
+          "tok_per_s": 13.4
+        },
+        {
+          "output": "### Mechanism\n\nThe concept of synthetic lethality underpins the clinical utility of PARP inhibitors (PARPis) in BRCA1/2-deficient malignancies. This phenomenon arises from the functional interdependence of two DNA repair pathways: base excision repair (BER), which relies on PARP, and homologous recombination repair (HRR), which is critically dependent on BRCA1/2. Under normal conditions, PARP1/2 enzymes recognize and bind single-strand breaks (SSBs) and certain base adducts, recruiting downstream effectors to facilitate repair. Upon PARPi treatment, the enzymatic activity of PARP is inhibited, but more importantly, the drug physically traps PARP on the damaged DNA site, forming a cytotoxic PARP-DNA complex. This \"PARP trapping\" prevents the dissociation of the enzyme, thereby stalling replication forks and generating persistent DNA damage.\n\nIn a BRCA-proficient cell, these stalled forks and unrepaired SSBs are converted into double-strand breaks (DSBs) during DNA replication. These DSBs are then resolved with high fidelity via HRR, a process requiring BRCA1 for DNA-end resection and BRCA2 for RAD51 loading and filament stabilization. However, in BRCA1/2-deficient tumors, HRR is non-functional. Consequently, the DSBs generated from unrepaired SSBs or collapsed replication forks must be channeled into error-prone pathways like non-homologous end joining (NHEJ) or single-strand annealing. This leads to gross chromosomal rearrangements, centrosome amplification, and ultimately, cell cycle arrest and apoptosis. Thus, PARPi treatment creates lethal DNA damage specifically in cells lacking HRR, while sparing normal, BRCA-proficient tissues, which can still repair the damage via HR.\n\n### Clinical Evidence\n\nThe synthetic lethality paradigm has been translated into significant clinical efficacy, leading to the FDA approval of multiple PARPis. **Olaparib** was the first to be approved, based on the phase III SOLO-1 trial in advanced BRCA-mutated (BRCAm) ovarian cancer. In SOLO-1, maintenance olaparib following first-line platinum-based chemotherapy demonstrated a remarkable improvement in progression-free survival (PFS) compared to placebo (hazard ratio [HR] 0.30; 95% CI 0.23-0.41). The median PFS was not reached in the olaparib arm versus 13.8 months in the placebo arm, establishing a new standard of care.\n\n**Niraparib** , a potent PARP1/2 inhibitor with high trapping ability, was approved for maintenance treatment of recurrent platinum-sensitive ovarian cancer based on the phase III NOVA trial. In the BRCAm cohort, niraparib maintenance significantly improved PFS (HR 0.27; 95% CI 0.21-0.34), with a median PFS of 21.0 months versus 11.1 months for placebo. Beyond ovarian cancer, **talazoparib** demonstrated efficacy in germline BRCAm breast cancer. The phase III EMBRACA trial showed a statistically significant improvement in PFS for talazoparib versus physician's choice of chemotherapy (HR 0.43; 95% CI 0.31-0.58), with a median PFS of 8.6 months versus 5.5 months. These pivotal trials collectively validate the synthetic lethality concept, showing that PARPis provide substantial clinical benefit in BRCA1/2-deficient tumors across different disease contexts.\n\n### Resistance Mechanisms\n\nDespite the profound initial responses, acquired resistance to PARPis remains a major clinical challenge. A primary mechanism is the restoration of HRR function. This most commonly occurs via **reversion mutations** in *BRCA1* or *BRCA2*, where secondary frameshift or nonsense mutations restore the open reading frame, allowing for the expression of a functional, albeit truncated, protein. This re-establishes HRR, enabling cells to accurately repair PARPi-induced DSBs, thereby negating the synthetic lethal effect.\n\nA second, distinct mechanism involves the stabilization of replication forks. In BRCA-deficient cells, the RAD51-independent pathway of fork remodeling is dysregulated, leading to uncontrolled fork degradation by nucleases like MRE11. Resistance can arise through the loss of proteins that protect stalled forks, such as the helicase **ZRANB1** or the tumor suppressor **PTIP**. By stabilizing the replication fork, cells prevent the accumulation of DSBs, reducing the dependency on HRR for survival. Additionally, upregulation of drug efflux pumps, such as P-glycoprotein (MDR1), can reduce intracellular PARPi concentrations, diminishing drug efficacy. These mechanisms highlight the plasticity of tumor cells in circumventing the very vulnerability that PARPis exploit.\n\n### Open Question\n\nA critical open question is: **How can we effectively target PARPis in tumors with *BRCA1/2* promoter methylation, which are HRD but lack a germline mutation?** While these tumors exhibit a BRCA-deficient phenotype, they are often not captured by genetic testing. The clinical response to PARPis in this subgroup is variable and often inferior to that of tumors with deleterious mutations. This variability may stem from partial methylation, heterogeneity in methylation status across tumor cells, or the presence of other HRD mechanisms. Understanding the precise genomic and epigenetic determinants of response in this population is crucial. It would allow for the development of predictive biomarkers, such as a refined HRD score that incorporates methylation-specific signatures, to better select patients who will truly benefit from PARPi therapy. This is of paramount importance for patient care, as it could expand the population of responders beyond those with germline mutations, potentially offering a highly effective, oral, and less toxic treatment option to a larger cohort of patients with ovarian, breast, and pancreatic cancers.",
+          "ttft_s": 3.404,
+          "total_s": 87.882,
+          "prompt_tokens": 267,
+          "completion_tokens": 1185,
+          "finish_reason": "stop",
+          "tok_per_s": 13.48
+        },
+        {
+          "output": "### Mechanism\n\nThe concept of synthetic lethality underpins the clinical utility of PARP inhibitors (PARPis) in BRCA1/2-deficient malignancies. This phenomenon arises from the functional interdependence of two DNA repair pathways: base excision repair (BER), which relies on PARP, and homologous recombination repair (HRR), which is critically dependent on BRCA1/2. Under normal conditions, PARP1/2 enzymes recognize and bind single-strand breaks (SSBs) and certain base adducts, recruiting downstream effectors to facilitate repair. Upon PARPi treatment, the enzymatic activity of PARP is inhibited, but more importantly, the drug physically traps PARP on the damaged DNA site, forming a cytotoxic PARP-DNA complex. This \"PARP trapping\" prevents the dissociation of the enzyme, thereby stalling replication forks and generating persistent DNA damage.\n\nIn a BRCA-proficient cell, these stalled forks and unrepaired SSBs are converted into double-strand breaks (DSBs) during DNA replication. These DSBs are then resolved with high fidelity via HRR, a process requiring BRCA1 for DNA-end resection and BRCA2 for RAD51 loading and filament stabilization. However, in BRCA1/2-deficient tumors, HRR is non-functional. Consequently, the DSBs generated from unrepaired SSBs or collapsed replication forks must be channeled into error-prone pathways like non-homologous end joining (NHEJ) or single-strand annealing. This leads to gross chromosomal rearrangements, centrosome amplification, and ultimately, cell cycle arrest and apoptosis. Thus, PARPi treatment creates lethal DNA damage specifically in cells lacking HRR, while sparing normal, BRCA-proficient tissues, which can still repair the damage via HR.\n\n### Clinical Evidence\n\nThe synthetic lethality paradigm has been translated into significant clinical efficacy, leading to the FDA approval of multiple PARPis. **Olaparib** was the first to be approved, based on the phase III SOLO-1 trial in advanced BRCA-mutated (BRCAm) ovarian cancer. In SOLO-1, maintenance olaparib following first-line platinum-based chemotherapy demonstrated a remarkable improvement in progression-free survival (PFS) compared to placebo (hazard ratio [HR] 0.30; 95% CI 0.23-0.41). The median PFS was not reached in the olaparib arm versus 13.8 months in the placebo arm, establishing a new standard of care.\n\n**Niraparib** , a potent PARP1/2 inhibitor with high trapping ability, was approved for maintenance treatment of recurrent platinum-sensitive ovarian cancer based on the phase III NOVA trial. In the BRCAm cohort, niraparib maintenance significantly improved PFS (HR 0.27; 95% CI 0.21-0.34), with a median PFS of 21.0 months versus 11.1 months for placebo. Beyond ovarian cancer, **talazoparib** demonstrated efficacy in germline BRCAm breast cancer. The phase III EMBRACA trial showed a statistically significant improvement in PFS for talazoparib versus physician's choice of chemotherapy (HR 0.43; 95% CI 0.31-0.58), with a median PFS of 8.6 months versus 5.5 months. These pivotal trials collectively validate the synthetic lethality concept, showing that PARPis provide substantial clinical benefit in BRCA1/2-deficient tumors across different disease contexts.\n\n### Resistance Mechanisms\n\nDespite the profound initial responses, acquired resistance to PARPis remains a major clinical challenge. A primary mechanism is the restoration of HRR function. This most commonly occurs via **reversion mutations** in *BRCA1* or *BRCA2*, where secondary frameshift or nonsense mutations restore the open reading frame, allowing for the expression of a functional, albeit truncated, protein. This re-establishes HRR, enabling cells to accurately repair PARPi-induced DSBs, thereby negating the synthetic lethal effect.\n\nA second, distinct mechanism involves the stabilization of replication forks. In BRCA-deficient cells, the RAD51-independent pathway of fork remodeling is dysregulated, leading to uncontrolled fork degradation by nucleases like MRE11. Resistance can arise through the loss of proteins that protect stalled forks, such as the helicase **ZRANB1** or the tumor suppressor **PTIP**. By stabilizing the replication fork, cells prevent the accumulation of DSBs, reducing the dependency on HRR for survival. Additionally, upregulation of drug efflux pumps, such as P-glycoprotein (MDR1), can reduce intracellular PARPi concentrations, diminishing drug efficacy. These mechanisms highlight the plasticity of tumor cells in circumventing the very vulnerability that PARPis exploit.\n\n### Open Question\n\nA critical open question is: **How can we effectively target PARPis in tumors with *BRCA1/2* promoter methylation, which are HRD but lack a germline mutation?** While these tumors exhibit a BRCA-deficient phenotype, they are often not captured by genetic testing. The clinical response to PARPis in this subgroup is variable and often inferior to that of tumors with deleterious mutations. This variability may stem from partial methylation, heterogeneity in methylation status across tumor cells, or the presence of other HRD mechanisms. Understanding the precise genomic and epigenetic determinants of response in this population is crucial. It would allow for the development of predictive biomarkers, such as a refined HRD score that incorporates methylation-specific signatures, to better select patients who will truly benefit from PARPi therapy. This is of paramount importance for patient care, as it could expand the population of responders beyond those with germline mutations, potentially offering a highly effective, oral, and less toxic treatment option to a larger cohort of patients with ovarian, breast, and pancreatic cancers.",
+          "ttft_s": 3.408,
+          "total_s": 87.627,
+          "prompt_tokens": 267,
+          "completion_tokens": 1185,
+          "finish_reason": "stop",
+          "tok_per_s": 13.52
+        },
+        {
+          "output": "### Mechanism\n\nThe concept of synthetic lethality underpins the clinical utility of PARP inhibitors (PARPis) in BRCA1/2-deficient malignancies. This phenomenon arises from the functional interdependence of two DNA repair pathways: base excision repair (BER), which relies on PARP, and homologous recombination repair (HRR), which is critically dependent on BRCA1/2. Under normal conditions, PARP1/2 enzymes recognize and bind single-strand breaks (SSBs) and certain base adducts, recruiting downstream effectors to facilitate repair. Upon PARPi treatment, the enzymatic activity of PARP is inhibited, but more importantly, the drug physically traps PARP on the damaged DNA site, forming a cytotoxic PARP-DNA complex. This \"PARP trapping\" prevents the dissociation of the enzyme, thereby stalling replication forks and generating persistent DNA damage.\n\nIn a BRCA-proficient cell, these stalled forks and unrepaired SSBs are converted into double-strand breaks (DSBs) during DNA replication. These DSBs are then resolved with high fidelity via HRR, a process requiring BRCA1 for DNA-end resection and BRCA2 for RAD51 loading and filament stabilization. However, in BRCA1/2-deficient tumors, HRR is non-functional. Consequently, the DSBs generated from unrepaired SSBs or collapsed replication forks must be channeled into error-prone pathways like non-homologous end joining (NHEJ) or single-strand annealing. This leads to gross chromosomal rearrangements, centrosome amplification, and ultimately, cell cycle arrest and apoptosis. Thus, PARPi treatment creates lethal DNA damage specifically in cells lacking HRR, while sparing normal, BRCA-proficient tissues, which can still repair the damage via HR.\n\n### Clinical Evidence\n\nThe synthetic lethality paradigm has been translated into significant clinical efficacy, leading to the FDA approval of multiple PARPis. **Olaparib** was the first to be approved, based on the phase III SOLO-1 trial in advanced BRCA-mutated (BRCAm) ovarian cancer. In SOLO-1, maintenance olaparib following first-line platinum-based chemotherapy demonstrated a remarkable improvement in progression-free survival (PFS) compared to placebo (hazard ratio [HR] 0.30; 95% CI 0.23-0.41). The median PFS was not reached in the olaparib arm versus 13.8 months in the placebo arm, establishing a new standard of care.\n\n**Niraparib** , a potent PARP1/2 inhibitor with high trapping ability, was approved for maintenance treatment of recurrent platinum-sensitive ovarian cancer based on the phase III NOVA trial. In the BRCAm cohort, niraparib maintenance significantly improved PFS (HR 0.27; 95% CI 0.21-0.34), with a median PFS of 21.0 months versus 11.1 months for placebo. Beyond ovarian cancer, **talazoparib** demonstrated efficacy in germline BRCAm breast cancer. The phase III EMBRACA trial showed a statistically significant improvement in PFS for talazoparib versus physician's choice of chemotherapy (HR 0.43; 95% CI 0.31-0.58), with a median PFS of 8.6 months versus 5.5 months. These pivotal trials collectively validate the synthetic lethality concept, showing that PARPis provide substantial clinical benefit in BRCA1/2-deficient tumors across different disease contexts.\n\n### Resistance Mechanisms\n\nDespite the profound initial responses, acquired resistance to PARPis remains a major clinical challenge. A primary mechanism is the restoration of HRR function. This most commonly occurs via **reversion mutations** in *BRCA1* or *BRCA2*, where secondary frameshift or nonsense mutations restore the open reading frame, allowing for the expression of a functional, albeit truncated, protein. This re-establishes HRR, enabling cells to accurately repair PARPi-induced DSBs, thereby negating the synthetic lethal effect.\n\nA second, distinct mechanism involves the stabilization of replication forks. In BRCA-deficient cells, the RAD51-independent pathway of fork remodeling is dysregulated, leading to uncontrolled fork degradation by nucleases like MRE11. Resistance can arise through the loss of proteins that protect stalled forks, such as the helicase **ZRANB1** or the tumor suppressor **PTIP**. By stabilizing the replication fork, cells prevent the accumulation of DSBs, reducing the dependency on HRR for survival. Additionally, upregulation of drug efflux pumps, such as P-glycoprotein (MDR1), can reduce intracellular PARPi concentrations, diminishing drug efficacy. These mechanisms highlight the plasticity of tumor cells in circumventing the very vulnerability that PARPis exploit.\n\n### Open Question\n\nA critical open question is: **How can we effectively target PARPis in tumors with *BRCA1/2* promoter methylation, which are HRD but lack a germline mutation?** While these tumors exhibit a BRCA-deficient phenotype, they are often not captured by genetic testing. The clinical response to PARPis in this subgroup is variable and often inferior to that of tumors with deleterious mutations. This variability may stem from partial methylation, heterogeneity in methylation status across tumor cells, or the presence of other HRD mechanisms. Understanding the precise genomic and epigenetic determinants of response in this population is crucial. It would allow for the development of predictive biomarkers, such as a refined HRD score that incorporates methylation-specific signatures, to better select patients who will truly benefit from PARPi therapy. This is of paramount importance for patient care, as it could expand the population of responders beyond those with germline mutations, potentially offering a highly effective, oral, and less toxic treatment option to a larger cohort of patients with ovarian, breast, and pancreatic cancers.",
+          "ttft_s": 3.862,
+          "total_s": 86.497,
+          "prompt_tokens": 267,
+          "completion_tokens": 1185,
+          "finish_reason": "stop",
+          "tok_per_s": 13.7
+        },
+        {
+          "output": "### Mechanism\n\nThe concept of synthetic lethality underpins the clinical utility of PARP inhibitors (PARPis) in BRCA1/2-deficient malignancies. This phenomenon arises from the functional interdependence of two DNA repair pathways: base excision repair (BER), which relies on PARP, and homologous recombination repair (HRR), which is critically dependent on BRCA1/2. Under normal conditions, PARP1/2 enzymes recognize and bind single-strand breaks (SSBs) and certain base adducts, recruiting downstream effectors to facilitate repair. Upon PARPi treatment, the enzymatic activity of PARP is inhibited, but more importantly, the drug physically traps PARP on the damaged DNA site, forming a cytotoxic PARP-DNA complex. This \"PARP trapping\" prevents the dissociation of the enzyme, thereby stalling replication forks and generating persistent DNA damage.\n\nIn a BRCA-proficient cell, these stalled forks and unrepaired SSBs are converted into double-strand breaks (DSBs) during DNA replication. These DSBs are then resolved with high fidelity via HRR, a process requiring BRCA1 for DNA-end resection and BRCA2 for RAD51 loading and filament stabilization. However, in BRCA1/2-deficient tumors, HRR is non-functional. Consequently, the DSBs generated from unrepaired SSBs or collapsed replication forks must be channeled into error-prone pathways like non-homologous end joining (NHEJ) or single-strand annealing. This leads to gross chromosomal rearrangements, centrosome amplification, and ultimately, cell cycle arrest and apoptosis. Thus, PARPi treatment creates lethal DNA damage specifically in cells lacking HRR, while sparing normal, BRCA-proficient tissues, which can still repair the damage via HR.\n\n### Clinical Evidence\n\nThe synthetic lethality paradigm has been translated into significant clinical efficacy, leading to the FDA approval of multiple PARPis. **Olaparib** was the first to be approved, based on the phase III SOLO-1 trial in advanced BRCA-mutated (BRCAm) ovarian cancer. In SOLO-1, maintenance olaparib following first-line platinum-based chemotherapy demonstrated a remarkable improvement in progression-free survival (PFS) compared to placebo (hazard ratio [HR] 0.30; 95% CI 0.23-0.41). The median PFS was not reached in the olaparib arm versus 13.8 months in the placebo arm, establishing a new standard of care.\n\n**Niraparib** , a potent PARP1/2 inhibitor with high trapping ability, was approved for maintenance treatment of recurrent platinum-sensitive ovarian cancer based on the phase III NOVA trial. In the BRCAm cohort, niraparib maintenance significantly improved PFS (HR 0.27; 95% CI 0.21-0.34), with a median PFS of 21.0 months versus 11.1 months for placebo. Beyond ovarian cancer, **talazoparib** demonstrated efficacy in germline BRCAm breast cancer. The phase III EMBRACA trial showed a statistically significant improvement in PFS for talazoparib versus physician's choice of chemotherapy (HR 0.43; 95% CI 0.31-0.58), with a median PFS of 8.6 months versus 5.5 months. These pivotal trials collectively validate the synthetic lethality concept, showing that PARPis provide substantial clinical benefit in BRCA1/2-deficient tumors across different disease contexts.\n\n### Resistance Mechanisms\n\nDespite the profound initial responses, acquired resistance to PARPis remains a major clinical challenge. A primary mechanism is the restoration of HRR function. This most commonly occurs via **reversion mutations** in *BRCA1* or *BRCA2*, where secondary frameshift or nonsense mutations restore the open reading frame, allowing for the expression of a functional, albeit truncated, protein. This re-establishes HRR, enabling cells to accurately repair PARPi-induced DSBs, thereby negating the synthetic lethal effect.\n\nA second, distinct mechanism involves the stabilization of replication forks. In BRCA-deficient cells, the RAD51-independent pathway of fork remodeling is dysregulated, leading to uncontrolled fork degradation by nucleases like MRE11. Resistance can arise through the loss of proteins that protect stalled forks, such as the helicase **ZRANB1** or the tumor suppressor **PTIP**. By stabilizing the replication fork, cells prevent the accumulation of DSBs, reducing the dependency on HRR for survival. Additionally, upregulation of drug efflux pumps, such as P-glycoprotein (MDR1), can reduce intracellular PARPi concentrations, diminishing drug efficacy. These mechanisms highlight the plasticity of tumor cells in circumventing the very vulnerability that PARPis exploit.\n\n### Open Question\n\nA critical open question is: **How can we effectively target PARPis in tumors with *BRCA1/2* promoter methylation, which are HRD but lack a germline mutation?** While these tumors exhibit a BRCA-deficient phenotype, they are often not captured by genetic testing. The clinical response to PARPis in this subgroup is variable and often inferior to that of tumors with deleterious mutations. This variability may stem from partial methylation, heterogeneity in methylation status across tumor cells, or the presence of other HRD mechanisms. Understanding the precise genomic and epigenetic determinants of response in this population is crucial. It would allow for the development of predictive biomarkers, such as a refined HRD score that incorporates methylation-specific signatures, to better select patients who will truly benefit from PARPi therapy. This is of paramount importance for patient care, as it could expand the population of responders beyond those with germline mutations, potentially offering a highly effective, oral, and less toxic treatment option to a larger cohort of patients with ovarian, breast, and pancreatic cancers.",
+          "ttft_s": 3.508,
+          "total_s": 87.689,
+          "prompt_tokens": 267,
+          "completion_tokens": 1185,
+          "finish_reason": "stop",
+          "tok_per_s": 13.51
+        }
+      ],
+      "ttft_s": {
+        "mean": 3.625,
+        "min": 3.404,
+        "max": 3.941
+      },
+      "total_s": {
+        "mean": 87.621,
+        "min": 86.497,
+        "max": 88.409
+      },
+      "tok_per_s": {
+        "mean": 13.522,
+        "min": 13.4,
+        "max": 13.7
+      },
+      "prompt_tokens": 267,
+      "completion_tokens": {
+        "mean": 1185.0,
+        "min": 1185,
+        "max": 1185
+      },
+      "quality": {
+        "max": 6,
+        "scored": 6,
+        "checks": {
+          "word_count": {
+            "passed": true,
+            "word_count": 794,
+            "expected": "500-1200"
+          },
+          "sections": {
+            "passed": true,
+            "found": 4,
+            "expected": 4
+          },
+          "topic_hr_mechanism": {
+            "passed": true,
+            "hit_count": 8,
+            "keywords_matched": [
+              "homologous recombination",
+              "dsb",
+              "double-strand break",
+              "parp trapping",
+              "single-strand break",
+              "ssb",
+              "brca1",
+              "brca2"
+            ]
+          },
+          "topic_drug_names": {
+            "passed": true,
+            "hit_count": 5,
+            "keywords_matched": [
+              "olaparib",
+              "niraparib",
+              "talazoparib",
+              "parp inhibitor",
+              "parpi"
+            ]
+          },
+          "topic_resistance_term": {
+            "passed": true,
+            "hit_count": 4,
+            "keywords_matched": [
+              "reversion mutation",
+              "reversion",
+              "replication fork",
+              "drug efflux"
+            ]
+          },
+          "topic_outcome_metric": {
+            "passed": true,
+            "hit_count": 4,
+            "keywords_matched": [
+              "pfs",
+              "progression-free survival",
+              "hazard ratio",
+              "os"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "environment": {
+    "hostname": "kankjdeMBP",
+    "platform": "Darwin 25.5.0 (arm64)",
+    "python": "3.11.15",
+    "llm_label": "mac-m3max-ds4-server",
+    "llm_api_url": "http://127.0.0.1:8000/v1",
+    "llm_model": "deepseek-v4-flash",
+    "cpu_cores": "16 (12 Performance and 4 Efficiency)",
+    "chip": "Apple M3 Max",
+    "memory_gb": 128.0,
+    "memory_gb_str": "128 GB",
+    "gpu": "Apple M3 Max",
+    "llm_endpoint_models": [
+      {
+        "id": "deepseek-v4-flash",
+        "object": "model",
+        "created": 1767225600,
+        "owned_by": "ds4.c",
+        "name": "DeepSeek V4 Flash",
+        "context_length": 256000,
+        "top_provider": {
+          "context_length": 256000,
+          "max_completion_tokens": 256000,
+          "is_moderated": false
+        },
+        "supported_parameters": [
+          "tools",
+          "tool_choice",
+          "max_tokens",
+          "temperature",
+          "top_p",
+          "top_k",
+          "min_p",
+          "stop",
+          "seed",
+          "stream",
+          "reasoning_effort"
+        ]
+      },
+      {
+        "id": "deepseek-v4-pro",
+        "object": "model",
+        "created": 1767225600,
+        "owned_by": "ds4.c",
+        "name": "DeepSeek V4 Flash",
+        "context_length": 256000,
+        "top_provider": {
+          "context_length": 256000,
+          "max_completion_tokens": 256000,
+          "is_moderated": false
+        },
+        "supported_parameters": [
+          "tools",
+          "tool_choice",
+          "max_tokens",
+          "temperature",
+          "top_p",
+          "top_k",
+          "min_p",
+          "stop",
+          "seed",
+          "stream",
+          "reasoning_effort"
+        ]
+      }
+    ],
+    "llm_engine": "ds4-server",
+    "llm_context": "256000"
+  },
+  "overall_score": {
+    "overall": 54.9,
+    "sub_scores": {
+      "quality": 70.6,
+      "throughput": 24.6,
+      "ttft": 22.3,
+      "stability": 100.0
+    },
+    "weights": {
+      "quality": 0.5,
+      "throughput": 0.3,
+      "ttft": 0.1,
+      "stability": 0.1
+    },
+    "quality_count": 8,
+    "tps_median": 10.48,
+    "ttft_median": 6.12
+  }
+}

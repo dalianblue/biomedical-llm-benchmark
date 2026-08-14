@@ -1,0 +1,12 @@
+key	value
+dataset	GSE100866
+title	CITE-seq: Large scale simultaneous measurement of epitopes and transcriptomes in single cells
+source_file	GSE100866_CD8_merged-RNA_umi.csv.gz
+organism	Homo sapiens
+matrix_genes	11757
+matrix_cells	1774
+top_genes_kept	500
+total_umi_top500	954364
+fraction_of_total_umi_top500	0.566049
+min_umi_top500	485
+max_umi_top500	216054

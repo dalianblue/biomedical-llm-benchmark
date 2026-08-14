@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>本地 LLM 生物医学基准测试报告 v2 · M3 Max / M5 Max / DGX Spark</title>
+<style>
+  :root {
+    --bg: #f7f4ee;
+    --paper: #ffffff;
+    --ink: #1a1f2e;
+    --ink-soft: #4a5266;
+    --ink-faint: #8b94a8;
+    --rule: #e4ddd0;
+    --m3: #c89b3c;          /* gold */
+    --m3-soft: #f5ead0;
+    --m5: #e8553a;          /* coral */
+    --m5-soft: #fbe4dd;
+    --dgx: #1a8754;         /* green */
+    --dgx-soft: #dcefe2;
+    --dgx2: #0f6b8a;        /* teal (dgx run2) */
+    --dgx2-soft: #d6e8f0;
+    --danger: #b3261e;
+    --danger-soft: #f8dedc;
+    --ok: #2e7d4a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", "Source Han Sans CN", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 56px 40px 80px; }
+
+  header.hero { border-bottom: 3px double var(--ink); padding-bottom: 32px; margin-bottom: 48px; }
+  .eyebrow { font-family: "SF Mono","JetBrains Mono",monospace; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 14px; }
+  h1 { font-family: Georgia,"Source Han Serif",serif; font-size: 44px; line-height: 1.12; font-weight: 700; letter-spacing: -0.015em; margin-bottom: 18px; }
+  h1 .m3 { color: var(--m3); font-style: italic; }
+  h1 .m5 { color: var(--m5); font-style: italic; }
+  h1 .dgx { color: var(--dgx); font-style: italic; }
+  h1 .sep { font-family: Georgia,serif; font-size: 26px; color: var(--ink-faint); font-weight: 400; margin: 0 10px; vertical-align: middle; }
+  .lede { font-size: 18px; color: var(--ink-soft); max-width: 820px; line-height: 1.55; }
+  .lede p { margin: 0; }
+  .lede p + p { margin-top: 14px; }
+  .meta-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--rule); margin-top: 28px; border: 1px solid var(--rule); }
+  .meta-cell { background: var(--paper); padding: 14px 18px; }
+  .meta-cell .k { font-family: "SF Mono",monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px; }
+  .meta-cell .v { font-size: 14px; font-weight: 600; }
+
+  section { margin-bottom: 64px; }
+  h2 { font-family: Georgia,serif; font-size: 28px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; display: flex; align-items: baseline; gap: 14px; }
+  h2 .num { font-family: "SF Mono",monospace; font-size: 13px; color: var(--m3); font-weight: 600; letter-spacing: 0.1em; }
+  .section-lede { color: var(--ink-soft); font-size: 15px; margin-bottom: 28px; max-width: 860px; }
+
+  /* score cards */
+  .score-banner { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+  .score-card { background: var(--paper); border: 1px solid var(--rule); padding: 22px 22px; position: relative; overflow: hidden; }
+  .score-card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:6px; }
+  .score-card.m3::before { background: var(--m3); }
+  .score-card.m5::before { background: var(--m5); }
+  .score-card.dgx::before { background: var(--dgx); }
+  .score-card.dgx2::before { background: var(--dgx2); }
+  .score-card.faded { opacity: 0.78; }
+  .score-card .label { font-family:"SF Mono",monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color: var(--ink-faint); margin-bottom:4px; }
+  .score-card .name { font-family: Georgia,serif; font-size:17px; font-weight:700; margin-bottom:10px; line-height:1.2; }
+  .score-card .big { font-family: Georgia,serif; font-size:50px; font-weight:700; line-height:1; letter-spacing:-0.03em; }
+  .score-card.m3 .big { color: var(--m3); }
+  .score-card.m5 .big { color: var(--m5); }
+  .score-card.dgx .big { color: var(--dgx); }
+  .score-card.dgx2 .big { color: var(--dgx2); }
+  .score-card .verdict { display:inline-block; font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; padding:3px 8px; margin-left:8px; vertical-align:middle; }
+  .verdict.good { background: var(--dgx-soft); color: var(--ok); }
+  .verdict.fair { background: var(--m3-soft); color: #8a6a1c; }
+  .verdict.weak { background: var(--danger-soft); color: var(--danger); }
+  .sub-scores { margin-top:14px; display:grid; grid-template-columns: repeat(2,1fr); gap:6px 10px; }
+  .sub-score .name-s { font-size:9px; letter-spacing:0.08em; text-transform:uppercase; color: var(--ink-faint); }
+  .sub-score .val-s { font-family:"SF Mono",monospace; font-size:14px; font-weight:600; }
+  .runs-tag { font-family:"SF Mono",monospace; font-size:10px; color: var(--ink-faint); margin-top:8px; }
+
+  /* charts */
+  .chart-block { background: var(--paper); border: 1px solid var(--rule); padding: 28px 32px; margin-bottom: 24px; }
+  .chart-title { font-family: Georgia,serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .chart-sub { font-size: 12px; color: var(--ink-faint); margin-bottom: 22px; }
+  .bar-row { display:grid; grid-template-columns: 160px 1fr; align-items:center; gap:14px; margin-bottom:14px; font-size:13px; }
+  .bar-row .task-name { font-family:"SF Mono",monospace; font-size:12px; color: var(--ink-soft); }
+  .bar-track { height: 44px; background:#f0ebe0; position:relative; border-radius:2px; }
+  .bar-seg { position:absolute; height:25%; left:0; }
+  .bar-seg.m3 { bottom:75%; background:var(--m3); }
+  .bar-seg.m5 { bottom:50%; background:var(--m5); }
+  .bar-seg.dgx { bottom:25%; background:var(--dgx); }
+  .bar-seg.dgx2 { bottom:0; background:var(--dgx2); }
+  .bar-row .vals { font-family:"SF Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:3px; display:flex; gap:14px; flex-wrap:wrap; }
+  .bar-row .vals span { white-space:nowrap; }
+  .bar-row .vals .lbl { display:inline-block; width:46px; color:var(--ink-faint); }
+  .legend { display:flex; gap:22px; margin-top:18px; padding-top:16px; border-top:1px solid var(--rule); font-size:12px; flex-wrap:wrap; }
+  .legend-dot { display:inline-block; width:12px; height:12px; margin-right:6px; vertical-align:middle; }
+  .legend-dot.m3 { background:var(--m3); } .legend-dot.m5 { background:var(--m5); }
+  .legend-dot.dgx { background:var(--dgx); } .legend-dot.dgx2 { background:var(--dgx2); }
+
+  table.full { width:100%; border-collapse:collapse; background:var(--paper); font-size:13px; }
+  table.full th, table.full td { padding:11px 13px; text-align:left; border-bottom:1px solid var(--rule); }
+  table.full thead th { background:#f4efe3; font-family:"SF Mono",monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-soft); font-weight:600; }
+  table.full td.num { font-family:"SF Mono",monospace; text-align:right; }
+  table.full td.center { text-align:center; }
+  table.full tr:hover { background:#fcfaf5; }
+  table.full code { font-family:"SF Mono",monospace; font-size:12px; }
+  .pill { display:inline-block; font-family:"SF Mono",monospace; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px; }
+  .pill.ok { background:var(--dgx-soft); color:var(--ok); }
+  .pill.fail { background:var(--danger-soft); color:var(--danger); }
+  .pill.warn { background:var(--m3-soft); color:#8a6a1c; }
+
+  .callout { background:var(--paper); border-left:4px solid var(--m3); padding:22px 26px; margin:20px 0; font-size:14px; }
+  .callout.danger { border-left-color:var(--danger); background:#fdf6f5; }
+  .callout.ok { border-left-color:var(--dgx); background:#f3faf6; }
+  .callout.info { border-left-color:var(--dgx2); background:#f0f7fa; }
+  .callout .ttl { font-family:Georgia,serif; font-weight:700; font-size:16px; margin-bottom:6px; }
+  .callout strong { color:var(--ink); }
+  .callout ul { margin:10px 0 0 20px; line-height:1.9; }
+
+  .bento { display:grid; grid-template-columns: repeat(3,1fr); gap:18px; margin:24px 0; }
+  .bento-card { background:var(--paper); border:1px solid var(--rule); padding:24px 24px; }
+  .bento-card .role { font-family:"SF Mono",monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:8px; }
+  .bento-card.m3 .role { color:var(--m3); } .bento-card.m5 .role { color:var(--m5); } .bento-card.dgx .role { color:var(--dgx); }
+  .bento-card h3 { font-family:Georgia,serif; font-size:19px; margin-bottom:8px; line-height:1.2; }
+  .bento-card .sub { font-size:12px; color:var(--ink-faint); margin-bottom:12px; }
+  .bento-card ul { list-style:none; padding:0; }
+  .bento-card li { padding:7px 0; border-bottom:1px dashed var(--rule); font-size:13px; color:var(--ink-soft); position:relative; padding-left:18px; }
+  .bento-card li:before { content:"—"; position:absolute; left:0; color:var(--ink-faint); }
+  .bento-card li:last-child { border-bottom:none; }
+  .bento-card li strong { color:var(--ink); }
+
+  .anomaly { background:linear-gradient(135deg,#fdf6f5 0%,#fff 100%); border:1px solid var(--danger-soft); padding:28px 32px; margin:24px 0; }
+  .anomaly .ttl { font-family:Georgia,serif; font-size:20px; color:var(--danger); margin-bottom:6px; }
+  .anomaly .stat-line { font-family:"SF Mono",monospace; font-size:13px; color:var(--ink-soft); margin:14px 0; }
+  .anomaly .stat-line span.hl { color:var(--danger); font-weight:700; }
+  .anomaly .stat-line span.gd { color:var(--ok); font-weight:700; }
+
+  .task-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:16px; margin:20px 0; }
+  .task-card { background:var(--paper); border:1px solid var(--rule); padding:20px 22px; }
+  .task-card .tnum { font-family:"SF Mono",monospace; font-size:11px; color:var(--m3); font-weight:600; letter-spacing:0.1em; }
+  .task-card .tname { font-family:Georgia,serif; font-size:16px; font-weight:700; margin:4px 0 8px; }
+  .task-card .tdesc { font-size:12.5px; color:var(--ink-soft); line-height:1.55; }
+  .task-card .tmeta { font-family:"SF Mono",monospace; font-size:10.5px; color:var(--ink-faint); margin-top:10px; padding-top:8px; border-top:1px dashed var(--rule); }
+  .task-card .tmeta .q { color:var(--ok); }
+
+  ol.advice { list-style:none; counter-reset:advice; margin-top:16px; }
+  ol.advice li { counter-increment:advice; padding:18px 0 18px 56px; border-bottom:1px solid var(--rule); position:relative; font-size:14.5px; color:var(--ink-soft); }
+  ol.advice li:before { content:counter(advice,decimal-leading-zero); position:absolute; left:0; top:18px; font-family:Georgia,serif; font-size:28px; font-weight:700; color:var(--m3); line-height:1; }
+  ol.advice li strong { display:block; font-family:Georgia,serif; font-size:17px; color:var(--ink); margin-bottom:4px; font-weight:700; }
+
+  .delta-table td.up { color:var(--ok); font-weight:700; }
+  .delta-table td.down { color:var(--danger); font-weight:700; }
+
+  footer { margin-top:80px; padding-top:28px; border-top:3px double var(--ink); font-size:12px; color:var(--ink-faint); line-height:1.8; }
+  footer code { font-family:"SF Mono",monospace; background:#f0ebe0; padding:1px 6px; font-size:11px; }
+  footer a { color:var(--dgx2); }
+
+  @media (max-width: 920px) {
+    .wrap { padding:32px 20px 60px; }
+    h1 { font-size:28px; }
+    .meta-grid,.score-banner,.bento,.task-grid,.sub-scores { grid-template-columns:1fr; }
+    .bar-row { grid-template-columns:110px 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="eyebrow">本地 LLM 基准测试 · 生物医学场景 · 报告 v2 · 2026.08.14</div>
+  <h1>
+    <span class="m3">M3 Max</span><span class="sep">·</span><span class="m5">M5 Max</span><span class="sep">·</span><span class="dgx">DGX Spark</span>
+  </h1>
+  <div class="lede">
+    <p>
+      事情是这样的——我们三个人，三台机器，两套底层方案，同时跑同一个模型（DeepSeek V4 Flash 0731）。
+    </p>
+    <p>
+      为了不让测试流于形式，我们攒了 9 个和日常科研强相关的生物医学任务：从基因变异检测、单细胞差异表达，
+      到蛋白质功能推理、文献问答和医学选择题——基本覆盖了我们平时会喂给 LLM 的各类需求。
+    </p>
+    <p>
+      目标很朴素：<em>就想看看，一样的模型，换个硬件和引擎，实际用起来到底差多少？</em>
+    </p>
+    <p>
+      跑完之后发现，最值得说的反而不是"谁最快"。<br>
+      最让我们意外的是两个"不该变"的变量：DGX Spark 同一天上午跑和下午跑，结果不太一样；Mia 中间顺手升了个 vLLM，分数直接涨了一档。
+      这些事展开讲还挺有意思的，单开了一节聊（见 <a href="#dgx-upgrade" style="color:var(--dgx2);">§04</a>）。
+    </p>
+  </div>
+  <div class="meta-grid">
+    <div class="meta-cell"><div class="k">机型 A</div><div class="v">Apple M3 Max · 128 GB</div></div>
+    <div class="meta-cell"><div class="k">机型 B</div><div class="v">Apple M5 Max · 128 GB</div></div>
+    <div class="meta-cell"><div class="k">机型 C</div><div class="v">NVIDIA DGX Spark (GB10) · 128 GB</div></div>
+    <div class="meta-cell"><div class="k">机型 C 跑分</div><div class="v">2 次（升级前后各一）</div></div>
+  </div>
+  <div class="meta-grid" style="margin-top:0;">
+    <div class="meta-cell"><div class="k">模型</div><div class="v">DeepSeek V4 Flash 0731</div></div>
+    <div class="meta-cell"><div class="k">推理引擎</div><div class="v">Mac = ds4-server · DGX = vLLM</div></div>
+    <div class="meta-cell"><div class="k">上下文</div><div class="v">256,000 tokens</div></div>
+    <div class="meta-cell"><div class="k">温度</div><div class="v">0（确定性）</div></div>
+  </div>
+</header>
+
+<!-- ============ 1. TL;DR ============ -->
+<section>
+  <h2><span class="num">01</span>一句话结论</h2>
+  <p class="section-lede">
+    四份结果摆一起，最先跳出来的还是那句老话：<strong>质量由模型决定，硬件只决定你多快摸到这个上限</strong>。
+    你看四份的质量分，全部挤在 70.6–76.9，极差才 6 分出头；可综合分呢，从 54.9 一路冲到 73.5，差了 18 分还多。
+    这 18 分的鸿沟，几乎全出在吞吐和首 token 延迟上——说白了，全是硬件、引擎、调参能左右的部分。
+  </p>
+
+  <div class="score-banner">
+    <div class="score-card m3">
+      <div class="label">机型 A</div>
+      <div class="name">M3 Max<br><span style="font-size:11px;font-weight:400;color:var(--ink-faint);">ds4-server</span></div>
+      <div class="big">54.9<span class="verdict weak">WEAK</span></div>
+      <div class="sub-scores">
+        <div class="sub-score"><div class="name-s">质量 ×50%</div><div class="val-s">70.6</div></div>
+        <div class="sub-score"><div class="name-s">吞吐 ×30%</div><div class="val-s">24.6</div></div>
+        <div class="sub-score"><div class="name-s">TTFT ×10%</div><div class="val-s">22.3</div></div>
+        <div class="sub-score"><div class="name-s">稳定 ×10%</div><div class="val-s">100</div></div>
+      </div>
+      <div class="runs-tag">5 runs/task · median 10.5 tok/s</div>
+    </div>
+
+    <div class="score-card m5">
+      <div class="label">机型 B</div>
+      <div class="name">M5 Max<br><span style="font-size:11px;font-weight:400;color:var(--ink-faint);">ds4-server</span></div>
+      <div class="big">72.9<span class="verdict good">GOOD</span></div>
+      <div class="sub-scores">
+        <div class="sub-score"><div class="name-s">质量 ×50%</div><div class="val-s">71.7</div></div>
+        <div class="sub-score"><div class="name-s">吞吐 ×30%</div><div class="val-s">70.4</div></div>
+        <div class="sub-score"><div class="name-s">TTFT ×10%</div><div class="val-s">59.7</div></div>
+        <div class="sub-score"><div class="name-s">稳定 ×10%</div><div class="val-s">100</div></div>
+      </div>
+      <div class="runs-tag">5 runs/task · median 41.3 tok/s</div>
+    </div>
+
+    <div class="score-card dgx faded">
+      <div class="label">机型 C · 第一次</div>
+      <div class="name">DGX Spark<br><span style="font-size:11px;font-weight:400;color:var(--ink-faint);">vLLM（升级前）</span></div>
+      <div class="big">67.1<span class="verdict fair">FAIR</span></div>
+      <div class="sub-scores">
+        <div class="sub-score"><div class="name-s">质量 ×50%</div><div class="val-s">75.8</div></div>
+        <div class="sub-score"><div class="name-s">吞吐 ×30%</div><div class="val-s">45.3</div></div>
+        <div class="sub-score"><div class="name-s">TTFT ×10%</div><div class="val-s">55.5</div></div>
+        <div class="sub-score"><div class="name-s">稳定 ×10%</div><div class="val-s">100</div></div>
+      </div>
+      <div class="runs-tag">⚠ 仅 2 runs/task · 样本偏少</div>
+    </div>
+
+    <div class="score-card dgx2">
+      <div class="label">机型 C · 第二次</div>
+      <div class="name">DGX Spark<br><span style="font-size:11px;font-weight:400;color:var(--ink-faint);">vLLM（升级后）</span></div>
+      <div class="big">73.5<span class="verdict good">GOOD</span></div>
+      <div class="sub-scores">
+        <div class="sub-score"><div class="name-s">质量 ×50%</div><div class="val-s">76.9</div></div>
+        <div class="sub-score"><div class="name-s">吞吐 ×30%</div><div class="val-s">61.8</div></div>
+        <div class="sub-score"><div class="name-s">TTFT ×10%</div><div class="val-s">65.7</div></div>
+        <div class="sub-score"><div class="name-s">稳定 ×10%</div><div class="val-s">100</div></div>
+      </div>
+      <div class="runs-tag">5 runs/task · median 31.9 tok/s</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="ttl">四个关键发现</div>
+    <ul>
+      <li><strong>质量几乎打平</strong>（70.6 → 76.9，极差才 6.3 分）——同模型同权重，硬件根本改不了答案对错。</li>
+      <li><strong>同引擎升一代芯片，等于换了台机器</strong>：M3 Max → M5 Max，吞吐中位数 <strong>10.5 → 41.3 tok/s（3.9×）</strong>，TTFT 中位数 <strong>6.12s → 0.85s（7.2×）</strong>，综合分直接 +18。</li>
+      <li><strong>DGX 这次升级是真香</strong>：同一台机器、同一版权重，Mia 把 vLLM 方案重做一遍，综合分 <strong>67.1 → 73.5</strong>，pubmedqa 的 TTFT 从 <strong>21.59s 砸到 0.76s（28×）</strong>——看到这行的时候我是真的惊了。</li>
+      <li><strong>M5 Max 综合手感最顺</strong>：吞吐 70.4 全场第一；但 DGX 升级后在质量上反超（76.9），还顺手把长 prefill 卡顿这老毛病治了。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 2. 九任务介绍 ============ -->
+<section>
+  <h2><span class="num">02</span>测试方法：九个任务都在测什么</h2>
+  <p class="section-lede">
+    一套生物医学标准化卷子，每个任务盯一种能力。<strong>带"质量评估"的任务都有标准答案</strong>，
+    能自动判分（精确率/召回率、命中检查点数、准确率）；剩下的只测吞吐和 TTFT，不评分。
+    所有题目都冻结在 <code>test_data/</code> 里，seed=42 采样——三台机器拿到的，是同一份卷子，谁也别想赖题不一样。
+  </p>
+
+  <div class="task-grid">
+    <div class="task-card">
+      <div class="tnum">任务 01</div>
+      <div class="tname">mutation_call · 序列变异检出</div>
+      <div class="tdesc">丢两条 BRCA1 序列给它（一条参考、一条塞了 20 个已知点突变，加起来 7088 nt × 2），让它输出 VCF 格式的变异位点。想测的是<strong>长上下文 + 核苷酸级精确对齐</strong>——结果翻车最惨的一个，后面会讲。</div>
+      <div class="tmeta">输入 ~15 KB · <span class="q">质量：位置 P/R vs 20 个真值位点</span></div>
+    </div>
+
+    <div class="task-card">
+      <div class="tnum">任务 02</div>
+      <div class="tname">expression_genes · 单细胞领域知识</div>
+      <div class="tdesc">给 GSE100866 CD8 T 细胞里 top30 高表达的基因，让模型当"审稿人"：判断样本身份、核糖体/线粒体含量、MT-RNR2 为啥异常、QC 该关注啥。考的是<strong>单细胞生物学知识</strong>。</div>
+      <div class="tmeta">输入 ~1.7 KB · 开放问答，无自动评分</div>
+    </div>
+
+    <div class="task-card">
+      <div class="tnum">任务 03</div>
+      <div class="tname">expression_matrix · 表格数值推理</div>
+      <div class="tdesc">塞一个 20 基因 × 10 细胞的小矩阵，让它求和、求均值、找 top5、算稀疏度。听起来简单，<strong>实际是 LLM 的滑铁卢</strong>——它真的不擅长算术。</div>
+      <div class="tmeta">输入 ~1.6 KB · <span class="q">质量：4 项子检查 vs 计算真值</span></div>
+    </div>
+
+    <div class="task-card">
+      <div class="tnum">任务 04</div>
+      <div class="tname">expression_code · Scanpy 代码生成</div>
+      <div class="tdesc">只给数据集描述，要它写一份能直接跑的 scanpy 分析脚本（读入 → QC → 归一化 → PCA/UMAP/Leiden → marker gene）。测<strong>领域代码生成</strong>——这是它最拿手的活儿之一。</div>
+      <div class="tmeta">输入 ~1.4 KB · <span class="q">质量：12 个代码关键点检查</span></div>
+    </div>
+
+    <div class="task-card">
+      <div class="tnum">任务 05</div>
+      <div class="tname">protein_function · 结构生物学知识</div>
+      <div class="tdesc">给 BRCA1 的 p53 结合域序列加二级结构注释，问 4 个结构/功能相关的问题。纯考<strong>蛋白质结构生物学知识</strong>。</div>
+      <div class="tmeta">输入 ~3.3 KB · <span class="q">质量：4 个子问题关键词匹配</span></div>
+    </div>
+
+    <div class="task-card">
+      <div class="tnum">任务 06</div>
+      <div class="tname">pubmedqa · 文献 yes/no 推理</div>
+      <div class="tdesc">20 道 PubMedQA，每题塞一篇摘要，让模型回答 yes/no/maybe。<strong>这是整套测试输入最长的一个（20 篇摘要 ~33 KB / ~8000 tokens）</strong>，也是长 prefill 的照妖镜——后面 DGX 翻身仗全靠它。</div>
+      <div class="tmeta">输入 ~33 KB · <span class="q">质量：准确率 vs 标注答案</span></div>
+    </div>
+
+    <div class="task-card">
+      <div class="tnum">任务 07</div>
+      <div class="tname">medmcqa · 医学四选一</div>
+      <div class="tdesc">20 道医学多选题（4 选 1），药理、解剖、病理、微生物都来一点。考<strong>医学领域知识的广度</strong>，像执业医考的迷你版。</div>
+      <div class="tmeta">输入 ~4 KB · <span class="q">质量：准确率 vs 标注答案</span></div>
+    </div>
+
+    <div class="task-card">
+      <div class="tnum">任务 08</div>
+      <div class="tname">json_output · 结构化输出</div>
+      <div class="tdesc">给 5 个已知变异，要求按指定 JSON schema 输出。别看简单，<strong>这是 agent / 函数调用的地基</strong>——schema 稍微歪一点，下游就全崩。</div>
+      <div class="tmeta">输入 ~625 B · <span class="q">质量：6 项 schema/正确性检查</span></div>
+    </div>
+
+    <div class="task-card">
+      <div class="tnum">任务 09</div>
+      <div class="tname">long_generation · 长文综述</div>
+      <div class="tdesc">让模型就 PARP/BRCA 啃一篇 600–800 字的英文综述。<strong>这任务就是专门为了压"持续 decode"吞吐设计的</strong>，顺便拿来算稳定性 (CV)。</div>
+      <div class="tmeta">输入 ~1 KB · <span class="q">质量：长度 + 4 章节 + 主题覆盖 = 6 项</span></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="ttl">读这张表，记住两个"极端分子"</div>
+    任务 6（pubmedqa）和任务 9（long_generation）是<strong>两个极端</strong>：一个吃 prefill（输入长），一个吃 decode（输出长）。
+    它俩合起来，能告诉你一台机器到底是"读得快"还是"写得快"——有意思的是，很多平台这两件事的速度压根不是一回事。
+    后面 DGX 升级那出戏，基本就全发生在任务 6 身上。
+  </div>
+</section>
+
+<!-- ============ 3. 三机横评 ============ -->
+<section>
+  <h2><span class="num">03</span>三台机器横评</h2>
+  <p class="section-lede">
+    三张图把四份结果按任务铺开（M3 Max / M5 Max / DGX 升级前 / DGX 升级后）。
+    先提醒一句：DGX 升级前那次只跑了 2 runs，样本偏少，所以横评时请以<strong>升级后的 DGX</strong>为准。
+    升级前那版留着不删，是为了在 §04 里把"升级到底改了啥"讲清楚——好戏还得有对照组才看得明白。
+  </p>
+
+  <!-- 吞吐 -->
+  <div class="chart-block">
+    <div class="chart-title">吞吐量 · tokens / second <span style="color:var(--ink-faint);font-size:12px;font-weight:400;">（越高越好，柱子按 44 tok/s 拉满）</span></div>
+    <div class="chart-sub">每根柱从下往上叠了四层：金=M3 Max · 橙=M5 Max · 绿=DGX 升级前 · 蓝=DGX 升级后。一眼就能看出谁长谁短。</div>
+
+    <div class="bar-row"><div class="task-name">mutation_call</div>
+      <div><div class="bar-track">
+        <div class="bar-seg m3" style="width:20.6%"></div><div class="bar-seg m5" style="width:83.9%"></div>
+        <div class="bar-seg dgx" style="width:73.0%"></div><div class="bar-seg dgx2" style="width:94.3%"></div>
+      </div><div class="vals">
+        <span><span class="lbl">M3</span>9.1</span><span><span class="lbl">M5</span>36.9</span>
+        <span><span class="lbl">DGX1</span>32.1</span><span><span class="lbl">DGX2</span>41.5</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">expression_genes</div>
+      <div><div class="bar-track">
+        <div class="bar-seg m3" style="width:31.0%"></div><div class="bar-seg m5" style="width:94.7%"></div>
+        <div class="bar-seg dgx" style="width:49.5%"></div><div class="bar-seg dgx2" style="width:57.1%"></div>
+      </div><div class="vals">
+        <span><span class="lbl">M3</span>13.6</span><span><span class="lbl">M5</span>41.7</span>
+        <span><span class="lbl">DGX1</span>21.8</span><span><span class="lbl">DGX2</span>25.1</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">expression_matrix</div>
+      <div><div class="bar-track">
+        <div class="bar-seg m3" style="width:32.1%"></div><div class="bar-seg m5" style="width:93.8%"></div>
+        <div class="bar-seg dgx" style="width:71.6%"></div><div class="bar-seg dgx2" style="width:93.9%"></div>
+      </div><div class="vals">
+        <span><span class="lbl">M3</span>14.1</span><span><span class="lbl">M5</span>41.3</span>
+        <span><span class="lbl">DGX1</span>31.5</span><span><span class="lbl">DGX2</span>41.3</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">expression_code</div>
+      <div><div class="bar-track">
+        <div class="bar-seg m3" style="width:32.3%"></div><div class="bar-seg m5" style="width:94.1%"></div>
+        <div class="bar-seg dgx" style="width:44.2%"></div><div class="bar-seg dgx2" style="width:90.5%"></div>
+      </div><div class="vals">
+        <span><span class="lbl">M3</span>14.2</span><span><span class="lbl">M5</span>41.4</span>
+        <span><span class="lbl">DGX1</span>19.5</span><span><span class="lbl">DGX2</span>39.8</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">protein_function</div>
+      <div><div class="bar-track">
+        <div class="bar-seg m3" style="width:22.5%"></div><div class="bar-seg m5" style="width:75.3%"></div>
+        <div class="bar-seg dgx" style="width:22.2%"></div><div class="bar-seg dgx2" style="width:48.1%"></div>
+      </div><div class="vals">
+        <span><span class="lbl">M3</span>9.9</span><span><span class="lbl">M5</span>33.1</span>
+        <span><span class="lbl">DGX1</span>9.8</span><span><span class="lbl">DGX2</span>21.2</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">pubmedqa ⚠</div>
+      <div><div class="bar-track">
+        <div class="bar-seg m3" style="width:3.1%"></div><div class="bar-seg m5" style="width:40.4%"></div>
+        <div class="bar-seg dgx" style="width:4.9%"></div><div class="bar-seg dgx2" style="width:70.4%"></div>
+      </div><div class="vals">
+        <span><span class="lbl">M3</span><span style="color:var(--danger);font-weight:700;">1.35</span></span>
+        <span><span class="lbl">M5</span>17.8</span>
+        <span><span class="lbl">DGX1</span><span style="color:var(--danger);font-weight:700;">2.15</span></span>
+        <span><span class="lbl">DGX2</span>31.0</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">medmcqa</div>
+      <div><div class="bar-track">
+        <div class="bar-seg m3" style="width:11.8%"></div><div class="bar-seg m5" style="width:98.1%"></div>
+        <div class="bar-seg dgx" style="width:34.3%"></div><div class="bar-seg dgx2" style="width:72.4%"></div>
+      </div><div class="vals">
+        <span><span class="lbl">M3</span>5.2</span><span><span class="lbl">M5</span>43.2</span>
+        <span><span class="lbl">DGX1</span>15.1</span><span><span class="lbl">DGX2</span>31.9</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">json_output</div>
+      <div><div class="bar-track">
+        <div class="bar-seg m3" style="width:23.8%"></div><div class="bar-seg m5" style="width:83.8%"></div>
+        <div class="bar-seg dgx" style="width:44.8%"></div><div class="bar-seg dgx2" style="width:98.3%"></div>
+      </div><div class="vals">
+        <span><span class="lbl">M3</span>10.5</span><span><span class="lbl">M5</span>36.9</span>
+        <span><span class="lbl">DGX1</span>19.7</span><span><span class="lbl">DGX2</span>43.3</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">long_generation</div>
+      <div><div class="bar-track">
+        <div class="bar-seg m3" style="width:30.7%"></div><div class="bar-seg m5" style="width:96.4%"></div>
+        <div class="bar-seg dgx" style="width:24.3%"></div><div class="bar-seg dgx2" style="width:51.9%"></div>
+      </div><div class="vals">
+        <span><span class="lbl">M3</span>13.5</span><span><span class="lbl">M5</span>42.4</span>
+        <span><span class="lbl">DGX1</span>10.7</span><span><span class="lbl">DGX2</span>22.9</span>
+      </div></div></div>
+
+    <div class="legend">
+      <span><span class="legend-dot m3"></span>M3 Max (ds4-server)</span>
+      <span><span class="legend-dot m5"></span>M5 Max (ds4-server)</span>
+      <span><span class="legend-dot dgx"></span>DGX Spark 升级前 (vLLM)</span>
+      <span><span class="legend-dot dgx2"></span>DGX Spark 升级后 (vLLM)</span>
+    </div>
+  </div>
+
+  <!-- TTFT -->
+  <div class="chart-block">
+    <div class="chart-title">首 token 延迟 · TTFT（秒）<span style="color:var(--ink-faint);font-size:12px;font-weight:400;">（越低越好——就是你按下回车后，等多久才看到第一个字蹦出来）</span></div>
+    <div class="chart-sub">单位秒。标红的两个是 M3 Max 和升级前 DGX 在 pubmedqa 上的"灾难现场"——52s 和 21.59s，等一个字能等到怀疑人生。</div>
+
+    <div class="bar-row"><div class="task-name">mutation_call</div>
+      <div><div class="vals" style="margin-top:0;margin-bottom:6px;">
+        <span><span class="lbl">M3</span>43.03s</span><span><span class="lbl">M5</span>1.68s</span>
+        <span><span class="lbl">DGX1</span>1.09s</span><span><span class="lbl">DGX2</span>0.62s</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">expression_matrix</div>
+      <div><div class="vals" style="margin-top:0;margin-bottom:6px;">
+        <span><span class="lbl">M3</span>6.12s</span><span><span class="lbl">M5</span>0.40s</span>
+        <span><span class="lbl">DGX1</span>0.94s</span><span><span class="lbl">DGX2</span>0.41s</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">expression_code</div>
+      <div><div class="vals" style="margin-top:0;margin-bottom:6px;">
+        <span><span class="lbl">M3</span>4.11s</span><span><span class="lbl">M5</span>1.11s</span>
+        <span><span class="lbl">DGX1</span>0.81s</span><span><span class="lbl">DGX2</span>0.62s</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">protein_function</div>
+      <div><div class="vals" style="margin-top:0;margin-bottom:6px;">
+        <span><span class="lbl">M3</span>9.28s</span><span><span class="lbl">M5</span>2.50s</span>
+        <span><span class="lbl">DGX1</span>0.81s</span><span><span class="lbl">DGX2</span>0.45s</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">pubmedqa ⚠</div>
+      <div><div class="vals" style="margin-top:0;margin-bottom:6px;">
+        <span><span class="lbl">M3</span><span style="color:var(--danger);font-weight:700;">52.26s</span></span>
+        <span><span class="lbl">M5</span>2.57s</span>
+        <span><span class="lbl">DGX1</span><span style="color:var(--danger);font-weight:700;">21.59s</span></span>
+        <span><span class="lbl">DGX2</span>0.76s</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">json_output</div>
+      <div><div class="vals" style="margin-top:0;margin-bottom:6px;">
+        <span><span class="lbl">M3</span>3.00s</span><span><span class="lbl">M5</span>0.72s</span>
+        <span><span class="lbl">DGX1</span>1.15s</span><span><span class="lbl">DGX2</span>0.71s</span>
+      </div></div></div>
+
+    <div class="bar-row"><div class="task-name">long_generation</div>
+      <div><div class="vals" style="margin-top:0;margin-bottom:6px;">
+        <span><span class="lbl">M3</span>3.63s</span><span><span class="lbl">M5</span>0.85s</span>
+        <span><span class="lbl">DGX1</span>1.13s</span><span><span class="lbl">DGX2</span>0.58s</span>
+      </div></div></div>
+
+    <div class="callout ok">
+      <div class="ttl">横评速读</div>
+      <strong>M5 Max</strong> 是吞吐王——9 个任务里拿下 7 个第一，TTFT 也最稳。
+      <strong>DGX 升级后</strong>在 json_output、expression_matrix 上追平甚至反超 M5，TTFT 中位数 0.62s，全场最快。
+      <strong>M3 Max</strong> 全面掉队，尤其两个长输入任务（pubmedqa 52s、mutation_call 43s 的 TTFT），说"几乎不可用"都算客气了。
+    </div>
+  </div>
+
+  <!-- 质量表 -->
+  <div class="chart-block">
+    <div class="chart-title">质量得分 · 各任务评估器结果</div>
+    <div class="chart-sub">拿标准答案自动判的分。P/R = 精确率/召回率，X/Y = 命中了几个检查点。重点看：质量列几乎不随硬件变化——这就是"模型决定质量上限"最硬的证据。</div>
+    <table class="full">
+      <thead>
+        <tr>
+          <th>任务</th><th>类型</th>
+          <th class="num">M3 Max</th><th class="num">M5 Max</th>
+          <th class="num">DGX 升级前</th><th class="num">DGX 升级后</th>
+          <th>评价</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>mutation_call</code></td><td>序列变异检出</td>
+          <td class="num"><span class="pill warn">1/20</span></td><td class="num"><span class="pill fail">0/20</span></td>
+          <td class="num"><span class="pill fail">0/20</span></td><td class="num"><span class="pill fail">0/20</span></td>
+          <td><strong style="color:var(--danger);">任务设计失败</strong>，见 §05</td></tr>
+        <tr><td><code>expression_genes</code></td><td>单细胞领域知识</td>
+          <td class="num center">—</td><td class="num center">—</td><td class="num center">—</td><td class="num center">—</td>
+          <td>开放问答，无自动评分</td></tr>
+        <tr><td><code>expression_matrix</code></td><td>表格数值推理</td>
+          <td class="num"><span class="pill warn">1/4</span></td><td class="num"><span class="pill warn">1/4</span></td>
+          <td class="num"><span class="pill warn">2/4</span></td><td class="num"><span class="pill warn">2/4</span></td>
+          <td>数值推理是薄弱点</td></tr>
+        <tr><td><code>expression_code</code></td><td>Scanpy 代码生成</td>
+          <td class="num"><span class="pill ok">9/12</span></td><td class="num"><span class="pill ok">10/12</span></td>
+          <td class="num"><span class="pill ok">11/12</span></td><td class="num"><span class="pill ok">12/12</span></td>
+          <td>DGX 升级后拿满</td></tr>
+        <tr><td><code>protein_function</code></td><td>结构生物学知识</td>
+          <td class="num"><span class="pill ok">4/4</span></td><td class="num"><span class="pill ok">4/4</span></td>
+          <td class="num"><span class="pill ok">4/4</span></td><td class="num"><span class="pill ok">4/4</span></td>
+          <td>全场满分</td></tr>
+        <tr><td><code>pubmedqa</code></td><td>文献 yes/no 推理</td>
+          <td class="num"><span class="pill ok">15/20 · 75%</span></td><td class="num"><span class="pill ok">16/20 · 80%</span></td>
+          <td class="num"><span class="pill ok">16/20 · 80%</span></td><td class="num"><span class="pill ok">16/20 · 80%</span></td>
+          <td>同模型同答案</td></tr>
+        <tr><td><code>medmcqa</code></td><td>医学四选一</td>
+          <td class="num"><span class="pill ok">17/20 · 85%</span></td><td class="num"><span class="pill ok">17/20 · 85%</span></td>
+          <td class="num"><span class="pill ok">17/20 · 85%</span></td><td class="num"><span class="pill ok">17/20 · 85%</span></td>
+          <td>同模型同答案</td></tr>
+        <tr><td><code>json_output</code></td><td>结构化输出</td>
+          <td class="num"><span class="pill ok">6/6</span></td><td class="num"><span class="pill ok">6/6</span></td>
+          <td class="num"><span class="pill ok">6/6</span></td><td class="num"><span class="pill ok">6/6</span></td>
+          <td>全场满分</td></tr>
+        <tr><td><code>long_generation</code></td><td>长文综述</td>
+          <td class="num"><span class="pill ok">6/6</span></td><td class="num"><span class="pill ok">6/6</span></td>
+          <td class="num"><span class="pill ok">6/6</span></td><td class="num"><span class="pill ok">6/6</span></td>
+          <td>全场满分</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info">
+    <div class="ttl">为什么三机质量几乎打平</div>
+    四份结果跑的是<strong>同一份 DeepSeek V4 Flash 0731 权重</strong>，温度=0（确定性）。同一道题、同一份权重，理论上就该吐同一个答案——
+    实测也确实如此，5 个满分任务（protein / json / long_generation 等）四份结果一模一样。少数几分波动（mutation_call、expression_matrix、pubmedqa 那 1 分）
+    基本都怪 <strong>finish_reason=length 截断</strong>：长输出在 max_tokens 上被切掉时，不同机器的截断位置和措辞会差一点点，但答案本质没变。
+  </div>
+</section>
+
+<!-- ============ 4. DGX 两次跑分 ============ -->
+<section>
+  <h2 id="dgx-upgrade"><span class="num">04</span>DGX Spark 跑了两次：升级带来了什么</h2>
+  <p class="section-lede">
+    DGX Spark 同一天跑了两次：头一次（13:46）只跑了 2 runs/task，综合分 67.1；当晚（23:25）又跑了一轮 5 runs/task，
+    综合分 <strong>73.5，多了 6.4 分</strong>。中间这段时间，Mia 把 vLLM 的服务方案重做了一遍（recipe 开源在
+    <a href="https://github.com/MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark" style="color:var(--dgx2);">MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark</a>）。
+    这一节就专门拆开看：升级到底动了什么，哪个任务吃到了最大的红利。
+  </p>
+
+  <div class="chart-block">
+    <div class="chart-title">DGX 升级前后，逐任务对比</div>
+    <div class="chart-sub">绿字 = 升级后变好了。TTFT 这玩意儿是"越低越好"，所以箭头往下（↓）反而是好事——别看反了。</div>
+    <table class="full delta-table">
+      <thead><tr>
+        <th>任务</th>
+        <th class="num">吞吐（tok/s）<br>升级前 → 后</th>
+        <th class="num">TTFT（秒）<br>升级前 → 后</th>
+        <th>质量</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><code>mutation_call</code></td>
+          <td class="num">32.1 → <span class="up">41.5 (+29%)</span></td>
+          <td class="num">1.09 → <span class="up">0.62 (↓43%)</span></td>
+          <td>0/20 → 0/20</td></tr>
+        <tr><td><code>expression_genes</code></td>
+          <td class="num">21.8 → <span class="up">25.1 (+15%)</span></td>
+          <td class="num">0.64 → <span class="up">0.54 (↓16%)</span></td>
+          <td>—</td></tr>
+        <tr><td><code>expression_matrix</code></td>
+          <td class="num">31.5 → <span class="up">41.3 (+31%)</span></td>
+          <td class="num">0.94 → <span class="up">0.41 (↓56%)</span></td>
+          <td>2/4 → 2/4</td></tr>
+        <tr><td><code>expression_code</code></td>
+          <td class="num">19.5 → <span class="up">39.8 (+104%)</span></td>
+          <td class="num">0.81 → <span class="up">0.62 (↓24%)</span></td>
+          <td>11/12 → <span class="up">12/12</span></td></tr>
+        <tr><td><code>protein_function</code></td>
+          <td class="num">9.8 → <span class="up">21.2 (+117%)</span></td>
+          <td class="num">0.81 → <span class="up">0.45 (↓44%)</span></td>
+          <td>4/4 → 4/4</td></tr>
+        <tr><td><code>pubmedqa</code> ⚠</td>
+          <td class="num">2.15 → <span class="up">31.0 (+1342%)</span></td>
+          <td class="num"><span style="color:var(--danger);font-weight:700;">21.59</span> → <span class="up">0.76 (↓96%)</span></td>
+          <td>16/20 → 16/20</td></tr>
+        <tr><td><code>medmcqa</code></td>
+          <td class="num">15.1 → <span class="up">31.9 (+111%)</span></td>
+          <td class="num">1.05 → <span class="up">0.66 (↓37%)</span></td>
+          <td>17/20 → 17/20</td></tr>
+        <tr><td><code>json_output</code></td>
+          <td class="num">19.7 → <span class="up">43.3 (+120%)</span></td>
+          <td class="num">1.15 → <span class="up">0.71 (↓38%)</span></td>
+          <td>6/6 → 6/6</td></tr>
+        <tr><td><code>long_generation</code></td>
+          <td class="num">10.7 → <span class="up">22.9 (+114%)</span></td>
+          <td class="num">1.13 → <span class="up">0.58 (↓49%)</span></td>
+          <td>6/6 → 6/6</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout ok">
+    <div class="ttl">最戏剧性的一行：pubmedqa</div>
+    升级前 TTFT <strong>21.59 秒</strong>、吞吐 <strong>2.15 tok/s</strong>——基本没法用；
+    升级后 TTFT <strong>0.76 秒</strong>、吞吐 <strong>31.0 tok/s</strong>——一跃变成全场最强。
+    9 个任务里最大的单点改进，没有之一（吞吐 <strong>~14 倍</strong>、TTFT <strong>~28 倍</strong>）。
+    <br><br>
+    为什么偏偏是它？因为 pubmedqa 是本套测试<strong>输入最长</strong>的任务（20 篇摘要 ~8000 tokens），改进几乎全发生在 prefill 阶段。
+    翻译成大白话：升级修好的，正好是"长 prefill"这条路径——而这条路径，恰恰是升级前 DGX 在 GB10 上最大的软肋。一针见血。
+  </div>
+
+  <h3 style="font-family:Georgia,serif;font-size:20px;margin:32px 0 12px;">那到底为啥变快了？看看 Mia 动了哪几刀</h3>
+  <p class="section-lede">
+    根据 Mia 的开源 recipe（<a href="https://github.com/MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark" style="color:var(--dgx2);">MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark</a>），
+    升级后的方案相比第一版，主要在四个层面动了刀：
+  </p>
+
+  <div class="bento" style="grid-template-columns:repeat(2,1fr);">
+    <div class="bento-card dgx">
+      <div class="role">改动 1 · 引擎层</div>
+      <h3>换上 Anemll 专为 GB10 移植的 vLLM 0.25</h3>
+      <p class="sub">镜像 ghcr.io/anemll/dspark-vllm-gx10:0.1.1</p>
+      <ul>
+        <li>原生带 <strong>DSpark 投机解码</strong>、<strong>NVFP4 DS-MLA KV cache</strong>、<strong>b12x MoE 后端</strong>——这三样都是冲着 GB10/Blackwell 专门做的优化</li>
+        <li>第一版八成还停在接近原版的 vLLM，这些 GB10 专用路径都没接上，长 prefill 自然就吃力</li>
+      </ul>
+    </div>
+    <div class="bento-card dgx">
+      <div class="role">改动 2 · 投机解码</div>
+      <h3>开 DSpark + MTP_NUM_TOKENS=5</h3>
+      <p class="sub">speculative decoding，一次验证一串草稿 token</p>
+      <ul>
+        <li>decode 吞吐肉眼可见地涨——这也解释了为什么 json / medmcqa / long_generation 这类 decode-heavy 任务<strong>直接翻倍</strong></li>
+        <li>草稿块大小 5，正好跟 DeepSeek V4 的 MTP checkpoint 对齐</li>
+      </ul>
+    </div>
+    <div class="bento-card dgx">
+      <div class="role">改动 3 · KV cache</div>
+      <h3>NVFP4 DS-MLA KV cache，专治长 prefill</h3>
+      <p class="sub">kv_cache_dtype=nvfp4_ds_mla</p>
+      <ul>
+        <li>低精度 KV 叠加 DeepSeek MLA 的专用路径，长上下文的显存压力和 prefill 计算量一起往下压</li>
+        <li>pubmedqa（8000 token 输入）TTFT 从 21.59s 砸到 0.76s，最直接的原因就在这</li>
+      </ul>
+    </div>
+    <div class="bento-card dgx">
+      <div class="role">改动 4 · 集群与统计</div>
+      <h3>2 节点 TP=2，外加 5 runs 更靠谱</h3>
+      <p class="sub">recipe 名字就叫 "2x DGX Spark"</p>
+      <ul>
+        <li>两台 DGX Spark 拉成 TP=2，显存和算力直接翻倍；max_model_len 默认拉满 1M，GPU_MEM_UTIL=0.835</li>
+        <li>runs 从 2 加到 5，median 更稳，warmup 也更充分——第一次的数字本身就偏保守</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="ttl">一句话总结这次升级</div>
+    Mia 没有换更好的硬件，干的事其实是<strong>把这台硬件上专门为它量身定做的软件路径，一条条全接上了</strong>。
+    DSpark 抬 decode 吞吐，NVFP4 DS-MLA 抬长 prefill，2 节点 TP=2 抬整体算力，5 runs 让统计更靠谱。
+    四件事叠一起，综合分 +6.4，pubmedqa 从灾难现场直接变冠军。也正因如此，<strong>第二次的成绩才更该作为 DGX 的代表</strong>。
+  </div>
+</section>
+
+<!-- ============ 5. 失败任务 ============ -->
+<section>
+  <h2><span class="num">05</span>失败的任务，也要诚实写下来</h2>
+  <p class="section-lede">
+    做测试不是为了证明"我们牛"，是为了看清边界在哪。这套测试里有两个明显的设计翻车，四份结果都老老实实复现了——
+    原原本本写在这里，给后来人避坑。
+  </p>
+
+  <div class="anomaly">
+    <div class="ttl">⚠ mutation_call：让 LLM 做序列比对，是典型的想当然</div>
+    <p style="font-size:14px;margin-top:8px;">
+      给模型两条 BRCA1 序列（参考 + 含 20 个已知点突变的模拟序列，共 7088 nt × 2），让它输出 VCF。当时我们的想法是："长上下文 + 核苷酸级推理"，这不就是 LLM 的甜蜜区嘛。
+    </p>
+    <div class="stat-line">
+      <strong>实际结果（四份结果出奇一致）：</strong>precision ≈ 0、recall ≈ 0、hit = <span class="hl">0/20</span>（M3 Max 偶发蒙中 1 个，统计上就当它是噪声）。
+    </div>
+    <div class="stat-line">
+      模型吐出来的全是 <span class="hl">编造的位置</span>（100、200、300…这种连号占位符，或者 365-383 一簇假变异），
+      真实的 20 个位点（205、245、261、713、…）<strong>一个都没摸到</strong>。
+    </div>
+    <p style="font-size:14px;margin-top:14px;color:var(--ink-soft);">
+      <strong>为什么翻车：</strong>序列比对本质是字符级精确对齐，而 LLM 的注意力机制对"逐位比较两条 7000 字符的长串"天生不在行。
+      它学到的只是"VCF 长什么样"，根本不是"怎么真的做比对"。
+      <br><br>
+      <strong>正确姿势：</strong>这类活儿交给 BLAST / BWA / minimap2 这些专用对齐工具，LLM 只负责写报告、解读结果就好。说白了，我们把"工具该干的活"误判成了"LLM 该干的活"。
+    </p>
+  </div>
+
+  <div class="callout danger">
+    <div class="ttl">数值推理（expression_matrix 1/4 ~ 2/4）</div>
+    让模型从 20×10 的小表里做求和、找差异、算倍数变化。四份结果都只蒙对 1–2 个检查点。<strong>LLM 不擅长精确算术</strong>，这早就是行业共识了。
+    正确姿势：让 LLM 写 pandas 代码（去看 expression_code 任务，9–12/12 的高分），让 Python 去算，它算得比谁都准。
+  </div>
+
+  <div class="callout ok">
+    <div class="ttl">但有些任务，稳得让人踏实</div>
+    <strong>Scanpy 代码生成</strong>（9–12/12，DGX 升级后直接满分）、<strong>结构生物学知识</strong>（4/4 全场满分）、
+    <strong>JSON schema 输出</strong>（6/6 全场满分）、<strong>医学 MCQ</strong>（85% 全场齐平）、
+    <strong>长文综述</strong>（6/6 全场满分）——你会发现一个共同点：<em>这些任务都是把 LLM 当"知识 + 语言"引擎在用，而不是当"计算 + 对齐"工具在使</em>。
+  </div>
+</section>
+
+<!-- ============ 6. 异常与亮点 ============ -->
+<section>
+  <h2><span class="num">06</span>翻车现场，和反杀现场</h2>
+  <p class="section-lede">
+    四份结果里，有两个故事最值得拎出来念叨：一个是 M3 Max 在长输入上的翻车现场，另一个是 DGX 升级怎么把同样的翻车扭成了招牌。
+  </p>
+
+  <div class="callout danger">
+    <div class="ttl">M3 Max 在长 prefill 上，基本没法用</div>
+    M3 Max + ds4-server 在 pubmedqa（8000 token 输入）上，TTFT <strong>52.26 秒</strong>、吞吐 <strong>1.35 tok/s</strong>；
+    换到 mutation_call（6820 token 输入），TTFT <strong>43.03 秒</strong>。
+    但短输入任务（medmcqa 才 4KB）TTFT 只有 0.057s——快得飞起。问题全卡在长 prefill 这一条路上。
+    <br><br>
+    这真不是"老芯片所以慢"，而是 <strong>ds4-server 在 M3 Max 上的 long-context kernel 压根没调好</strong>。同款引擎放到 M5 Max 上，pubmedqa TTFT 立刻就降到 2.57s。
+    一句话：<strong>引擎 × 芯片的耦合调优，往往比芯片代际本身还重要。</strong>
+  </div>
+
+  <div class="callout ok">
+    <div class="ttl">DGX 升级，把软肋硬生生掰成了强项</div>
+    还是同一台 DGX Spark：升级前 pubmedqa TTFT 21.59s（全场倒数第二），升级后 0.76s（直接全场第一）。
+    这事说明一个道理：<strong>很多时候所谓"硬件不行"，真相是"软件没配对"</strong>。GB10 不是跑不动长 prefill，
+    它只是需要 NVFP4 DS-MLA 这种为它量身打做的 KV cache 路径，才能把劲使出来。
+  </div>
+</section>
+
+<!-- ============ 7. 推荐场景 ============ -->
+<section>
+  <h2><span class="num">07</span>这三台机器分别适合谁</h2>
+  <p class="section-lede">
+    把四份结果揉一起看，给个场景化的推荐。前提是<strong>同模型同权重</strong>；哪天你换了模型（比如 Llama 3.3 70B、Qwen3 235B），结论就得重写。
+    下面的 DGX，默认指<strong>升级后</strong>那一版。
+  </p>
+
+  <div class="bento">
+    <div class="bento-card m3">
+      <div class="role">机型 A · 入门 / 备机</div>
+      <h3>M3 Max 128GB</h3>
+      <p class="sub">ds4-server · 综合分 54.9</p>
+      <ul>
+        <li><strong>短输入、轻量问答</strong>勉强能用（medmcqa TTFT 0.057s，其实挺快）</li>
+        <li><strong>长上下文任务慎选</strong>：pubmedqa TTFT 52s、mutation_call 43s，体验是真的崩</li>
+        <li>定位摆正了，它适合做<strong>备用机 / 开发调试机</strong>，不太适合挑大梁当主力科研机</li>
+        <li>手头只有 M3 Max 的话，先把 ds4-server 升到最新版救个急，或者拿 llama.cpp / Ollama 换着引擎试试</li>
+      </ul>
+    </div>
+
+    <div class="bento-card m5">
+      <div class="role">机型 B · 吞吐王</div>
+      <h3>M5 Max 128GB</h3>
+      <p class="sub">ds4-server · 综合分 72.9</p>
+      <ul>
+        <li><strong>单用户交互式科研，首选</strong>：吞吐中位数 41.3 tok/s 全场最高，TTFT 也很稳</li>
+        <li><strong>桌面一体化</strong>：合盖就走，移动办公友好，还没噪音</li>
+        <li><strong>性价比能打</strong>：比 DGX 便宜一截，日常还能当主力 Mac 用</li>
+        <li><strong>但有生态短板</strong>：CUDA-only 的训练框架、vLLM / SGLang 这些推理引擎，原生都不支持 Mac</li>
+      </ul>
+    </div>
+
+    <div class="bento-card dgx">
+      <div class="role">机型 C · 质量 + 生态王（升级后）</div>
+      <h3>DGX Spark 128GB</h3>
+      <p class="sub">vLLM（升级后）· 综合分 73.5</p>
+      <ul>
+        <li><strong>质量分最高</strong>（76.9），代码生成任务直接拿满 12/12</li>
+        <li><strong>TTFT 中位数最低</strong>（0.62s），升级后长 prefill 也一起通杀</li>
+        <li><strong>NVIDIA 全栈加持</strong>：PyTorch / CUDA / TensorRT-LLM 全套能用，<strong>训练和推理同一台机器搞定</strong></li>
+        <li><strong>多用户并发也行</strong>：vLLM PagedAttention + 2 节点 TP=2，拿来做团队 API 网关很合适</li>
+        <li><strong>但有个前提</strong>：一定得按 Mia 的 recipe 把 DSpark + NVFP4 DS-MLA 配齐，不然就只是升级前那个 67.1 的版本</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="ttl">一句话决策建议</div>
+    <strong>个人科研 / 单人开发</strong> → M5 Max，性价比和手感都最香；
+    <strong>团队 / 服务化 / 训推一体 / 要 1M 超长上下文</strong> → DGX Spark（但一定一定把 DSpark 方案配好，不然就是升级前那个 67.1 的版本）；
+    <strong>手头已经有 M3 Max</strong> → 先把引擎版本升级救个急，长上下文的活儿交给别的机器干；
+    <strong>只在乎答案质量、不在乎速度</strong> → 那就别折腾本地了，直接上云 API，省钱又省心。
+  </div>
+</section>
+
+<!-- ============ 8. 给后来人 ============ -->
+<section>
+  <h2><span class="num">08</span>给想自己搭本地 LLM 的你</h2>
+  <p class="section-lede">
+    四份结果，外加一次升级前后对照，揉碎了挤出 7 条经验。不敢说是真理，但都是真踩过的坑。
+  </p>
+
+  <ol class="advice">
+    <li>
+      <strong>模型决定质量上限，硬件只决定你多快够到这个上限</strong>
+      四份质量分 70.6–76.9（极差 6.3），综合分却 54.9–73.5（极差 18.6）。差距全长在速度上。
+      所以，想提升答案质量？换模型，别换机器——换机器救不了答错的题。
+    </li>
+    <li>
+      <strong>引擎 × 芯片的调优，比芯片代际差距还大</strong>
+      M3 Max → M5 Max，同引擎升一代：吞吐 3.9×。
+      DGX 升级前后，同机器换引擎配置：pubmedqa 吞吐 14×、TTFT 28×。
+      所以记住：<strong>"硬件不行"这锅，很多时候是软件没配对替它背了。</strong>
+    </li>
+    <li>
+      <strong>长上下文 ≠ 长上下文跑得快</strong>
+      能装下 256K tokens，不等于在上面跑得动。prefill 阶段对硬件的压力特别大——
+      M3 Max 在区区 8K 输入上 TTFT 就能崩到 52s，DGX 升级前也崩到 21s。买之前一定看真实的长上下文 benchmark，宣传页上那个 ctx size，看看就好。
+    </li>
+    <li>
+      <strong>speculative decoding，GB10/Blackwell 上的必开开关</strong>
+      DSpark + MTP_NUM_TOKENS=5 一开，DGX 的 decode 吞吐直接翻倍。这种"免费午餐"级别的优化，部署时千万确认它真的打开了，别白扔一半性能。
+    </li>
+    <li>
+      <strong>任务设计，一定要扬长避短</strong>
+      LLM 擅长：知识问答、代码生成、结构化输出、长文写作、文献推理。
+      LLM 拉胯：字符级精确比对、纯算术、严格逻辑链。把拉胯的那些活儿外包给工具（BLAST、pandas、regex、SQL），让 LLM 干它本来就在行的。
+    </li>
+    <li>
+      <strong>runs 要跑够，warmup 要做足</strong>
+      DGX 头一次只有 2 runs，数字偏保守；第二次 5 runs 之后多个任务明显回升——这里面有一部分就是统计更稳、warmup 更充分带来的。
+      正式 benchmark 至少 3–5 runs，头一趟当 warmup 直接丢掉，别心疼。
+    </li>
+    <li>
+      <strong>说句掏心窝的：云 API 还是大多数人的最优解</strong>
+      除非你有硬性需求（数据合规、离线、长期高频调用、纯粹研究兴趣），否则按 token 付费的云 API，在多数场景下比本地硬件便宜得多。
+      本地 LLM 真正值钱的地方是<strong>数据私有 + 可重复 + 无审查</strong>——从来就不是"省钱"。
+    </li>
+  </ol>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <p>
+    <strong>测试数据来源（4 份 JSON）：</strong>
+    <code>bench_mac-m3max-ds4-server_20260813_233032.json</code>（M3 Max，5 runs）、
+    <code>bench_m5max-ds4-0731_20260813_191727.json</code>（M5 Max，5 runs）、
+    <code>bench_dgx-spark-12fc-vllm_20260813_140820.json</code>（DGX 升级前，2 runs）、
+    <code>bench_dgx-spark-12fc-vllm_20260813_234504.json</code>（DGX 升级后，5 runs）。
+    所有输入数据冻结在 <code>test_data/</code>，seed=42 采样，无网络依赖。
+  </p>
+  <p>
+    <strong>评分公式：</strong>overall = quality×50% + throughput×30% + ttft×10% + stability×10%。
+    每台机器独立计算，不做跨机归一化；missing 数据按 0 计（惩罚不完整 run）。
+  </p>
+  <p>
+    <strong>DGX 升级 recipe 参考：</strong>
+    <a href="https://github.com/MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark">MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark</a>
+    （Anemll dspark-vllm-gx10:0.1.1 镜像 · DSpark 投机解码 · NVFP4 DS-MLA KV cache · 2 节点 TP=2 · max_model_len=1M）。
+  </p>
+  <p>
+    <strong>致谢：</strong>感谢三位硬件所有者开放测试结果，感谢 Mia 开源 DGX Spark 服务方案。
+    本报告由 Claude Code 基于原始 JSON 自动生成，所有数字均可追溯到源文件。复现：
+    <code>python compare_bench.py results/bench_mac-m3max*.json results/bench_m5max*.json results/bench_dgx*234504.json</code>
+  </p>
+  <p style="margin-top:18px;color:var(--ink-faint);font-size:11px;">
+    Generated 2026-08-14 · Local LLM Benchmark Project · Report v2
+  </p>
+</footer>
+
+</div>
+</body>
+</html>

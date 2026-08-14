@@ -1,0 +1,17 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 打包/备份（项目早期归档，不入库）
+testLLM.zip
+*.zip
+
+# 本地临时输出（保留 results/ 里的正式产物）
+compare_*.png

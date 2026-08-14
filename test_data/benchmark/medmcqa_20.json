@@ -1,0 +1,262 @@
+[
+  {
+    "id": "6bd89605-daf0-43d9-bcfc-7f44847433a6",
+    "question": "'Potts puffy' tumour is:",
+    "options": {
+      "A": "A malignant tumour",
+      "B": "An extradural abscess",
+      "C": "A tumour or pituitary gland",
+      "D": "An adrenal gland tumour"
+    },
+    "answer": "B",
+    "subject": "Surgery",
+    "explanation": null
+  },
+  {
+    "id": "549d38f4-993a-4009-ae9c-c0a7638437e8",
+    "question": "What should be ideal depth of MTA for root end filling material?",
+    "options": {
+      "A": "1 mm",
+      "B": "3 mm",
+      "C": "5 mm",
+      "D": "7 mm"
+    },
+    "answer": "B",
+    "subject": "Dental",
+    "explanation": null
+  },
+  {
+    "id": "f4e1dbce-eb9d-441c-9e1a-6f81ae207faf",
+    "question": "The soft tissue tooth interface that forms after flap surgery in a previously denuded area is",
+    "options": {
+      "A": "Long junctional epithelium",
+      "B": "Collagen adhesion",
+      "C": "Scar tissue attachment",
+      "D": "Connective tissue attachment"
+    },
+    "answer": "A",
+    "subject": "Dental",
+    "explanation": null
+  },
+  {
+    "id": "1a4b278a-1f53-4306-ba5e-7b5e303120be",
+    "question": "A 25 yr old person with history of repeated episodes of rheumatic fever is hypersensitive to penicillin. Which of following drug can be prescribed to him?",
+    "options": {
+      "A": "Penicillin G",
+      "B": "Sulfisoxazole",
+      "C": "Sulfasalazine",
+      "D": "Streptomycin"
+    },
+    "answer": "B",
+    "subject": "Pharmacology",
+    "explanation": null
+  },
+  {
+    "id": "7374ee60-8858-43ae-9caa-506553cac5f6",
+    "question": "Time required for pre-oxygenation before tracheal intubation",
+    "options": {
+      "A": "3 min",
+      "B": "5 min",
+      "C": "2 min",
+      "D": "1 min"
+    },
+    "answer": "A",
+    "subject": "Anaesthesia",
+    "explanation": "Preoxygenation before intubation : Process of replacing nitrogen in the lungs with oxygen. Preoxygenation with tidal volume breathing of 3 mins is required before tracheal intubation. This delays the onset of critical hypoxia during the period of apnea by 5-8 minutes."
+  },
+  {
+    "id": "0447b9a2-22ec-449c-8a23-a52c28ac6b34",
+    "question": "Which of the following finding are there in iron deficiency anemia?",
+    "options": {
+      "A": "| TIBC, | Ferritin, | Transferrin saturation",
+      "B": "| TIBC, | Ferritin, | Transferrin saturation",
+      "C": "| TIBC, | Ferritin, | Transferrin saturation",
+      "D": "| TIBC, | Ferritin, | Transferrin saturation"
+    },
+    "answer": "A",
+    "subject": "Pathology",
+    "explanation": "The diagnosis of iron deficiency anemia ultimately rests on laboratory studies. The serum iron and ferritin are low, and the total plasma iron-binding capacity (reflecting elevated transferrin levels) is high. Low serum iron with increased ironbinding capacity results in a reduction of transferrin saturation to below 15%. Reduced iron stores inhibit hepcidin synthesis, and its serum levels fall."
+  },
+  {
+    "id": "7ea6d180-f468-404f-9ee3-0c68a55b7e51",
+    "question": "which one of the following shows 'Blueberry lips'?",
+    "options": {
+      "A": "MEN syndrome",
+      "B": "Cyanotic heart disease",
+      "C": "Albright syndrome",
+      "D": "Gardner syndrome"
+    },
+    "answer": "A",
+    "subject": "Pathology",
+    "explanation": null
+  },
+  {
+    "id": "91670015-d49a-46d1-9ca2-925f832c300e",
+    "question": "Square root of pq/n indicates:",
+    "options": {
+      "A": "Standard error of mean",
+      "B": "Standard error of difference of means",
+      "C": "Standard error of proportions",
+      "D": "Standard error of difference in proportions"
+    },
+    "answer": "C",
+    "subject": "Dental",
+    "explanation": null
+  },
+  {
+    "id": "bdc34663-b39a-47bb-b034-7f804e437c09",
+    "question": "A young male patient is on 5 mg haloperidol for many days, recently for last 4 days of duration he has inner restlessness and urges to move. Diagnosis is?",
+    "options": {
+      "A": "Akathisia",
+      "B": "Tardive dyskinesia",
+      "C": "Rabbit syndrome",
+      "D": "Acute Dystonia"
+    },
+    "answer": "A",
+    "subject": "Psychiatry",
+    "explanation": "Antipsychotic drugs Extrapyramidal symptoms- dur to D2 blockade in limbic system Extrapyramidal symptoms Clinical features Special DOC Acute dystonia Oculogyric crisis ocular muscles spasm and opisthotonos Toicollis Protrusion of tongue leading to laryngospasm grimacing Earliest to develop (days) Anticholinergic drugs Acute akathisia Constant purposeless involuntary movement from one place to another Most common EPS Days to week Propranolol Tardive dyskinesia chewing and sucking movements grimacing choreoathetoid movements-akathisia Seen after long(years) use of anti-psychotic Tetrabenazine Malignant neuroleptic syndrome Fluctuating level of consciousness hypehermia -muscles rigidity increase level of CPK Increase level of liver enzyme confusion - Diaphoresis Most common cause of death in this syndrome is acute renal failure Most serious side effect dantrolene DRUG induced parkinsonism Few weeks anticholinergics"
+  },
+  {
+    "id": "3aed5296-d2c0-4347-8804-d85234302675",
+    "question": "Child of an Overindulgent mother will be:",
+    "options": {
+      "A": "Shy, submissive.",
+      "B": "Aggressive, display temper tantrums.",
+      "C": "Evasive and dawdling.",
+      "D": "Disobedient."
+    },
+    "answer": "B",
+    "subject": "Dental",
+    "explanation": "Maternal attitude and child behaviour"
+  },
+  {
+    "id": "18f4759f-08b6-4600-b14c-27e86a1e7e38",
+    "question": "Obstructive sleep apnoea caused by the following",
+    "options": {
+      "A": "Mandibular ameloblasma",
+      "B": "Dentigerous cyst",
+      "C": "Orbital fracture",
+      "D": "Bilateral TMJ ankylosis"
+    },
+    "answer": "D",
+    "subject": "Surgery",
+    "explanation": null
+  },
+  {
+    "id": "ce006581-8574-4698-a860-c156bca0c8be",
+    "question": "What will be the 95% confidence interval (CI) for an estimated prevalence of 10% and a sample size of 100?",
+    "options": {
+      "A": "18-Feb",
+      "B": "16-Apr",
+      "C": "13-Jul",
+      "D": "Given data inadequate for calculation of class intervals."
+    },
+    "answer": "B",
+    "subject": "Social & Preventive Medicine",
+    "explanation": "Ans: B. 4-16"
+  },
+  {
+    "id": "41b7f0c0-744e-41fd-ae2b-13fc6a741347",
+    "question": "In a patient with heart disease, which of the following should not be used to control PPH:",
+    "options": {
+      "A": "Methylergometrine",
+      "B": "Oxytocin",
+      "C": "Misoprostol",
+      "D": "Carboprost"
+    },
+    "answer": "A",
+    "subject": "Gynaecology & Obstetrics",
+    "explanation": null
+  },
+  {
+    "id": "4df0486d-1aba-4df0-9a1f-fd86bb8acc9a",
+    "question": "Which of the following structure is not present on floor of third ventricle?",
+    "options": {
+      "A": "Optic stalk",
+      "B": "Third nerve",
+      "C": "Infundibulum",
+      "D": "Mammillary body"
+    },
+    "answer": "B",
+    "subject": "Anatomy",
+    "explanation": "Answer- B (Third nerve)The third nerve (Oculomotor) does not form the floor of the third ventricle although it lies in close relation to the floor.The anterior wall of the third ventricle is formed by Lamina terminalis, Anterior commissure, Anterior columns of the fornixThe posterior wall is formed by the Pineal body, Posterior commissure, Cerebral aqueduct.The roof is formed by Body of fornix and the ependyma lining the undersurface of the tela choroidea of the third ventricle.The floor of the third ventricle is formed by Optic chiasma, Tuber cinereum, Infundibulum, the Mammillary bodies, Posterior perforated substance, and Tegmentum of the midbrain. The lateral wall is formed by the Medial surface of the thalamus, Hypothalamus, and the Hypothalamic sulcus."
+  },
+  {
+    "id": "1bb2cc45-79b6-45f8-add8-e6832e5090f0",
+    "question": "For which of the following is PPV-23 is most beneficial:",
+    "options": {
+      "A": "Cystic fibrosis patient",
+      "B": "Sickle cell anemia patient",
+      "C": "Patient with recurrent rhinitis and sinusitis",
+      "D": "Child less than 2 years"
+    },
+    "answer": "B",
+    "subject": "Microbiology",
+    "explanation": "Repeated microinfarction can destroy tissues having micro vascular beds prone to sickling. Thus splenic function is frequently lost within 18-36 months of life causing susceptibility to infection paicularly by pneumococci. So ( PPV-23) polysaccharide pneumococcal vaccine is beneficial in sickle cell anemia."
+  },
+  {
+    "id": "bf4732f0-2a61-4911-8463-11e3bee37870",
+    "question": "The primary action of topical fluoride is a:",
+    "options": {
+      "A": "Conversion of hydroxyapatite to fluoroapatite",
+      "B": "Decrease in the plaque bacteria",
+      "C": "Form a reservoir in saliva",
+      "D": "Improve morphology of teeth"
+    },
+    "answer": "A",
+    "subject": "Dental",
+    "explanation": null
+  },
+  {
+    "id": "6004baf5-e4da-4d48-915d-e1bd251c936e",
+    "question": "In which of surgeries this retractor is commonly used.",
+    "options": {
+      "A": "LSCS",
+      "B": "Vaginal hysterectomy",
+      "C": "Fothergill repair",
+      "D": "Manchester operation"
+    },
+    "answer": "A",
+    "subject": "Gynaecology & Obstetrics",
+    "explanation": "Helps to retract the bladder so, you can enter in uterus Used in LSCS"
+  },
+  {
+    "id": "aa240af7-9a6c-44dd-ab9a-ecb2c4cb5c28",
+    "question": "Umblical cord contains:",
+    "options": {
+      "A": "3 arteries & 1 vein",
+      "B": "1 artery& 3 veins",
+      "C": "1 artery & 1 vein",
+      "D": "2 arteries & 1 vein"
+    },
+    "answer": "D",
+    "subject": "Anatomy",
+    "explanation": "A patent opening called the primitive umbilical ring exists on the ventral surface of the developing embryo through which three structures pass: the yolk sac (vitelline duct), connecting stalk, and allantois. The allantois is not functional in humans and degenerates to form the median umbilical ligament in the adult.\nAs the amnion expands, it pushes the vitelline duct, connecting stalk, and allantois together to form the primitive umbilical cord.\nThe definitive umbilical cord at term is pearl-white, 1–2 cm in  diameter,  50–60  cm  long, eccentrically  positioned,  and contains the right and left umbilical arteries, left umbilical vein, and mucus connective tissue (Wharton’s jelly).\nThe right and left umbilical arteries carry deoxygenated blood from the fetus to the placenta. The left umbilical vein carries oxygenated blood from the placenta to the fetus.\n\n\nKey Concept:\nUmblical cord contains the right and left umbilical arteries, left umbilical vein, and mucus connective tissue (Wharton’s jelly)."
+  },
+  {
+    "id": "65981270-0578-4774-8c79-e11a22df3497",
+    "question": "To prevent porosity in dental porcelain it should be\nbaked:",
+    "options": {
+      "A": "In presence of air",
+      "B": "In vacuum",
+      "C": "For long period",
+      "D": "Under pressure"
+    },
+    "answer": "B",
+    "subject": "Dental",
+    "explanation": "To prevent porosity in dental porcelain, it should be baked in vacuum."
+  },
+  {
+    "id": "ade05b67-b4f5-433b-8433-d74e009763cd",
+    "question": "Which of the following can be used to delay preterm contractions of uterus with best neurological outcome for the fetus?",
+    "options": {
+      "A": "Mgso4",
+      "B": "Nifidipine",
+      "C": "Ritodrine",
+      "D": "Isoxprine"
+    },
+    "answer": "A",
+    "subject": "Gynaecology & Obstetrics",
+    "explanation": "Ans. A.MgSo4Antenatal magnesium sulfate for both tocolysis and fetal neuroprotection in premature rupture of the membranes before 32 weeks' gestation. Other tocolytic drugs:Ritodrine, salbutamol and magnesium sulphate are tocolytic drugs used to terminate preterm labour and delivery.Other tocolytic drugs are isoxsuprine, indomethacin, calcium channel blockers, glyceryl trinitrate, atosiban and glyceryl trinitrate."
+  }
+]
