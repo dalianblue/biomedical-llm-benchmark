@@ -7,21 +7,25 @@
     LLM_API_URL=http://127.0.0.1:8000/v1  \
     LLM_MODEL=deepseek-v4-flash           \
     LLM_LABEL=mac-m5max-ds4               \
-    RUNS=3 python test_dgx.py
+    RUNS=5 python test_dgx.py
 
 可选环境变量：
     LLM_API_URL   OpenAI 兼容 API 根（默认 http://localhost:8000/v1）
     LLM_MODEL     模型 id（默认 deepseek-v4-flash）
     LLM_LABEL     本次运行的标签，写入结果文件名（默认 unknown）
-    RUNS          每个 task 重复次数，默认 3（首次额外 1 次预热）
+    RUNS          每个 task 重复次数，默认 5（首次额外 1 次预热）
     OUTPUT_DIR    结果输出目录（默认 ./results）
 
-5 个任务：
+9 个任务：
     1. mutation_call      BRCA1 ref/mut 全序列 → 找 20 个变异（有 ground truth）
     2. expression_genes   top500 基因名 + 统计 → CD8 T 细胞单细胞数据生物学解读
     3. expression_matrix  top20 基因 × 10 cells 子矩阵 → 表格数值推理
     4. expression_code    数据集描述 → 写 Scanpy 分析代码
     5. protein_function   p53 结合域 + 二级结构 → 功能推断
+    6. pubmedqa           20 篇摘要 → yes/no 文献推理（长 prefill 照妖镜）
+    7. medmcqa            20 道医学选择题 → 领域知识广度
+    8. json_output        5 个变异 → 指定 schema 的结构化输出
+    9. long_generation    PARP/BRCA 综述 → 压测持续 decode 吞吐
 """
 
 import json

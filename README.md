@@ -48,7 +48,7 @@ Three machines, two chip architectures, two inference engines — all running th
 - **DGX 升级前后的跃升来自软件，不是硬件。** Mia 升级后的 recipe 把 GB10 专用路径全接上了：Anemll 的 GB10 vLLM 0.25 移植版、DSpark 投机解码（`MTP_NUM_TOKENS=5`）、NVFP4 DS-MLA KV cache（修好长 prefill 的就是它——`pubmedqa` TTFT 21.59s → 0.76s）、外加 2 节点 TP=2。第 2 次跑分才是 DGX 的可信数字（5 runs 对 2 runs，warmup 更充分）。
 - **有两个任务是诚实的设计翻车。** `mutation_call`（所有机器 P=0 R=0——LLM 做不了字符级对齐，用 BLAST/BWA）和 `expression_matrix`（1–2/4——LLM 做不了精确算术，让它写 pandas）。其余 5 个任务全场满分。
 
-### 快速开始（单机，约 5 分钟）
+### 快速开始（单机，约 15–30 分钟）
 
 ```bash
 cd Local_LLM_test
@@ -66,9 +66,12 @@ LLM_API_URL=http://127.0.0.1:8000/v1  \
 LLM_MODEL=deepseek-v4-flash           \
 LLM_LABEL=mac-m5max-ds4-0731          \
 LLM_CONTEXT=256000                    \
-RUNS=3                                \
+RUNS=5                                \
 python test_dgx.py
 ```
+
+> `RUNS=5` 是脚本默认值，也是本仓库 4 份跑分用的设置（首次额外 1 次预热不计入）。
+> 只想冒烟测试可设 `RUNS=1`，约 5 分钟跑完。
 
 输出：
 ```
@@ -222,7 +225,7 @@ Local_LLM_test/
 
 ### 复现对比
 
-要让结果可比：用**同一个** `test_data/`；用**同一个** `RUNS`（默认 3 够，1 也行做快检）；在**安静的机器**上跑（关浏览器、无其它 GPU 任务）；让 warmup 跑完（别把第一次当卡死杀掉——冷启动 GPU 上首条 prompt 可能要 30–60s 做内核编译）；分享 **JSON**（不只是 PNG），它有完整每轮样本，同事能重画或自分析。
+要让结果可比：用**同一个** `test_data/`；用**同一个** `RUNS`（脚本默认 5，也是本仓库跑分用的值；只做冒烟测试可用 1）；在**安静的机器**上跑（关浏览器、无其它 GPU 任务）；让 warmup 跑完（别把第一次当卡死杀掉——冷启动 GPU 上首条 prompt 可能要 30–60s 做内核编译）；分享 **JSON**（不只是 PNG），它有完整每轮样本，同事能重画或自分析。
 
 ---
 
@@ -258,7 +261,7 @@ Overall score = `quality×50% + throughput×30% + ttft×10% + stability×10%`.
 - **The DGX before→after jump came from software, not hardware.** Mia's upgraded recipe wired up the GB10-specific paths: Anemll's GB10 vLLM 0.25 port, DSpark speculative decoding (`MTP_NUM_TOKENS=5`), NVFP4 DS-MLA KV cache (this is what fixed long prefill — `pubmedqa` TTFT 21.59s → 0.76s), and 2-node TP=2. The run-2 score is the trustworthy DGX number (5 runs vs 2, proper warmup).
 - **Two tasks were honest design failures.** `mutation_call` (P=0 R=0 on all machines — LLMs can't do character-level alignment, use BLAST/BWA) and `expression_matrix` (1–2/4 — LLMs can't do exact arithmetic, have them write pandas instead). Five other tasks scored full marks everywhere.
 
-### Quick start (single machine, ~5 min)
+### Quick start (single machine, ~15–30 min)
 
 ```bash
 cd Local_LLM_test
@@ -276,9 +279,12 @@ LLM_API_URL=http://127.0.0.1:8000/v1  \
 LLM_MODEL=deepseek-v4-flash           \
 LLM_LABEL=mac-m5max-ds4-0731          \
 LLM_CONTEXT=256000                    \
-RUNS=3                                \
+RUNS=5                                \
 python test_dgx.py
 ```
+
+> `RUNS=5` is the script default and what the 4 runs in this repo used (plus 1
+> warmup, not counted). For a smoke test set `RUNS=1` — finishes in ~5 min.
 
 Output:
 ```
@@ -496,7 +502,7 @@ so **no internet access is needed at benchmark time**.
 To make results comparable across machines:
 
 1. Use the **same** `test_data/` directory (this exact folder).
-2. Use the **same** `RUNS` (default 3 is fine; 1 is OK for a quick check).
+2. Use the **same** `RUNS` (the script default is 5, and what this repo's runs used; use 1 for a smoke test).
 3. Run on a **quiet machine** — close browsers, no other GPU jobs.
 4. Let the warmup finish (don't kill the first run thinking it's hung — first
    prompt can take 30-60 s on a cold GPU due to kernel compilation).
