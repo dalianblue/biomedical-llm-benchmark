@@ -803,26 +803,45 @@
   </div>
 
   <div class="callout info">
-    <div class="ttl">盲区二：DGX 的 1M 上下文优势，根本没机会出场</div>
-    这是讨论里最容易被误读的一点：M3/M5 是 256K 上下文，DGX 是 1M，可分数里完全看不出 DGX 的容量优势。
+    <div class="ttl">盲区二：DGX 的 1M 上下文优势，在这套单轮题里看不见——但它在别处是真的</div>
+    这是最容易被误读的一点：M3/M5 是 256K 上下文，DGX 是 1M，可分数里完全看不出 DGX 的容量优势。
     原因很直白——<strong>整套测试最长的一题，输入也才 ~8K tokens</strong>（pubmedqa，20 篇摘要）。
     <br><br>
     也就是说，最"重"的一题只用到 256K 的 3%、1M 的 0.8%。这就像"两个人分别能举 256 斤和 1000 斤，但你只让他们举 8 斤"——看不出谁更强。
     <br><br>
     还要分清一件事：<strong>上下文容量是"容量能力"，不是"速度能力"</strong>。装得下 1M，不代表在 8K 上跑得更快。小上下文的速度由算力和 kernel 决定，跟容量上限没关系。
-    1M 的优势<strong>只在真正喂 &gt;256K 的时候才兑现</strong>——那一刻 M3/M5 要么直接超长报错、要么被迫截断，DGX 还能继续工作。这才是"降维打击"该有的场面。
     <br><br>
     顺带一提：DGX 能上 1M，靠的就是前文说的 <strong>NVFP4 DS-MLA KV cache</strong>——低精度 KV 把显存压下来，1M 才塞得进 128GB。
     换句话说，<strong>1M 这个能力本身就是那次 vLLM 升级的下游红利</strong>，和 §04 是同一个软件栈的产物。
+  </div>
+
+  <div class="callout ok">
+    <div class="ttl">那 1M 到底在哪儿发光？答案是：多轮长 agent</div>
+    这套题全是<strong>单轮单题</strong>，所以 1M 没机会。但换个场景——agent 式的长链路（多轮工具调用、不断检索累加、草稿在上下文里反复改）——KV cache 是<strong>逐轮增长</strong>的。256K 在几十轮后就会撞墙，1M 给你 4 倍的"不打理内存也能一直跑"的余量。
     <br><br>
-    <strong>想让 1M 显形：</strong>加一道真正吃上下文的题就行——整段基因组 in-context（轻松 100K+ tokens）、大单细胞矩阵原样喂进去（几十万 token）、20–50 篇论文<strong>全文</strong>（不是摘要）跨篇提问。任何一题越过 256K，M3/M5 会 OOM 或截断，DGX 独立完成，差距立刻变断崖。
+    所以更准确的说法是：<strong>1M 是个"省心余量"层面的优势，不是"能力解锁"</strong>。M5 Max 同样能跑长 agent，只是得到处自己管理上下文（落盘、检索、裁剪）；DGX 让你更晚才需要操心这事。对几十轮的深度科研 agent、代码 agent，DGX 体验上确实更顺——这是这套单轮测试<strong>完全测不到、但真实存在</strong>的红利。
+  </div>
+
+  <div class="callout danger">
+    <div class="ttl">顺手破一个误会："256K 写不了万字综述"</div>
+    这话听着合理，其实<strong>把两个独立限制混成一个了</strong>。万字综述是<strong>输出长度</strong>问题，归"单次 max_tokens 上限"管，不归上下文窗口管：
+    <ul>
+      <li><strong>上下文窗口</strong>：管输入 + 累积上下文能装多少（M5=256K，DGX=1M）。</li>
+      <li><strong>单次 max_tokens</strong>：管一次能吐多少字——取决于模型/引擎配置，<strong>两台机器一样</strong>（DeepSeek V4 Flash 一般配 ~8K 输出，约 5000–6000 中文字）。</li>
+    </ul>
+    万字中文 ≈ 1.2–1.5 万 tokens 的<strong>输出</strong>，这个天花板 DGX 也一样顶，跟 256K 没关系。256K 的输入/累积空间，对一篇万字综述的素材 + 草稿绰绰有余。
+    <br><br>
+    <strong>M5 Max 写万字综述的几种正经办法（DGX 也得用一样的招）：</strong>先大纲后分节（逐节生成、每次压在 max_tokens 内、再拼接）、map-reduce（每篇资料先各自摘要再综合）、多轮迭代 + 草稿落盘（每轮只把"当前要改的那节 + 相关素材"喂回去，上下文永远装不满）、续写模式（上段输出当输入接着写）。单次吐不完就<strong>分段生成 + 上下文里累积</strong>，所有机器通用。
+    <br><br>
+    一句话：<strong>万字综述是输出上限卡住的，不是 256K 卡住的，DGX 在这上没占便宜</strong>。1M 真正发光的地方是上一段说的多轮长 agent，不是单篇长输出。
   </div>
 
   <div class="callout">
-    <div class="ttl">一句话总结这两个盲区</div>
+    <div class="ttl">一句话总结这几个盲区</div>
     <strong>量化差别</strong>测不出，是因为任务不够挑剔、样本太小，且变量被硬件裹住；
-    <strong>1M 上下文</strong>测不出，是因为最长的题才 8K，没一道越过 256K 去逼它亮底牌。
-    两个都是"测试设计的覆盖问题"，不是"硬件没差别"。<em>别拿这套数据去回答它没问的问题。</em>
+    <strong>1M 上下文</strong>在单轮题里测不出（最长才 8K），但它在<strong>多轮长 agent</strong> 里是真红利——是"省心余量"，不是"能力解锁"；
+    而<strong>"256K 写不了万字综述"是误解</strong>——那是单次输出上限的事，两机一样卡，分段写法通吃。
+    归根结底，这些是"测试设计的覆盖问题"，不是"硬件没差别"。<em>别拿这套数据去回答它没问的问题。</em>
   </div>
 </section>
 
@@ -868,6 +887,7 @@
         <li><strong>TTFT 中位数最低</strong>（0.62s），升级后长 prefill 也一起通杀</li>
         <li><strong>NVIDIA 全栈加持</strong>：PyTorch / CUDA / TensorRT-LLM 全套能用，<strong>训练和推理同一台机器搞定</strong></li>
         <li><strong>多用户并发也行</strong>：vLLM PagedAttention + 2 节点 TP=2，拿来做团队 API 网关很合适</li>
+        <li><strong>多轮长 agent 的省心王</strong>：1M 上下文（M3/M5 只有 256K），跑几十轮的深度科研/代码 agent 时不用频繁手动裁剪上下文——这套单轮测试没体现，但真实存在（见 §07）</li>
         <li><strong>但有个前提</strong>：一定得按 Mia 的 recipe 把 DSpark + NVFP4 DS-MLA 配齐，不然就只是升级前那个 67.1 的版本</li>
       </ul>
     </div>
