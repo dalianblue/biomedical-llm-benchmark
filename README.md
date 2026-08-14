@@ -221,6 +221,22 @@ Local_LLM_test/
 
 要让结果可比：用**同一个** `test_data/`；用**同一个** `RUNS`（脚本默认 5，也是本仓库跑分用的值；只做冒烟测试可用 1）；在**安静的机器**上跑（关浏览器、无其它 GPU 任务）；让 warmup 跑完（别把第一次当卡死杀掉——冷启动 GPU 上首条 prompt 可能要 30–60s 做内核编译）；分享 **JSON**（不只是 PNG），它有完整每轮样本，同事能重画或自分析。
 
+### 扩展方向
+
+这套测试的盲区（见上文「已知限制」和报告 §07）大多是**任务覆盖**问题，不是硬件没差别。下面几条都能套进现有的 `task_*` builder + evaluator + `TASKS` 注册结构：
+
+| 扩展 | 补哪个盲区 | 怎么落地 | 难度 |
+|------|------------|----------|------|
+| **长上下文任务（输入 >256K）** | DGX 的 1M 优势在单轮题里看不见 | PubMedQA 从 20 篇摘要扩到 200 篇（同源多采样），单 prompt 直奔 ~80–100K；或塞一份长临床指南全文。越过 256K 那刻 M3/M5 OOM/截断，DGX 独立完成。 | 低 |
+| **多轮 agent 循环** | 1M 真正发光的地方（跨轮 KV 累积），现有题全单轮 | 固定 N 轮对话（每轮加子任务 + 结果留上下文），测末轮质量 + 几轮开始退化。需加 turn 调度器。 | 高 |
+| **QA 扩到 200+ 题** | 20 题统计力不够，量化差验不出 | 编辑 `test_data/benchmark/*.json` 扩容（同 seed 流程），误差棒立刻收紧。 | 极低 |
+| **精确召回任务** | 量化精度（Q2/FP4/FP8）分离不出 | 给含药名/剂量/位点的短文，让它逐字复述，按字符串命中计分。低位量化在此退化明显。 | 低 |
+| **量化对照模式** | 把量化从硬件里解耦 | 给 `test_dgx.py` 加个 `LLM_QUANT` 标签字段（只记录不改逻辑），同机分别跑 fp8 / awq-q2 / nvfp4 再横评。变量终于控住。 | 低 |
+| **工具调用任务** | 不测 function-calling 语义 | 给 mock 工具 schema（BLAST / pandas_eval），让它选对工具 + 参数，按正确性计分。`json_output` 是其雏形。 | 中 |
+| **温度扫描** | 温度固定 0，不测稳定性 | 外层加 `for temperature in [0, 0.3, 0.7]`，看跨温度方差。 | 低 |
+
+**建议优先级**：先做"QA 扩到 200+"和"长上下文 >256K"——前者零成本收紧统计，后者直接补最大盲区。多轮 agent 价值最大但工程量也最大，放后期。量化对照想做得先加 `LLM_QUANT` 标签，几乎零成本。
+
 ---
 
 ## English version
@@ -498,6 +514,24 @@ To make results comparable across machines:
    prompt can take 30-60 s on a cold GPU due to kernel compilation).
 5. Share the **JSON** (not just the PNG) — it has the full per-run samples,
    so colleagues can re-plot or do their own analysis.
+
+### Roadmap
+
+The blind spots above (see "Known limitations" and report §07) are mostly
+**task coverage** gaps, not "no hardware difference". These extensions all fit
+the existing `task_*` builder + evaluator + `TASKS` registry:
+
+| Extension | Closes which blind spot | How to land | Effort |
+|-----------|-------------------------|-------------|--------|
+| **Long-context task (>256K input)** | DGX's 1M edge invisible in single-turn tasks | Scale PubMedQA from 20 to 200 abstracts (same source, more sampling) → ~80–100K per prompt; or inline a long clinical guideline. Past 256K, M3/M5 OOM/truncate and DGX finishes alone. | Low |
+| **Multi-turn agent loop** | Where 1M truly shines (KV accumulates across turns); every task here is single-turn | Fix an N-turn script (each turn adds a sub-task + keeps its result in context), score the final output + track at which turn it degrades. Needs a turn harness. | High |
+| **Scale QA to 200+ questions** | 20 Qs lack statistical power; quantization gaps undetectable | Edit `test_data/benchmark/*.json` (same seed pipeline). Error bars tighten immediately. | Trivial |
+| **Verbatim-recall task** | Quantization (Q2/FP4/FP8) can't be isolated | Give a passage with drug names/doses/positions, ask verbatim repeat, score exact-string hits. Low-bit quant degrades this visibly. | Low |
+| **Quantization A/B mode** | Decouple quantization from hardware | Add an `LLM_QUANT` label field to `test_dgx.py` (recording only, no logic change); run fp8 / awq-q2 / nvfp4 on the same machine and compare. Variable finally controlled. | Low |
+| **Tool-calling task** | function-calling semantics untested | Provide mock tool schemas (BLAST / pandas_eval), have it pick the right tool + args, score correctness. `json_output` is its prototype. | Medium |
+| **Temperature sweep** | Temperature fixed at 0, no stability across temps | Wrap a `for temperature in [0, 0.3, 0.7]` loop, measure cross-temp variance. | Low |
+
+**Suggested priority**: do "QA → 200+" and "long-context >256K" first — one tightens stats for free, the other closes the biggest blind spot (the 1M edge). Multi-turn agent is the most valuable but heaviest; defer. The quantization A/B costs almost nothing if you just add the `LLM_QUANT` label.
 
 ---
 
