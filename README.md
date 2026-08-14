@@ -47,6 +47,7 @@ Three machines, two chip architectures, two inference engines — all running th
 - **长上下文 ≠ 长上下文跑得快。** 能装下 256K，不等于跑得动。M3 Max 在 8K 输入上 TTFT 飙到 52s；DGX（升级前）21s。买之前看真实长上下文 benchmark，别只看宣传的 ctx size。
 - **DGX 升级前后的跃升来自软件，不是硬件。** Mia 升级后的 recipe 把 GB10 专用路径全接上了：Anemll 的 GB10 vLLM 0.25 移植版、DSpark 投机解码（`MTP_NUM_TOKENS=5`）、NVFP4 DS-MLA KV cache（修好长 prefill 的就是它——`pubmedqa` TTFT 21.59s → 0.76s）、外加 2 节点 TP=2。第 2 次跑分才是 DGX 的可信数字（5 runs 对 2 runs，warmup 更充分）。
 - **有两个任务是诚实的设计翻车。** `mutation_call`（所有机器 P=0 R=0——LLM 做不了字符级对齐，用 BLAST/BWA）和 `expression_matrix`（1–2/4——LLM 做不了精确算术，让它写 pandas）。其余 5 个任务全场满分。
+- **UX 视角：交互式科研里 TTFT 的体感权重比分数里的 10% 更高。** 综合分把 TTFT 压到 10% 是为了兼顾批量场景，但写代码、查文献这种交互探索，体感分水岭是 <1s 秒回 / 1–3s 能感觉到等 / >5s 打断思路。DGX 升级后 0.62s、M5 Max 0.85s 都在"秒回"区，M3 Max 6.12s 在"打断思路"区——所以**单人交互用，一个 TTFT 稳定 <1s 的机器比吞吐更高但首字要等的机器更舒服**，挑机器时建议在脑子里把 TTFT 权重往上抬一档。详见报告 §01。
 
 ### 快速开始（单机，约 15–30 分钟）
 
@@ -295,6 +296,7 @@ Overall score = `quality×50% + throughput×30% + ttft×10% + stability×10%`.
 - **Long context ≠ fast long context.** 256K context fits, doesn't mean it runs fast. M3 Max TTFT on an 8K-token input balloons to 52s; DGX (pre-upgrade) to 21s. Always check a real long-context benchmark, not the advertised ctx size.
 - **The DGX before→after jump came from software, not hardware.** Mia's upgraded recipe wired up the GB10-specific paths: Anemll's GB10 vLLM 0.25 port, DSpark speculative decoding (`MTP_NUM_TOKENS=5`), NVFP4 DS-MLA KV cache (this is what fixed long prefill — `pubmedqa` TTFT 21.59s → 0.76s), and 2-node TP=2. The run-2 score is the trustworthy DGX number (5 runs vs 2, proper warmup).
 - **Two tasks were honest design failures.** `mutation_call` (P=0 R=0 on all machines — LLMs can't do character-level alignment, use BLAST/BWA) and `expression_matrix` (1–2/4 — LLMs can't do exact arithmetic, have them write pandas instead). Five other tasks scored full marks everywhere.
+- **UX angle: in interactive research, TTFT's felt weight is higher than its 10% in the score.** The 10% is there to serve batch workloads, but for coding / lit lookup the bands that matter are <1s (instant) / 1–3s (noticeable) / >5s (breaks flow). DGX-upgraded (0.62s) and M5 Max (0.85s) sit in the instant zone; M3 Max (6.12s) is in the flow-breaking zone — so **for single-user interactive use, a sub-1s-TTFT machine beats one with higher throughput but a slower first token**. Mentally up-weight TTFT when picking a machine for interactive work. See report §01.
 
 ### Quick start (single machine, ~15–30 min)
 
