@@ -216,7 +216,9 @@ Local_LLM_test/
 - **不测工具调用 / agent loop**。测了 JSON 输出，但没测函数调用语义。
 - **成本/能耗未归一化**。`tok/s` 是裸吞吐；要比 `tok/s/$` 自己在环境快照里填硬件成本。
 - **盲区一：量化精度（Q2 / FP4 / FP8）分离不出来。** 每台机器跑各自引擎的默认量化（DGX=NVFP4，Mac=GGUF 低位量化），差异被硬件差异裹住，没法单独归因；而且任务不够"挑剔精度"——失败的是能力问题（FP16 也救不回），通过的答案不变（精度损失埋在噪声地板下），加上 20 题样本太小，量化差统计上验不出。想真测：同机同引擎只换量化 + perplexity/精确 token 召回类任务 + 样本 ≥500。详见报告 §07。
-- **盲区二：长上下文容量优势没机会出场。** 最长输入才 ~8K tokens（pubmedqa），用到 256K 的 3%、1M 的 0.8%——DGX 的 1M 上下文在这个量级下完全显不出来。容量是"装得下"不是"跑得快"，1M 优势只在喂 >256K 时才兑现。想让它显形：加一道 >256K 的任务（整基因组 / 大单细胞矩阵 / 论文全文 in-context），M3/M5 会 OOM，差距立刻变断崖。详见报告 §07。
+- **盲区二：长上下文容量优势没机会出场。** 最长输入才 ~8K tokens（pubmedqa），用到 256K 的 3%、1M 的 0.8%——DGX 的 1M 上下文在这套单轮题里完全显不出来。容量是"装得下"不是"跑得快"，1M 优势只在喂 >256K 时才兑现（加一道 >256K 的任务——整基因组 / 大单细胞矩阵 / 论文全文 in-context——M3/M5 会 OOM，差距立刻变断崖）。
+- **盲区二的另一半：1M 真正发光的地方是多轮长 agent。** 这套测试全是单轮单题，测不到；但在 agent 式长链路里（多轮工具调用、检索累加、草稿在上下文里反复改），KV cache 逐轮增长，256K 几十轮就撞墙，1M 给 4 倍"不打理内存也能一直跑"的余量。注意这是<strong>"省心余量"</strong>，不是"能力解锁"——M5 Max 同样能跑，只是要手动管理上下文。
+- **顺手破个误会："256K 写不了万字综述"。** 万字综述是**单次 max_tokens 输出上限**问题，不归上下文窗口管，<strong>两机一样卡</strong>（DeepSeek V4 Flash 一般 ~8K 输出 ≈ 5000–6000 中文字）。256K 的输入/累积空间对一篇万字综述的素材绰绰有余。M5 Max 写法：先大纲后分节、map-reduce、多轮迭代 + 草稿落盘、续写模式——分段生成 + 上下文累积，所有机器通用。详见报告 §07。
 
 ### 复现对比
 
@@ -470,10 +472,24 @@ so **no internet access is needed at benchmark time**.
   recall), ≥500 samples. See report §07.
 - **Blind spot 2: long-context capacity advantage never shows.** The longest
   input is ~8K tokens (pubmedqa) — 3% of 256K, 0.8% of 1M — so DGX's 1M context
-  is invisible at this scale. Capacity is "fits" not "fast"; the 1M edge only
-  materializes when you feed >256K. To expose it: add a >256K task (whole
-  genome / large single-cell matrix / full papers in-context) where M3/M5 OOM
-  and the gap becomes a cliff. See report §07.
+  is invisible in this single-turn suite. Capacity is "fits" not "fast"; the 1M
+  edge only materializes when you feed >256K (add a >256K task — whole genome /
+  large single-cell matrix / full papers in-context — and M3/M5 OOM, gap turns
+  into a cliff).
+- **The other half of blind spot 2: 1M truly shines in long multi-turn agents.**
+  Every task here is single-turn, so it's untested; but in long agent loops
+  (multi-turn tool calls, retrieval accumulation, in-context draft edits), KV
+  cache grows each turn — 256K hits the wall after a few dozen, 1M gives 4× the
+  "run without babysitting memory" headroom. Note this is a **convenience
+  headroom**, not a capability unlock — M5 Max can do the same work, just with
+  manual context management.
+- **Busting a myth: "256K can't write a 10k-word review."** A long review is a
+  **per-generation max_tokens output** problem, not a context-window problem,
+  and the cap is **identical on both machines** (DeepSeek V4 Flash ~8K output ≈
+  5000–6000 Chinese chars). 256K of input/accumulation is plenty for the source
+  material. M5 Max recipes: outline-then-section, map-reduce, multi-turn with
+  draft on disk, continuation mode — segmented generation + in-context
+  accumulation works on any machine. See report §07.
 
 ### Reproducing the comparison
 
