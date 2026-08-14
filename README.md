@@ -108,12 +108,10 @@ results/bench_<机器-引擎-模型>_YYYYMMDD_HHMMSS.png    # 一眼速览图
 ```
 Local_LLM_test/
 ├── README.md                          # 本文件（中英双语）
-├── test_dgx.py                        # ⚠ 主 HTTP 基准脚本，兼容任何
+├── test_dgx.py                        # ⚠ 主基准脚本（HTTP），兼容任何
 │                                      #   OpenAI 服务（ds4-server / vLLM /
 │                                      #   llama.cpp / Ollama …）——名字虽叫
 │                                      #   dgx，但并非 DGX 专用
-├── test_mac.py                        # CLI 变体，subprocess 调 ds4 二进制，
-│                                      #   无 HTTP，只跑 1 个任务
 ├── compare_bench.py                   # 多机对比图生成器
 ├── test_data/                         # 所有测试输入（冻结，~3.4 MB）
 │   ├── README.md                      # 数据来源与出处
@@ -155,7 +153,7 @@ Local_LLM_test/
 | 8 | `json_output` | ~625 B（5 个已知变异） | 结构化输出可靠性 | 6 项 schema/正确性检查 |
 | 9 | `long_generation` | ~1 KB（综述 prompt） | **持续 decode 吞吐**——就 PARP/BRCA 写 600–800 字综述 | 长度 + 4 章节 + 主题覆盖 |
 
-**关于任务 1**：这是 `test_dgx.py`（HTTP）和 `test_mac.py`（CLI）唯一共享的任务，prompt **逐字节相同**（脚本验证过），所以 HTTP 路径和 CLI 路径在该任务上可直接对比（含 HTTP 开销）。
+**关于任务 1**：输入最长的一题（两条 7088 nt 全长序列），对 prefill 压力最大，也是长上下文表现最敏感的任务。
 
 ### 配置（环境变量）
 
@@ -189,18 +187,9 @@ Local_LLM_test/
 
 分数出现在：终端（`test_dgx.py` 结尾打印、`compare_bench.py` 排名表）、单机 PNG 顶部、对比 PNG 顶部、JSON 的 `overall_score` 字段。配色：**绿 ≥70（好）/ 橙 40–69（一般）/ 红 <40（弱）**。
 
-### 脚本命名：`test_dgx.py` vs `test_mac.py`
+### 关于脚本命名
 
-**名字有误导**——按开发顺序起的，真正区别是 **HTTP 对 CLI**，不是 **DGX 对 Mac**：
-
-| 脚本 | 真实角色 | 何时用 |
-|------|----------|--------|
-| `test_dgx.py` | 通用 HTTP 基准，9 个任务全跑 | **只要有任何 HTTP 服务在跑就用它**（ds4-server、vLLM、llama.cpp、Ollama、LM Studio、SGLang、TGI……）——Mac/Linux/DGX 通吃 |
-| `test_mac.py` | CLI subprocess 包装，只跑任务 1（`mutation_call`） | 只有 `ds4` 二进制、没起服务，想测裸 CLI 速度（无 HTTP 开销）时 |
-
-`test_mac.py` 从 `test_dgx.py` 导入全部任务/评估器/计分逻辑，只换调用方式。**任何完整跑分都用 `test_dgx.py`**，不分硬件。名字是历史遗留，理想情况应改名 `bench_http.py` / `bench_ds4_cli.py`，但改名会破坏已有结果引用。
-
-`test_mac.py` 的注意事项：只跑任务 1；运行前需改硬编码路径 `DS4_PATH`、`MODEL_PATH`；prompt 与 `test_dgx.py` 逐字节相同，可直接对比；用 `subprocess.run`（非流式），只报总时间——无 TTFT、无质量评估。
+仓库里只有一个基准脚本 `test_dgx.py`（+ 一个对比图生成器 `compare_bench.py`）。**名字里的 `dgx` 是历史遗留**——按开发顺序起的，早期先在 DGX 上调通，但它的真实角色是**通用 HTTP 基准**，兼容任何 OpenAI 接口（ds4-server、vLLM、llama.cpp、Ollama、LM Studio、SGLang、TGI……），Mac / Linux / DGX 通吃。理想情况应改名 `bench_http.py`，但改名会破坏已有结果引用。
 
 ### 数据来源
 
@@ -332,12 +321,10 @@ results/bench_<machine-engine-model>_YYYYMMDD_HHMMSS.png    # one-glance summary
 ```
 Local_LLM_test/
 ├── README.md                          # this file (bilingual CN/EN)
-├── test_dgx.py                        # ⚠ main HTTP benchmark, works with ANY
+├── test_dgx.py                        # ⚠ main benchmark (HTTP), works with ANY
 │                                      #   OpenAI-compatible server (ds4-server,
 │                                      #   vLLM, llama.cpp, Ollama, …) — NOT
 │                                      #   DGX-specific despite the name
-├── test_mac.py                        # CLI-only variant, calls ds4 binary via
-│                                      #   subprocess (no HTTP), only 1 task
 ├── compare_bench.py                   # multi-machine comparison chart generator
 ├── test_data/                         # all benchmark inputs (frozen, ~3.4 MB)
 │   ├── README.md                      # data provenance and sources
@@ -383,10 +370,8 @@ rightmost column have automated evaluators with ground truth.
 | 8 | `json_output` | ~625 B (5 known variants) | Structured output reliability | 6 schema/correctness checks |
 | 9 | `long_generation` | ~1 KB (review prompt) | **Sustained decode throughput** — write a 600-800 word review on PARP/BRCA | Length + 4 sections + topic coverage |
 
-**Note on task 1**: this is the only task shared between `test_dgx.py` (HTTP)
-and `test_mac.py` (CLI). The prompt is **byte-identical** (verified by script),
-so the HTTP path and the CLI path can be compared directly on this task —
-HTTP overhead included.
+**Note on task 1**: the longest-input task (two full 7088 nt sequences), so it
+stresses prefill the most and is the most sensitive to long-context performance.
 
 ### Configuration (environment variables)
 
@@ -433,21 +418,15 @@ The score shows up:
 
 Color coding: **green ≥70 (good)**, **orange 40-69 (fair)**, **red <40 (weak)**.
 
-### Script naming: `test_dgx.py` vs `test_mac.py`
+### On script naming
 
-**The names are misleading** — they were chosen by development order, not by
-purpose. The real distinction is **HTTP vs CLI**, not **DGX vs Mac**:
-
-| Script | Real role | When to use |
-|--------|-----------|-------------|
-| `test_dgx.py` | Universal HTTP benchmark, all 9 tasks | **Always, if you have any HTTP server running** (ds4-server, vLLM, llama.cpp, Ollama, LM Studio, SGLang, TGI, …) — works on Mac, Linux, DGX, anything |
-| `test_mac.py` | CLI subprocess wrapper, only task 1 (`mutation_call`) | Only when you have the `ds4` binary but no server, and want to measure raw CLI speed without HTTP overhead |
-
-`test_mac.py` imports all task/evaluator/score logic from `test_dgx.py` —
-it's a thin wrapper that only swaps the LLM calling method. **For any full
-benchmark run, use `test_dgx.py`**, regardless of hardware.
-
-`test_mac.py` caveats: runs only task 1; edit hard-coded `DS4_PATH` / `MODEL_PATH` first; prompt byte-identical to `test_dgx.py` (directly comparable); uses `subprocess.run` (not streaming), so only total time — no TTFT, no quality eval.
+There is a single benchmark script, `test_dgx.py` (plus `compare_bench.py`, the
+comparison-chart generator). **The `dgx` in the name is a historical artifact** —
+chosen by development order (it was first tuned on a DGX), but its real role is
+a **universal HTTP benchmark** that works with any OpenAI-compatible endpoint
+(ds4-server, vLLM, llama.cpp, Ollama, LM Studio, SGLang, TGI, …) on Mac, Linux,
+and DGX alike. Ideally it would be renamed `bench_http.py`, but renaming would
+break existing result references.
 
 ### Data sources and provenance
 

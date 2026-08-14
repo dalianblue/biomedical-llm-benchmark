@@ -57,8 +57,7 @@ COMMON_PAYLOAD = {"reasoning_effort": "none", "temperature": 0.0, "seed": 42}
 
 # ============ 数据加载（一次性）============
 def load_mutation():
-    # NOTE: .strip() 与 test_mac.py 的 load_data() 对齐，保证两套脚本生成的 prompt
-    # 逐字符一致（FASTA 文件末尾有 \n\n，不 strip 会引入差异）。
+    # .strip() 去掉 FASTA 末尾的 \n\n，保证 prompt 干净。
     ref = (DATA_DIR / "mutation" / "BRCA1_NM_007294.4.fasta").read_text().strip()
     mut = (DATA_DIR / "mutation" / "BRCA1_NM_007294.4_20mut.fasta").read_text().strip()
     events_log = (DATA_DIR / "mutation" / "mutation_events.log").read_text()
@@ -200,12 +199,9 @@ def _os_cpu_count():
     return _o.cpu_count()
 
 
-# ============ 5 个任务定义 ============
-# NOTE: task_mutation_call 的 prompt 与 test_mac.py 的 build_prompt **逐字符一致**，
-# 目的是保证两套脚本（CLI vs HTTP）跑出来的结果可比对。
-# 如果改这个 prompt，请同步改 test_mac.py。
+# ============ 9 个任务定义 ============
 def task_mutation_call(data):
-    """长上下文 + 推理 + 有 ground truth。Prompt 与 test_mac.py 完全一致。"""
+    """长上下文 + 推理 + 有 ground truth。"""
     ref, mut, _ = data["mutation"]
     prompt = f"""You are a professional genomic variant annotator. Analyze the following full-length BRCA1 cDNA reference sequence and a simulated tumor sample mutated sequence. Complete the following tasks:
 
@@ -219,7 +215,6 @@ Reference sequence:
 
 Mutated sequence:
 {mut}"""
-    # max_tokens=1500 与 test_mac.py 对齐
     return prompt, 1500
 
 
@@ -495,7 +490,6 @@ def call_llm_stream(prompt, max_tokens):
 
 
 # 所有 task 函数已定义，注册到任务表
-# NOTE: mutation_call 的 max_tokens 必须与 test_mac.py 的 call_ds4(max_tokens=1500) 一致。
 TASKS = [
     ("mutation_call",     task_mutation_call,     1500),
     ("expression_genes",  task_expression_genes,  700),
