@@ -65,8 +65,9 @@ uv pip install requests matplotlib
 # LLM_LABEL 每台机器起一个唯一标签，如 mac-m5max-ds4-0731 / dgx-spark-vllm / linux-a100
 # LLM_CONTEXT 填你引擎实际配置的上下文上限，如 M3/M5=256000，DGX(vLLM)=1048576
 # LLM_API_URL 填你引擎的端口，如 ds4-server=8000，DGX(vLLM)=8888
+# LLM_MODEL 填你引擎serve的模型 id，如 ds4-server=deepseek-v4-flash，DGX(vLLM)=deepseek-v4-flash-0731
 LLM_API_URL=http://127.0.0.1:<端口>/v1  \
-LLM_MODEL=deepseek-v4-flash           \
+LLM_MODEL=<模型-id>                    \
 LLM_LABEL=<机器-引擎-模型>             \
 LLM_CONTEXT=<上下文上限>               \
 RUNS=5                                \
@@ -282,8 +283,9 @@ uv pip install requests matplotlib
 # LLM_LABEL: one unique label per machine, e.g. mac-m5max-ds4-0731 / dgx-spark-vllm / linux-a100
 # LLM_CONTEXT: your engine's actual context limit, e.g. M3/M5=256000, DGX (vLLM)=1048576
 # LLM_API_URL: your engine's port, e.g. ds4-server=8000, DGX (vLLM)=8888
+# LLM_MODEL: the model id your engine serves, e.g. ds4-server=deepseek-v4-flash, DGX (vLLM)=deepseek-v4-flash-0731
 LLM_API_URL=http://127.0.0.1:<port>/v1  \
-LLM_MODEL=deepseek-v4-flash           \
+LLM_MODEL=<model-id>                   \
 LLM_LABEL=<machine-engine-model>       \
 LLM_CONTEXT=<context-limit>            \
 RUNS=5                                \
