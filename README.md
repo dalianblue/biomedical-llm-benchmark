@@ -10,8 +10,8 @@ Three machines, two chip architectures, two inference engines — all running th
 一套可复现的基准测试，在**真实生物医学任务**上评估本地 LLM，帮我们为科研工作挑出最合适的
 "硬件 + 引擎"组合。三台机器、两种芯片架构、两套推理引擎——跑的是**同一个模型（DeepSeek V4 Flash 0731）**。
 
-- 📄 **Full report / 完整报告:** [`results/biomedical_benchmark_report_v2.html`](results/biomedical_benchmark_report_v2.html)
-  (open locally, or [preview on HTMLPreview](https://htmlpreview.github.io/?https://github.com/dalianblue/biomedical-llm-benchmark/main/results/biomedical_benchmark_report_v2.html))
+- 📄 **Full report / 完整报告:** [`results/biomedical_benchmark_report_v3.html`](results/biomedical_benchmark_report_v3.html)
+  (open locally, or [preview on HTMLPreview](https://htmlpreview.github.io/?https://github.com/dalianblue/biomedical-llm-benchmark/main/results/biomedical_benchmark_report_v3.html))
 - 🧪 9 biomedical tasks / 9 个生物医学任务 · 4 result runs / 4 份跑分结果
 - 🔒 Frozen inputs (`test_data/`, seed=42) — no network at runtime / 输入冻结，运行时无需联网
 
@@ -30,7 +30,7 @@ Three machines, two chip architectures, two inference engines — all running th
 
 ### 结果速览（4 次跑分）
 
-完整报告见 [`results/biomedical_benchmark_report_v2.html`](results/biomedical_benchmark_report_v2.html)。
+完整报告见 [`results/biomedical_benchmark_report_v3.html`](results/biomedical_benchmark_report_v3.html)。
 综合分 = `质量×50% + 吞吐×30% + TTFT×10% + 稳定性×10%`。
 
 | 跑次 | 机器 | 引擎 | runs/task | 综合分 | 质量 | 吞吐 | TTFT |
@@ -114,7 +114,7 @@ Local_LLM_test/
 │   ├── protein/                       # BRCA1 p53 结合域 + UniProt 特征
 │   └── benchmark/                     # PubMedQA + MedMCQA 题库（40 题）
 └── results/                           # 运行后生成（json + png）
-                                      #   + biomedical_benchmark_report_v2.html
+                                      #   + biomedical_benchmark_report_v3.html
                                       #     （4 次跑分的完整报告，浏览器打开）
 ```
 
@@ -215,6 +215,8 @@ Local_LLM_test/
 - **PubMedQA / MedMCQA 各 20 题**。够给机器排序，不足以做可发表对比。需要更窄误差棒就改 `test_data/benchmark/*.json` 扩容。
 - **不测工具调用 / agent loop**。测了 JSON 输出，但没测函数调用语义。
 - **成本/能耗未归一化**。`tok/s` 是裸吞吐；要比 `tok/s/$` 自己在环境快照里填硬件成本。
+- **盲区一：量化精度（Q2 / FP4 / FP8）分离不出来。** 每台机器跑各自引擎的默认量化（DGX=NVFP4，Mac=GGUF 低位量化），差异被硬件差异裹住，没法单独归因；而且任务不够"挑剔精度"——失败的是能力问题（FP16 也救不回），通过的答案不变（精度损失埋在噪声地板下），加上 20 题样本太小，量化差统计上验不出。想真测：同机同引擎只换量化 + perplexity/精确 token 召回类任务 + 样本 ≥500。详见报告 §07。
+- **盲区二：长上下文容量优势没机会出场。** 最长输入才 ~8K tokens（pubmedqa），用到 256K 的 3%、1M 的 0.8%——DGX 的 1M 上下文在这个量级下完全显不出来。容量是"装得下"不是"跑得快"，1M 优势只在喂 >256K 时才兑现。想让它显形：加一道 >256K 的任务（整基因组 / 大单细胞矩阵 / 论文全文 in-context），M3/M5 会 OOM，差距立刻变断崖。详见报告 §07。
 
 ### 复现对比
 
@@ -236,7 +238,7 @@ side-by-side chart for cross-machine comparison.
 
 ### Results at a glance (4 runs)
 
-Full write-up: [`results/biomedical_benchmark_report_v2.html`](results/biomedical_benchmark_report_v2.html).
+Full write-up: [`results/biomedical_benchmark_report_v3.html`](results/biomedical_benchmark_report_v3.html).
 Overall score = `quality×50% + throughput×30% + ttft×10% + stability×10%`.
 
 | Run | Machine | Engine | runs/task | Overall | Quality | Throughput | TTFT |
@@ -325,7 +327,7 @@ Local_LLM_test/
 │   ├── protein/                       # BRCA1 p53-binding domain + UniProt features
 │   └── benchmark/                     # PubMedQA + MedMCQA question banks (40 Qs)
 └── results/                           # generated after running (json + png)
-                                      #   + biomedical_benchmark_report_v2.html
+                                      #   + biomedical_benchmark_report_v3.html
                                       #     (the 4-run write-up; open in a browser)
 ```
 
@@ -457,6 +459,21 @@ so **no internet access is needed at benchmark time**.
   function-calling semantics.
 - **Cost / energy not normalized**. `tok/s` is raw throughput; to compare
   `tok/s/$` you need to fill in hardware cost yourself in the env snapshot.
+- **Blind spot 1: quantization precision (Q2 / FP4 / FP8) is not isolated.** Each
+  machine runs its engine's default quantization (DGX=NVFP4, Mac=low-bit GGUF),
+  so precision differences are confounded with hardware and can't be attributed
+  alone. The tasks also aren't precision-discriminating: failures are capability
+  failures (they'd fail at FP16 too), passes are unchanged across quants (loss
+  is below the noise floor), and 20-question samples are too small to detect
+  single-digit-% differences. To really measure it: same machine + engine, swap
+  only quantization, use precision-sensitive tasks (perplexity, exact token
+  recall), ≥500 samples. See report §07.
+- **Blind spot 2: long-context capacity advantage never shows.** The longest
+  input is ~8K tokens (pubmedqa) — 3% of 256K, 0.8% of 1M — so DGX's 1M context
+  is invisible at this scale. Capacity is "fits" not "fast"; the 1M edge only
+  materializes when you feed >256K. To expose it: add a >256K task (whole
+  genome / large single-cell matrix / full papers in-context) where M3/M5 OOM
+  and the gap becomes a cliff. See report §07.
 
 ### Reproducing the comparison
 
