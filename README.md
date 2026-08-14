@@ -237,6 +237,31 @@ Local_LLM_test/
 
 **建议优先级**：先做"QA 扩到 200+"和"长上下文 >256K"——前者零成本收紧统计，后者直接补最大盲区。多轮 agent 价值最大但工程量也最大，放后期。量化对照想做得先加 `LLM_QUANT` 标签，几乎零成本。
 
+### 贡献指南（欢迎你的硬件 / 引擎 / 量化）
+
+这套基准的盲区（量化精度、1M 上下文、AMD/Intel GPU、其它模型）我们没法自测——这正是社区能补的地方。**只要你有一台能跑 OpenAI 兼容服务的机器，就欢迎提交你的 `bench_*.json`。**
+
+**特别想要的配置：**
+- **GPU**：AMD (ROCm, vLLM/Ollama)、Intel Arc / oneAPI、其它 NVIDIA（A100/H100/RTX 4090/5090）
+- **量化**：FP8、Q2/Q3/Q4 (GGUF/AWQ/GPTQ)、NVFP4、INT8、INT4——同机不同量化的对照尤其值钱
+- **模型**：Llama 3.3 70B、Qwen3 235B、其它 DeepSeek 版本
+- **云端 GPU** 作为基线参考也欢迎
+
+**提交步骤：**
+1. 按上面的「快速开始」在本机跑一次 `test_dgx.py`（务必用唯一的 `LLM_LABEL`，比如 `amd-7900xtx-vllm`）。
+2. 跑前请确认：用本仓库**原版** `test_data/`、`RUNS=5`、机器处于空闲状态、warmup 跑完。
+3. （可选）在结果 JSON 旁边附一份 `README-my-hardware.md`，写清：芯片/显存、引擎+版本、量化方案、模型+版本、上下文长度、驱动/CUDA/ROCm 版本、跑分日期。
+4. 提交方式任选其一：
+   - **PR**：把 `bench_*.json` 放进 `results/community/`，改下文件名加你的 label 前缀即可。
+   - **Issue**：贴 JSON 全文或附件，标题写 `[bench] <你的 label>`。
+   - 不想公开也行，发邮件联系仓库 owner。
+
+**两条硬规矩：**
+- **不许调优某台机器的分数**——不要为刷分改 prompt、改 `max_tokens`、改 task 顺序。脚本怎么来就怎么跑。
+- **诚实标注**：如果机器跑的时候有别的负载、或者用了非标准配置（比如关了 warmup、降了 RUNS），在附带的说明里写清楚。不完整的跑分我们也会收，但会标明。
+
+提交被采纳后，会进下一版报告的横评，并署名（除非你要求匿名）。本仓库 MIT 协议，提交内容按同样协议释放。
+
 ---
 
 ## English version
@@ -532,6 +557,31 @@ the existing `task_*` builder + evaluator + `TASKS` registry:
 | **Temperature sweep** | Temperature fixed at 0, no stability across temps | Wrap a `for temperature in [0, 0.3, 0.7]` loop, measure cross-temp variance. | Low |
 
 **Suggested priority**: do "QA → 200+" and "long-context >256K" first — one tightens stats for free, the other closes the biggest blind spot (the 1M edge). Multi-turn agent is the most valuable but heaviest; defer. The quantization A/B costs almost nothing if you just add the `LLM_QUANT` label.
+
+### Contributing (we want your hardware / engine / quant)
+
+This benchmark's blind spots (quantization precision, 1M context, AMD/Intel GPUs, other models) are exactly what we can't test ourselves — and exactly what the community can fill. **If you have a machine that speaks the OpenAI API, please submit your `bench_*.json`.**
+
+**Configs we especially want:**
+- **GPUs**: AMD (ROCm, via vLLM/Ollama), Intel Arc / oneAPI, other NVIDIA (A100/H100/RTX 4090/5090)
+- **Quantization**: FP8, Q2/Q3/Q4 (GGUF/AWQ/GPTQ), NVFP4, INT8, INT4 — same-machine A/B between quants is gold
+- **Models**: Llama 3.3 70B, Qwen3 235B, other DeepSeek versions
+- **Cloud GPUs** welcome as reference baselines
+
+**How to submit:**
+1. Run `test_dgx.py` per "Quick start" above, with a unique `LLM_LABEL` (e.g. `amd-7900xtx-vllm`).
+2. Keep it honest: use this repo's **original** `test_data/`, `RUNS=5`, a quiet machine, and let the warmup finish.
+3. (Optional) Add a `README-my-hardware.md` next to the JSON with: chip/VRAM, engine+version, quantization, model+version, context length, driver/CUDA/ROCm version, run date.
+4. Submit via any of:
+   - **PR**: drop the `bench_*.json` under `results/community/`, prefixed with your label.
+   - **Issue**: paste or attach the JSON, title it `[bench] <your label>`.
+   - Prefer email? Contact the repo owner.
+
+**Two hard rules:**
+- **Don't tune a machine's score** — no prompt tweaks, no `max_tokens` changes, no task reordering. Run the script as-is.
+- **Label honestly** — if the box had other load, or you used non-standard settings (skipped warmup, lowered RUNS), say so in the accompanying note. Incomplete runs are still accepted, just marked as such.
+
+Accepted submissions join the next report's cross-machine chart and are credited (unless you ask to stay anonymous). Repo is MIT; submissions are released under the same license.
 
 ---
 
