@@ -11,6 +11,7 @@ Three machines, two chip architectures, two inference engines — all running th
 "硬件 + 引擎"组合。三台机器、两种芯片架构、两套推理引擎——跑的是**同一个模型（DeepSeek V4 Flash 0731）**。
 
 - 📄 **Full report / 完整报告:** [`results/biomedical_benchmark_report_v3.html`](results/biomedical_benchmark_report_v3.html)
+- ❓ **FAQ / 常见问题:** [`FAQ.md`](FAQ.md)（结果怎么读、缓存影响、量化与质量、复现要求）
   (open locally, or [preview on HTMLPreview](https://htmlpreview.github.io/?https://github.com/dalianblue/biomedical-llm-benchmark/main/results/biomedical_benchmark_report_v3.html))
 - 🧪 10 biomedical tasks / 10 个生物医学任务（v2 协议含 prefill 专项）· 6 result runs / 6 份跑分结果
 - 🔒 Frozen inputs (`test_data/`, seed=42) — no network at runtime / 输入冻结，运行时无需联网
