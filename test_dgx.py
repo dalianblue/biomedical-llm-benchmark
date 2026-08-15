@@ -44,6 +44,8 @@ API_URL = os.environ.get("LLM_API_URL", "http://localhost:8000/v1").rstrip("/")
 MODEL_NAME = os.environ.get("LLM_MODEL", "deepseek-v4-flash")
 LLM_LABEL = os.environ.get("LLM_LABEL", "unknown")
 RUNS = int(os.environ.get("RUNS", "5"))  # 3 太少看不出短任务差异；5 是统计/耗时的折中
+# 逗号分隔的任务名，跳过不跑（弱机/长 prefill 太慢时用）
+SKIP_TASKS = {s for s in os.environ.get("TASKS_SKIP", "").replace(" ", "").split(",") if s}
 OUTPUT_DIR = Path(os.environ.get("OUTPUT_DIR", "./results"))
 # 跑完是否自动生成结果图（默认开）。设 0 关闭，便于纯 CI/无头环境。
 PLOT = os.environ.get("PLOT", "1") not in ("0", "false", "no", "")
@@ -1460,6 +1462,9 @@ def main():
     all_results["environment"] = hw
 
     for task_name, builder, max_tok in TASKS:
+        if task_name in SKIP_TASKS:
+            print(f"\n⏭️  Task: {task_name}  skipped (TASKS_SKIP)")
+            continue
         print(f"\n{'─' * 70}")
         print(f"📋 Task: {task_name}  (max_tokens={max_tok})")
         print(f"{'─' * 70}")

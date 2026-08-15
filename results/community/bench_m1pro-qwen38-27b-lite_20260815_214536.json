@@ -1,0 +1,786 @@
+{
+  "label": "m1pro-qwen38-27b-lite",
+  "api_url": "http://127.0.0.1:8080/v1",
+  "model": "Qwen3.8-27B-UD-Q4_K_XL.gguf",
+  "runs": 1,
+  "timestamp": "2026-08-15T20:57:07.834623",
+  "tasks": {
+    "expression_genes": {
+      "runs": 1,
+      "ok": 1,
+      "samples": [
+        {
+          "output": "**1. Sample Identity**\nThis dataset represents **CD8+ T cells**. This is explicitly stated in the source file name (`GSE100866_CD8_merged...`) and supported by the transcriptomic profile. Key marker genes from the top-30 list include:\n*   **GNLY** (Granulysin): A potent antimicrobial peptide highly expressed in cytotoxic T lymphocytes.\n*   **HLA-B** and **HLA-E**: MHC Class I molecules, which are constitutively expressed on CD8+ T cells (and most nucleated cells) but are critical for their antigen presentation and immune surveillance functions.\n*   **B2M** (Beta-2-microglobulin): The invariant chain of MHC Class I, essential for its surface expression.\n\n**2. Ribosomal / Mitochondrial Content**\nTo quantify the UMI mass, we sum the counts for specific gene families in the top-30:\n*   **Ribosomal Proteins (RPL/RPS):** RPS6 (9182), RPL13 (5516), RPS29 (4962), RPL13A (4936), RPS8 (4491), RPS24 (4386), RPL11 (4373), RPLP2 (4284), RPLP1 (3731), RPS12 (3371), RPL32 (3296), RPL34 (3091).\n    *   Sum â **41,619 UMIs**.\n*   **Mitochondrial Genes (MT-):** MT-RNR2 (216,054), MT-RNR1 (11,510), MT-ND5 (5,830), MT-ND4 (4,980), MT-CO3 (4,787), MT-CO1 (4,367).\n    *   Sum â **247,528 UMIs**.\n\nTotal Top-30 UMI mass is approximately **330,000** (summing all listed values).\n*   **Ribosomal fraction:** ~12.6%\n*   **Mitochondrial fraction:** ~75.0%\n\n**Is this typical?** No. While ribosomal content (~10-15%) is typical for healthy, quiescent or moderately active T cells, a **75% mitochondrial fraction** in the top-30 genes is **extremely high** and atypical for healthy CD8+ T cells. Healthy cells usually have mitochondrial genes ranked lower (often outside the top 30 unless the cell is highly metabolically active, such as during activation or apoptosis). This suggests a population with high metabolic stress or a significant artifact.\n\n**3. MT-RNR2 Anomaly**\nThe dominance of **MT-RNR2** (216,054 UMIs, ~65% of the top-30 mass) is almost certainly an **artifact of library preparation or sequencing**, not a biological sign of stress.\n*   **Reasoning:** In standard 10x Genomics CITE-seq",
+          "ttft_s": 0.356,
+          "total_s": 125.731,
+          "prompt_tokens": 773,
+          "completion_tokens": 700,
+          "finish_reason": "length",
+          "tok_per_s": 5.57
+        }
+      ],
+      "warmup": {
+        "output": "**1. Sample Identity**\nThis dataset represents **CD8+ T cells**. This is explicitly stated in the source file name (`GSE100866_CD8_merged...`) and supported by the transcriptomic profile. Key marker genes from the top-30 list include:\n*   **GNLY** (Granulysin): A potent antimicrobial peptide highly expressed in cytotoxic T lymphocytes.\n*   **HLA-B** and **HLA-E**: MHC Class I molecules, which are constitutively expressed on CD8+ T cells (and most nucleated cells) but are critical for their antigen presentation and immune surveillance functions.\n*   **B2M** (Beta-2-microglobulin): The invariant chain of MHC Class I, essential for its surface expression.\n\n**2. Ribosomal / Mitochondrial Content**\nTo quantify the UMI mass, we sum the counts for specific gene families in the top-30:\n*   **Ribosomal Proteins (RPL/RPS):** RPS6 (9182), RPL13 (5516), RPS29 (4962), RPL13A (4936), RPS8 (4491), RPS24 (4386), RPL11 (4373), RPLP2 (4284), RPLP1 (3731), RPS12 (3371), RPL32 (3296), RPL34 (3091).\n    *   Sum â **41,619 UMIs**.\n*   **Mitochondrial Genes (MT-):** MT-RNR2 (216,054), MT-RNR1 (11,510), MT-ND5 (5,830), MT-ND4 (4,980), MT-CO3 (4,787), MT-CO1 (4,367).\n    *   Sum â **247,528 UMIs**.\n\nTotal Top-30 UMI mass is approximately **330,000** (summing all listed values).\n*   **Ribosomal fraction:** ~12.6%\n*   **Mitochondrial fraction:** ~75.0%\n\n**Is this typical?** No. While ribosomal content (~10-15%) is typical for healthy, quiescent or moderately active T cells, a **75% mitochondrial fraction** in the top-30 genes is **extremely high** and atypical for healthy CD8+ T cells. Healthy cells usually have mitochondrial genes ranked lower (often outside the top 30 unless the cell is highly metabolically active, such as during activation or apoptosis). This suggests a population with high metabolic stress or a significant artifact.\n\n**3. MT-RNR2 Anomaly**\nThe dominance of **MT-RNR2** (216,054 UMIs, ~65% of the top-30 mass) is almost certainly an **artifact of library preparation or sequencing**, not a biological sign of stress.\n*   **Reasoning:** In standard 10x Genomics CITE-seq",
+        "ttft_s": 13.27,
+        "total_s": 138.641,
+        "prompt_tokens": 773,
+        "completion_tokens": 700,
+        "finish_reason": "length",
+        "tok_per_s": 5.05
+      },
+      "hot_ttft_s": 0.354,
+      "ttft_s": {
+        "mean": 0.356,
+        "min": 0.356,
+        "max": 0.356
+      },
+      "cold_ttft_s": 13.27,
+      "total_s": {
+        "mean": 125.731,
+        "min": 125.731,
+        "max": 125.731
+      },
+      "tok_per_s": {
+        "mean": 5.57,
+        "min": 5.57,
+        "max": 5.57
+      },
+      "prompt_tokens": 773,
+      "completion_tokens": {
+        "mean": 700.0,
+        "min": 700,
+        "max": 700
+      },
+      "cache_speedup_ttft": 37.49
+    },
+    "expression_matrix": {
+      "runs": 1,
+      "ok": 1,
+      "samples": [
+        {
+          "output": "Here are the step-by-step calculations and the final answers based on the provided sub-matrix.\n\n### 1. Top-5 Genes by Row-Sum\n\nFirst, we calculate the total UMI count (row sum) for each gene across the 10 cells.\n\n| Gene | Calculation (Sum of 10 cells) | Total UMI |\n| :--- | :--- | :--- |\n| **MT-RNR2** | $304+265+189+86+63+191+180+237+168+168$ | **1851** |\n| **MALAT1** | $111+69+79+101+123+63+181+131+117+71$ | **1046** |\n| **MT-RNR1** | $0+17+15+2+2+27+5+11+7+3$ | **89** |\n| **RPS6** | $36+21+12+17+12+32+29+15+7+29$ | **210** |\n| **B2M** | $8+4+1+5+18+5+6+1+5+0$ | **53** |\n| **PABPC1** | $27+16+7+11+14+9+13+6+7+8$ | **118** |\n| **TMSB4X** | $23+3+2+3+29+5+4+2+0+6$ | **77** |\n| **MT-ND5** | $1+14+8+3+6+13+7+4+4+4$ | **64** |\n| **RPL13** | $16+10+5+6+8+20+20+12+3+19$ | **119** |\n| **MT-ND4** | $1+13+12+2+11+12+4+8+1+2$ | **66** |\n| **RPS29** | $20+6+10+9+6+19+9+13+9+10$ | **111** |\n| **RPL13A** | $28+6+6+14+14+14+10+7+4+22$ | **125** |\n| **MT-CO3** | $13+17+5+9+10+16+9+10+5+5$ | **99** |\n| **TPT1** | $14+5+3+7+3+10+9+4+2+5$ | **62** |\n| **RPS8** | $27+14+8+10+1+15+24+11+7+9$ | **126** |\n| **RPS24** | $10+9+5+1+7+12+17+9+5+9$ | **84** |\n| **RPL11** | $18+9+8+7+5+13+7+9+3+16$ | **95",
+          "ttft_s": 0.353,
+          "total_s": 143.793,
+          "prompt_tokens": 946,
+          "completion_tokens": 800,
+          "finish_reason": "length",
+          "tok_per_s": 5.56
+        }
+      ],
+      "warmup": {
+        "output": "Here are the step-by-step calculations and the final answers based on the provided sub-matrix.\n\n### 1. Top-5 Genes by Row-Sum\n\nFirst, we calculate the total UMI count (row sum) for each gene across the 10 cells.\n\n| Gene | Calculation (Sum of 10 cells) | Total UMI |\n| :--- | :--- | :--- |\n| **MT-RNR2** | $304+265+189+86+63+191+180+237+168+168$ | **1851** |\n| **MALAT1** | $111+69+79+101+123+63+181+131+117+71$ | **1046** |\n| **MT-RNR1** | $0+17+15+2+2+27+5+11+7+3$ | **89** |\n| **RPS6** | $36+21+12+17+12+32+29+15+7+29$ | **210** |\n| **B2M** | $8+4+1+5+18+5+6+1+5+0$ | **53** |\n| **PABPC1** | $27+16+7+11+14+9+13+6+7+8$ | **118** |\n| **TMSB4X** | $23+3+2+3+29+5+4+2+0+6$ | **77** |\n| **MT-ND5** | $1+14+8+3+6+13+7+4+4+4$ | **64** |\n| **RPL13** | $16+10+5+6+8+20+20+12+3+19$ | **119** |\n| **MT-ND4** | $1+13+12+2+11+12+4+8+1+2$ | **66** |\n| **RPS29** | $20+6+10+9+6+19+9+13+9+10$ | **111** |\n| **RPL13A** | $28+6+6+14+14+14+10+7+4+22$ | **125** |\n| **MT-CO3** | $13+17+5+9+10+16+9+10+5+5$ | **99** |\n| **TPT1** | $14+5+3+7+3+10+9+4+2+5$ | **62** |\n| **RPS8** | $27+14+8+10+1+15+24+11+7+9$ | **126** |\n| **RPS24** | $10+9+5+1+7+12+17+9+5+9$ | **84** |\n| **RPL11** | $18+9+8+7+5+13+7+9+3+16$ | **95",
+        "ttft_s": 16.012,
+        "total_s": 159.41,
+        "prompt_tokens": 946,
+        "completion_tokens": 800,
+        "finish_reason": "length",
+        "tok_per_s": 5.02
+      },
+      "hot_ttft_s": 0.368,
+      "ttft_s": {
+        "mean": 0.353,
+        "min": 0.353,
+        "max": 0.353
+      },
+      "cold_ttft_s": 16.012,
+      "total_s": {
+        "mean": 143.793,
+        "min": 143.793,
+        "max": 143.793
+      },
+      "tok_per_s": {
+        "mean": 5.56,
+        "min": 5.56,
+        "max": 5.56
+      },
+      "prompt_tokens": 946,
+      "completion_tokens": {
+        "mean": 800.0,
+        "min": 800,
+        "max": 800
+      },
+      "cache_speedup_ttft": 43.51,
+      "quality": {
+        "max": 4,
+        "scored": 2,
+        "checks": {
+          "top5_genes": {
+            "expected": [
+              "MT-RNR2",
+              "MALAT1",
+              "RPS6",
+              "RPS8",
+              "RPL13A"
+            ],
+            "hit": [
+              "MT-RNR2",
+              "MALAT1",
+              "RPS6",
+              "RPS8",
+              "RPL13A"
+            ],
+            "hit_count": 5,
+            "passed": true
+          },
+          "top3_variance": {
+            "expected": [
+              "MT-RNR2",
+              "MALAT1",
+              "RPS6"
+            ],
+            "hit": [
+              "MT-RNR2",
+              "MALAT1",
+              "RPS6"
+            ],
+            "hit_count": 3,
+            "passed": true
+          },
+          "sparsity": {
+            "expected": 0.015,
+            "got": null,
+            "passed": false
+          },
+          "top_cell": {
+            "expected": "CD8_off_GACCCCCCTTCT",
+            "got": null,
+            "passed": false
+          }
+        }
+      }
+    },
+    "expression_code": {
+      "runs": 1,
+      "ok": 1,
+      "samples": [
+        {
+          "output": "```python\n#!/usr/bin/env python3\n\"\"\"\nAnalysis script for GSE100866 CD8 CITE-seq RNA UMI data.\n\nThis script performs:\n1. Loading and preprocessing of the UMI count matrix.\n2. Quality control (cell and gene filtering, mitochondrial percentage).\n3. Normalization, log-transformation, and highly variable gene selection.\n4. Dimensionality reduction (PCA, UMAP) and clustering (Leiden).\n5. Marker gene identification per cluster.\n6. Saving results to disk.\n\"\"\"\n\nimport os\nimport pandas as pd\nimport numpy as np\nimport scanpy as sc\nimport anndata\nimport logging\n\n# Configure logging\nlogging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')\nlogger = logging.getLogger(__name__)\n\n# Define file paths\nINPUT_FILE = \"GSE100866_CD8_merged-RNA_umi.csv.gz\"\nOUTPUT_DIR = \"output\"\nMARKERS_TSV = os.path.join(OUTPUT_DIR, \"cluster_markers_top10.tsv\")\nANNDATA_H5AD = os.path.join(OUTPUT_DIR, \"GSE100866_CD8_processed.h5ad\")\n\n# Create output directory if it doesn't exist\nos.makedirs(OUTPUT_DIR, exist_ok=True)\n\n\ndef load_data(input_file: str) -> anndata.AnnData:\n    \"\"\"\n    Load the UMI count matrix from a gzipped CSV file.\n    \n    The input file has genes in rows and cells in columns.\n    We transpose so that cells are rows and genes are columns,\n    then build an AnnData object.\n    \n    Parameters:\n        input_file: Path to the gzipped CSV file.\n        \n    Returns:\n        AnnData object with cells as rows and genes as columns.\n    \"\"\"\n    logger.info(f\"Loading data from {input_file}...\")\n    \n    # Read the CSV file (genes in rows, cells in columns)\n    # index_col=0 to use gene names as index\n    df = pd.read_csv(input_file, compression='gzip', index_col=0)\n    \n    logger.info(f\"Loaded matrix with shape: {df.shape} (genes x cells)\")\n    \n    # Transpose so cells are rows and genes are columns\n    df_t = df.T\n    \n    # Extract gene names and cell names\n    var_names = df.index.tolist()  # gene names\n    obs_names = df_t.index.tolist()  # cell names\n    \n    # Create AnnData object\n    # X should be the count matrix (cells x genes)\n    adata = anndata.AnnData(\n        X=df_t.values,\n        var=pd.Index(var_names, name='gene'),\n        obs=pd.Index(obs_names, name='cell')\n    )\n    \n    logger.info(f\"Created AnnData object with shape: {adata.shape} (cells x genes)\")\n    return adata\n\n\ndef quality_control(adata: anndata.AnnData) -> anndata.AnnData:\n    \"\"\"\n    Apply standard quality control filters.\n    \n    Steps:\n    1. Filter cells with < 500 detected genes.\n    2. Filter genes detected in < 3 cells.\n    3. Compute pct_counts_mt for genes prefixed with 'MT-'.\n    4. Flag cells with >20% mitochondrial counts.\n    \n    Parameters:\n        adata: AnnData object.\n        \n    Returns:\n        Filtered AnnData object with QC metrics added.\n    \"\"\"\n    logger.info(\"Starting quality control...\")\n    \n    # Step 1: Filter cells with < 500 detected genes\n    # n_genes is the number of non-zero entries per cell\n    adata.obs['n_genes'] = adata.X.sum(axis=1) > 0  # This is wrong, let's use proper method\n    \n    # Actually, let's use scanpy's built-in methods for clarity\n    # First, let's compute the number of detected genes per cell\n    # In AnnData, adata.X is the count matrix. We can count non-zero entries.\n    # But scanpy has a more standard way. Let's use sc.pp.filter_cells and sc.pp.filter_genes\n    \n    # Filter cells with < 500 detected genes\n    # We need to compute n_genes first. In scanpy, after loading, we can use:\n    # adata.obs['n_genes'] = adata.X.sum(axis=1) > 0 doesn't give count of non-zeros.\n    # Let's compute it properly.\n    \n    # Count non-zero entries per cell (detected genes)\n    adata.obs['n_genes'] = np.array(adata.X > 0).sum(axis=1)\n    \n    logger.info(f\"Before cell filtering: {adata.n_obs} cells\")\n    adata = adata[adata.obs['n_genes'] >= 500].copy()\n    logger.info(f\"After cell filtering (>=500 genes): {adata.n_obs} cells\")\n    \n    # Step 2: Filter genes detected in < 3 cells\n    # Count non-zero entries per gene (detected cells)\n    adata.var['n_cells'] = np.array(adata.X > 0).sum(axis=0)\n    \n    logger.info(f\"Before gene filtering: {adata.n_vars} genes\")\n    adata = adata[:, adata.var['n_cells'] >= 3].copy()\n    logger.info(f\"After gene filtering (>=3 cells): {adata.n_vars} genes\")\n    \n    # Step 3: Compute pct_counts_mt for genes prefixed with 'MT-'\n    # Identify mitochondrial genes\n    mt_genes = [gene for gene in adata.var_names if gene.startswith('MT-')]\n    logger.info(f\"Found {len(mt_genes)} mitochondrial genes\")\n    \n    if len(mt_genes) > 0:\n        # Compute percentage of mitochondrial counts per cell\n        # Total counts per cell\n        total_counts = adata.X.sum(axis=1)\n        # Mitochondrial counts per cell\n        mt_counts = adata[:, mt_genes].X.sum(axis=1)\n        # Percentage\n        adata.obs['pct_counts_mt'] = (mt_counts / total_counts) * 100\n    else:\n        logger.warning(\"No mitochondrial genes found. Setting pct_counts_mt to 0.\")\n        adata.obs['pct_counts_mt'] = 0.0\n    \n    # Step 4: Flag cells with >20% mitochondrial counts\n    adata.obs['high_mt'] = adata.obs['pct_counts_mt'] > 20\n    n_high_mt = adata.obs['high_mt'].sum()\n    logger.info(f\"Cells with >20% mitochondrial counts: {n_high_mt}\")\n    \n    # Remove cells with high mitochondrial content\n    adata = adata[~adata.obs['high_mt']].",
+          "ttft_s": 0.492,
+          "total_s": 272.885,
+          "prompt_tokens": 448,
+          "completion_tokens": 1500,
+          "finish_reason": "length",
+          "tok_per_s": 5.5
+        }
+      ],
+      "warmup": {
+        "output": "```python\n#!/usr/bin/env python3\n\"\"\"\nAnalysis script for GSE100866 CD8 CITE-seq RNA UMI data.\n\nThis script performs:\n1. Loading and preprocessing of the UMI count matrix.\n2. Quality control (cell and gene filtering, mitochondrial percentage).\n3. Normalization, log-transformation, and highly variable gene selection.\n4. Dimensionality reduction (PCA, UMAP) and clustering (Leiden).\n5. Marker gene identification per cluster.\n6. Saving results to disk.\n\"\"\"\n\nimport os\nimport pandas as pd\nimport numpy as np\nimport scanpy as sc\nimport anndata\nimport logging\n\n# Configure logging\nlogging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')\nlogger = logging.getLogger(__name__)\n\n# Define file paths\nINPUT_FILE = \"GSE100866_CD8_merged-RNA_umi.csv.gz\"\nOUTPUT_DIR = \"output\"\nMARKERS_TSV = os.path.join(OUTPUT_DIR, \"cluster_markers_top10.tsv\")\nANNDATA_H5AD = os.path.join(OUTPUT_DIR, \"GSE100866_CD8_processed.h5ad\")\n\n# Create output directory if it doesn't exist\nos.makedirs(OUTPUT_DIR, exist_ok=True)\n\n\ndef load_data(input_file: str) -> anndata.AnnData:\n    \"\"\"\n    Load the UMI count matrix from a gzipped CSV file.\n    \n    The input file has genes in rows and cells in columns.\n    We transpose so that cells are rows and genes are columns,\n    then build an AnnData object.\n    \n    Parameters:\n        input_file: Path to the gzipped CSV file.\n        \n    Returns:\n        AnnData object with cells as rows and genes as columns.\n    \"\"\"\n    logger.info(f\"Loading data from {input_file}...\")\n    \n    # Read the CSV file (genes in rows, cells in columns)\n    # index_col=0 to use gene names as index\n    df = pd.read_csv(input_file, compression='gzip', index_col=0)\n    \n    logger.info(f\"Loaded matrix with shape: {df.shape} (genes x cells)\")\n    \n    # Transpose so cells are rows and genes are columns\n    df_t = df.T\n    \n    # Extract gene names and cell names\n    var_names = df.index.tolist()  # gene names\n    obs_names = df_t.index.tolist()  # cell names\n    \n    # Create AnnData object\n    # X should be the count matrix (cells x genes)\n    adata = anndata.AnnData(\n        X=df_t.values,\n        var=pd.Index(var_names, name='gene'),\n        obs=pd.Index(obs_names, name='cell')\n    )\n    \n    logger.info(f\"Created AnnData object with shape: {adata.shape} (cells x genes)\")\n    return adata\n\n\ndef quality_control(adata: anndata.AnnData) -> anndata.AnnData:\n    \"\"\"\n    Apply standard quality control filters.\n    \n    Steps:\n    1. Filter cells with < 500 detected genes.\n    2. Filter genes detected in < 3 cells.\n    3. Compute pct_counts_mt for genes prefixed with 'MT-'.\n    4. Flag cells with >20% mitochondrial counts.\n    \n    Parameters:\n        adata: AnnData object.\n        \n    Returns:\n        Filtered AnnData object with QC metrics added.\n    \"\"\"\n    logger.info(\"Starting quality control...\")\n    \n    # Step 1: Filter cells with < 500 detected genes\n    # n_genes is the number of non-zero entries per cell\n    adata.obs['n_genes'] = adata.X.sum(axis=1) > 0  # This is wrong, let's use proper method\n    \n    # Actually, let's use scanpy's built-in methods for clarity\n    # First, let's compute the number of detected genes per cell\n    # In AnnData, adata.X is the count matrix. We can count non-zero entries.\n    # But scanpy has a more standard way. Let's use sc.pp.filter_cells and sc.pp.filter_genes\n    \n    # Filter cells with < 500 detected genes\n    # We need to compute n_genes first. In scanpy, after loading, we can use:\n    # adata.obs['n_genes'] = adata.X.sum(axis=1) > 0 doesn't give count of non-zeros.\n    # Let's compute it properly.\n    \n    # Count non-zero entries per cell (detected genes)\n    adata.obs['n_genes'] = np.array(adata.X > 0).sum(axis=1)\n    \n    logger.info(f\"Before cell filtering: {adata.n_obs} cells\")\n    adata = adata[adata.obs['n_genes'] >= 500].copy()\n    logger.info(f\"After cell filtering (>=500 genes): {adata.n_obs} cells\")\n    \n    # Step 2: Filter genes detected in < 3 cells\n    # Count non-zero entries per gene (detected cells)\n    adata.var['n_cells'] = np.array(adata.X > 0).sum(axis=0)\n    \n    logger.info(f\"Before gene filtering: {adata.n_vars} genes\")\n    adata = adata[:, adata.var['n_cells'] >= 3].copy()\n    logger.info(f\"After gene filtering (>=3 cells): {adata.n_vars} genes\")\n    \n    # Step 3: Compute pct_counts_mt for genes prefixed with 'MT-'\n    # Identify mitochondrial genes\n    mt_genes = [gene for gene in adata.var_names if gene.startswith('MT-')]\n    logger.info(f\"Found {len(mt_genes)} mitochondrial genes\")\n    \n    if len(mt_genes) > 0:\n        # Compute percentage of mitochondrial counts per cell\n        # Total counts per cell\n        total_counts = adata.X.sum(axis=1)\n        # Mitochondrial counts per cell\n        mt_counts = adata[:, mt_genes].X.sum(axis=1)\n        # Percentage\n        adata.obs['pct_counts_mt'] = (mt_counts / total_counts) * 100\n    else:\n        logger.warning(\"No mitochondrial genes found. Setting pct_counts_mt to 0.\")\n        adata.obs['pct_counts_mt'] = 0.0\n    \n    # Step 4: Flag cells with >20% mitochondrial counts\n    adata.obs['high_mt'] = adata.obs['pct_counts_mt'] > 20\n    n_high_mt = adata.obs['high_mt'].sum()\n    logger.info(f\"Cells with >20% mitochondrial counts: {n_high_mt}\")\n    \n    # Remove cells with high mitochondrial content\n    adata = adata[~adata.obs['high_mt']].",
+        "ttft_s": 8.141,
+        "total_s": 277.923,
+        "prompt_tokens": 448,
+        "completion_tokens": 1500,
+        "finish_reason": "length",
+        "tok_per_s": 5.4
+      },
+      "hot_ttft_s": 0.423,
+      "ttft_s": {
+        "mean": 0.492,
+        "min": 0.492,
+        "max": 0.492
+      },
+      "cold_ttft_s": 8.141,
+      "total_s": {
+        "mean": 272.885,
+        "min": 272.885,
+        "max": 272.885
+      },
+      "tok_per_s": {
+        "mean": 5.5,
+        "min": 5.5,
+        "max": 5.5
+      },
+      "prompt_tokens": 448,
+      "completion_tokens": {
+        "mean": 1500.0,
+        "min": 1500,
+        "max": 1500
+      },
+      "cache_speedup_ttft": 19.25,
+      "quality": {
+        "max": 12,
+        "scored": 6,
+        "checks": {
+          "import_scanpy": {
+            "passed": true
+          },
+          "import_anndata": {
+            "passed": true
+          },
+          "read_csv": {
+            "passed": true
+          },
+          "transpose": {
+            "passed": true
+          },
+          "qc_filter_cells": {
+            "passed": false
+          },
+          "qc_filter_genes": {
+            "passed": false
+          },
+          "mito_pct": {
+            "passed": true
+          },
+          "normalize_log": {
+            "passed": false
+          },
+          "hv_genes": {
+            "passed": false
+          },
+          "pca_neighbors_umap_leiden": {
+            "passed": false
+          },
+          "rank_genes": {
+            "passed": false
+          },
+          "save_anndata": {
+            "passed": true
+          }
+        }
+      }
+    },
+    "protein_function": {
+      "runs": 1,
+      "ok": 1,
+      "samples": [
+        {
+          "output": "**1. Paradox**\nThe apparent paradox of an intrinsically disordered region (IDR) mediating specific binding is resolved by the concept of **conformational selection** and **induced fit**. While the BRCA1 p53-binding domain (aa 224-500) lacks stable secondary structure in isolation, it possesses a high density of specific amino acid sequences that can transiently sample conformations complementary to the p53 C-terminal domain (CTD). The interaction is driven by the high affinity of these transient states for the p53 surface, allowing the IDR to \"lock\" into a bound conformation. This mechanism allows for high specificity despite low structural rigidity, a hallmark of many critical regulatory protein-protein interactions.\n\n**2. Mechanism**\nThe most likely mechanism is **coupled folding-and-binding** mediated by a **Molecular Recognition Feature (MoRF)**. The BRCA1 sequence contains short linear motifs (SLiMs) or amphipathic helical MoRFs that are disordered in the free state but fold into specific secondary structures (likely helices) upon binding to the hydrophobic pockets of the p53 CTD. This process converts the entropic penalty of folding into the enthalpic gain of specific contacts, ensuring that binding occurs only when the correct partner is present, thereby preventing non-specific aggregation.\n\n**3. Functional Implication**\nBRCA1 binding to the p53 CTD typically acts as a **negative regulator** or stabilizer, often inhibiting p53âs transcriptional activity or promoting its degradation, depending on the cellular context. To distinguish between transcriptional activation and protein stabilization, one would perform a **cycloheximide chase assay** combined with **RT-qPCR**. If BRCA1 stabilizes p53, the half-life of p53 protein will increase without necessarily changing the immediate transcriptional output of target genes (e.g., *MDM2*, *PUMA*). Conversely, if BRCA1 activates transcription, one would observe increased mRNA levels of p53 target genes even if p53 protein levels remain constant or decrease.\n\n**4. Experimental Design**\nI would choose **Hydrogen-Deuterium Exchange Mass Spectrometry (HDX-MS)**. Unlike NMR, which requires high sample amounts and may struggle with the large size of the complex, or cryo-EM, which requires high-resolution structures that may not be achievable for dynamic IDP complexes, HDX-MS is ideal for mapping transient interactions. It identifies specific peptide regions on BRCA1 that become protected from solvent exchange upon p53 binding, directly revealing the minimal contact residues. This technique is particularly powerful for IDPs because it can detect local structural changes and binding interfaces without requiring the entire domain to fold into a rigid structure, providing a high-resolution map of the interaction surface.",
+          "ttft_s": 0.357,
+          "total_s": 112.862,
+          "prompt_tokens": 1486,
+          "completion_tokens": 598,
+          "finish_reason": "stop",
+          "tok_per_s": 5.3
+        }
+      ],
+      "warmup": {
+        "output": "**1. Paradox**\nThe apparent paradox of an intrinsically disordered region (IDR) mediating specific binding is resolved by the concept of **conformational selection** and **induced fit**. While the BRCA1 p53-binding domain (aa 224-500) lacks stable secondary structure in isolation, it possesses a high density of specific amino acid sequences that can transiently sample conformations complementary to the p53 C-terminal domain (CTD). The interaction is driven by the high affinity of these transient states for the p53 surface, allowing the IDR to \"lock\" into a bound conformation. This mechanism allows for high specificity despite low structural rigidity, a hallmark of many critical regulatory protein-protein interactions.\n\n**2. Mechanism**\nThe most likely mechanism is **coupled folding-and-binding** mediated by a **Molecular Recognition Feature (MoRF)**. The BRCA1 sequence contains short linear motifs (SLiMs) or amphipathic helical MoRFs that are disordered in the free state but fold into specific secondary structures (likely helices) upon binding to the hydrophobic pockets of the p53 CTD. This process converts the entropic penalty of folding into the enthalpic gain of specific contacts, ensuring that binding occurs only when the correct partner is present, thereby preventing non-specific aggregation.\n\n**3. Functional Implication**\nBRCA1 binding to the p53 CTD typically acts as a **negative regulator** or stabilizer, often inhibiting p53âs transcriptional activity or promoting its degradation, depending on the cellular context. To distinguish between transcriptional activation and protein stabilization, one would perform a **cycloheximide chase assay** combined with **RT-qPCR**. If BRCA1 stabilizes p53, the half-life of p53 protein will increase without necessarily changing the immediate transcriptional output of target genes (e.g., *MDM2*, *PUMA*). Conversely, if BRCA1 activates transcription, one would observe increased mRNA levels of p53 target genes even if p53 protein levels remain constant or decrease.\n\n**4. Experimental Design**\nI would choose **Hydrogen-Deuterium Exchange Mass Spectrometry (HDX-MS)**. Unlike NMR, which requires high sample amounts and may struggle with the large size of the complex, or cryo-EM, which requires high-resolution structures that may not be achievable for dynamic IDP complexes, HDX-MS is ideal for mapping transient interactions. It identifies specific peptide regions on BRCA1 that become protected from solvent exchange upon p53 binding, directly revealing the minimal contact residues. This technique is particularly powerful for IDPs because it can detect local structural changes and binding interfaces without requiring the entire domain to fold into a rigid structure, providing a high-resolution map of the interaction surface.",
+        "ttft_s": 24.728,
+        "total_s": 132.143,
+        "prompt_tokens": 1486,
+        "completion_tokens": 598,
+        "finish_reason": "stop",
+        "tok_per_s": 4.53
+      },
+      "hot_ttft_s": 0.388,
+      "ttft_s": {
+        "mean": 0.357,
+        "min": 0.357,
+        "max": 0.357
+      },
+      "cold_ttft_s": 24.728,
+      "total_s": {
+        "mean": 112.862,
+        "min": 112.862,
+        "max": 112.862
+      },
+      "tok_per_s": {
+        "mean": 5.3,
+        "min": 5.3,
+        "max": 5.3
+      },
+      "prompt_tokens": 1486,
+      "completion_tokens": {
+        "mean": 598.0,
+        "min": 598,
+        "max": 598
+      },
+      "cache_speedup_ttft": 63.73,
+      "quality": {
+        "max": 4,
+        "scored": 4,
+        "checks": {
+          "q1_idp_mechanism": {
+            "hit_count": 3,
+            "passed": true,
+            "keywords_matched": [
+              "coupled folding",
+              "morf",
+              "molecular recognition feature",
+              "intrinsically disordered",
+              "induced fit",
+              "conformational selection"
+            ]
+          },
+          "q2_mechanism_name": {
+            "hit_count": 6,
+            "keywords_matched": [
+              "morf",
+              "molecular recognition feature",
+              "coupled folding",
+              "short linear motif",
+              "slim",
+              "intrinsically disordered"
+            ],
+            "passed": true
+          },
+          "q3_function": {
+            "hit_count": 2,
+            "keywords_matched": [
+              "transcription",
+              "stabiliz"
+            ],
+            "passed": true
+          },
+          "q4_experiment": {
+            "methods_matched": [
+              "nmr",
+              "hdx-ms",
+              "cryo-em"
+            ],
+            "passed": true
+          }
+        }
+      }
+    },
+    "medmcqa": {
+      "runs": 1,
+      "ok": 1,
+      "samples": [
+        {
+          "output": "1. B\n2. B\n3. A\n4. B\n5. C\n6. B\n7. B\n8. C\n9. A\n10. B\n11. D\n12. A\n13. A\n14. B\n15. B\n16. A\n17. B\n18. D\n19. B\n20. A",
+          "ttft_s": 0.388,
+          "total_s": 17.951,
+          "prompt_tokens": 1303,
+          "completion_tokens": 91,
+          "finish_reason": "stop",
+          "tok_per_s": 5.07
+        }
+      ],
+      "warmup": {
+        "output": "1. B\n2. B\n3. A\n4. B\n5. C\n6. B\n7. B\n8. C\n9. A\n10. B\n11. D\n12. A\n13. A\n14. B\n15. B\n16. A\n17. B\n18. D\n19. B\n20. A",
+        "ttft_s": 24.319,
+        "total_s": 41.882,
+        "prompt_tokens": 1303,
+        "completion_tokens": 91,
+        "finish_reason": "stop",
+        "tok_per_s": 2.17
+      },
+      "hot_ttft_s": 0.385,
+      "ttft_s": {
+        "mean": 0.388,
+        "min": 0.388,
+        "max": 0.388
+      },
+      "cold_ttft_s": 24.319,
+      "total_s": {
+        "mean": 17.951,
+        "min": 17.951,
+        "max": 17.951
+      },
+      "tok_per_s": {
+        "mean": 5.07,
+        "min": 5.07,
+        "max": 5.07
+      },
+      "prompt_tokens": 1303,
+      "completion_tokens": {
+        "mean": 91.0,
+        "min": 91,
+        "max": 91
+      },
+      "cache_speedup_ttft": 63.17,
+      "quality": {
+        "max": 20,
+        "scored": 15,
+        "answered": 20,
+        "accuracy": 0.75,
+        "random_baseline": 0.25,
+        "majority_baseline": 0.45,
+        "missing": [],
+        "per_item": [
+          {
+            "i": 1,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 2,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 3,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          },
+          {
+            "i": 4,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 5,
+            "truth": "a",
+            "got": "c",
+            "correct": false
+          },
+          {
+            "i": 6,
+            "truth": "a",
+            "got": "b",
+            "correct": false
+          },
+          {
+            "i": 7,
+            "truth": "a",
+            "got": "b",
+            "correct": false
+          },
+          {
+            "i": 8,
+            "truth": "c",
+            "got": "c",
+            "correct": true
+          },
+          {
+            "i": 9,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          },
+          {
+            "i": 10,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 11,
+            "truth": "d",
+            "got": "d",
+            "correct": true
+          },
+          {
+            "i": 12,
+            "truth": "b",
+            "got": "a",
+            "correct": false
+          },
+          {
+            "i": 13,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          },
+          {
+            "i": 14,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 15,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 16,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          },
+          {
+            "i": 17,
+            "truth": "a",
+            "got": "b",
+            "correct": false
+          },
+          {
+            "i": 18,
+            "truth": "d",
+            "got": "d",
+            "correct": true
+          },
+          {
+            "i": 19,
+            "truth": "b",
+            "got": "b",
+            "correct": true
+          },
+          {
+            "i": 20,
+            "truth": "a",
+            "got": "a",
+            "correct": true
+          }
+        ]
+      }
+    },
+    "json_output": {
+      "runs": 1,
+      "ok": 1,
+      "samples": [
+        {
+          "output": "{\n  \"gene\": \"BRCA1\",\n  \"variants\": [\n    {\"position\": 205, \"ref\": \"T\", \"alt\": \"C\", \"type\": \"SNP\"},\n    {\"position\": 245, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 713, \"ref\": \"A\", \"alt\": \"T\", \"type\": \"SNP\"},\n    {\"position\": 913, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 5544, \"ref\": \"C\", \"alt\": \"T\", \"type\": \"SNP\"}\n  ],\n  \"count\": 5\n}",
+          "ttft_s": 0.383,
+          "total_s": 34.406,
+          "prompt_tokens": 245,
+          "completion_tokens": 176,
+          "finish_reason": "stop",
+          "tok_per_s": 5.12
+        }
+      ],
+      "warmup": {
+        "output": "{\n  \"gene\": \"BRCA1\",\n  \"variants\": [\n    {\"position\": 205, \"ref\": \"T\", \"alt\": \"C\", \"type\": \"SNP\"},\n    {\"position\": 245, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 713, \"ref\": \"A\", \"alt\": \"T\", \"type\": \"SNP\"},\n    {\"position\": 913, \"ref\": \"C\", \"alt\": \"G\", \"type\": \"SNP\"},\n    {\"position\": 5544, \"ref\": \"C\", \"alt\": \"T\", \"type\": \"SNP\"}\n  ],\n  \"count\": 5\n}",
+        "ttft_s": 5.072,
+        "total_s": 39.109,
+        "prompt_tokens": 245,
+        "completion_tokens": 176,
+        "finish_reason": "stop",
+        "tok_per_s": 4.5
+      },
+      "hot_ttft_s": 0.381,
+      "ttft_s": {
+        "mean": 0.383,
+        "min": 0.383,
+        "max": 0.383
+      },
+      "cold_ttft_s": 5.072,
+      "total_s": {
+        "mean": 34.406,
+        "min": 34.406,
+        "max": 34.406
+      },
+      "tok_per_s": {
+        "mean": 5.12,
+        "min": 5.12,
+        "max": 5.12
+      },
+      "prompt_tokens": 245,
+      "completion_tokens": {
+        "mean": 176.0,
+        "min": 176,
+        "max": 176
+      },
+      "cache_speedup_ttft": 13.31,
+      "quality": {
+        "max": 6,
+        "scored": 6,
+        "checks": {
+          "parse": {
+            "passed": true
+          },
+          "schema": {
+            "passed": true
+          },
+          "count_eq_5": {
+            "passed": true,
+            "got": 5
+          },
+          "variants_len_5": {
+            "passed": true,
+            "got": 5
+          },
+          "positions": {
+            "passed": true,
+            "expected": [
+              205,
+              245,
+              713,
+              913,
+              5544
+            ],
+            "got": [
+              205,
+              245,
+              713,
+              913,
+              5544
+            ]
+          },
+          "ref_alt": {
+            "passed": true,
+            "correct_count": 5
+          }
+        }
+      }
+    },
+    "long_generation": {
+      "runs": 1,
+      "ok": 1,
+      "samples": [
+        {
+          "output": "### Mechanism\n\nThe therapeutic efficacy of poly (ADP-ribose) polymerase (PARP) inhibitors in BRCA1/2-deficient malignancies is predicated on the principle of synthetic lethality, wherein the simultaneous disruption of two non-redundant DNA repair pathways leads to cell death. Under normal physiological conditions, PARP1 and PARP2 are recruited to sites of single-strand DNA breaks (SSBs) to facilitate base excision repair (BER) and single-strand break repair (SSBR). Upon PARP inhibition, these enzymes become trapped on the DNA, forming stable PARP-DNA complexes that act as physical obstacles to transcription and replication. This \"PARP trapping\" converts transient SSBs into persistent double-strand breaks (DSBs) during the S-phase of the cell cycle. In wild-type cells, these DSBs are efficiently repaired via homologous recombination (HR), a high-fidelity pathway heavily dependent on the BRCA1 and BRCA2 proteins. BRCA1 facilitates the resection of 5' DNA ends and the loading of RAD51 onto 3' single-stranded DNA, while BRCA2 directly mediates the RAD51 filament assembly required for strand invasion. In BRCA1/2-deficient tumors, the HR pathway is compromised, rendering cells unable to resolve PARP inhibitor-induced DSBs. Consequently, cells rely on error-prone alternative pathways, such as non-homologous end joining (NHEJ) or microhomology-mediated end joining (MMEJ), leading to genomic instability, chromosomal aberrations, and ultimately, mitotic catastrophe and apoptosis. This differential vulnerability allows for selective cytotoxicity in HR-deficient cells while sparing normal tissues that retain functional HR capacity.\n\n### Clinical Evidence\n\nThe clinical validation of PARP inhibitors as a class has been driven by several pivotal phase III trials demonstrating significant improvements in progression-free survival (PFS) in patients with germline BRCA1/2 (gBRCA)-mutated advanced ovarian, fallopian tube, or primary peritoneal cancer. Olaparib, the first PARP inhibitor approved for this indication, was evaluated in the SOLO-1 trial, which established its role as maintenance therapy following response to first-line platinum-based chemotherapy. In this study, olaparib significantly prolonged PFS compared to placebo, with a hazard ratio (HR) of 0.18 (95% CI, 0.11â0.30; P < 0.001), indicating an 82% reduction in the risk of disease progression or death. Furthermore, the SOLO-2 trial demonstrated the efficacy of olaparib as maintenance therapy in the recurrent setting, yielding a PFS HR of 0.30 (95% CI, 0.21â0.44; P < 0.001) in gBRCA-mutated patients.\n\nRucaparib received approval based on the ARIEL3 trial, which assessed its use as maintenance therapy in recurrent disease. The trial reported a PFS HR of 0.30 (95% CI, 0.21â0.43; P < 0.001) in the gBRCA-mutated cohort. More recently, niraparib was approved based on the NOVA trial, which showed a PFS HR of 0.27 (95% CI, 0.18â0.40; P < 0.001) in the gBRCA-mutated population. These consistent outcomes across multiple agents have solidified PARP inhibitors as a standard of care for HR-deficient ovarian cancer, significantly altering the treatment landscape and improving quality of life by delaying the need for subsequent lines of chemotherapy.\n\n### Resistance Mechanisms\n\nDespite initial efficacy, acquired resistance to PARP inhibitors is a major clinical challenge, driven by several distinct molecular mechanisms. The most well-characterized mechanism is the reversion of BRCA1/2 truncating mutations. Through secondary somatic mutations, such as frameshift or nonsense mutations, the tumor can restore the open reading frame of the BRCA gene, thereby re-establishing functional homologous recombination repair. This restores the cellâs ability to repair PARP inhibitor-induced DSBs, conferring high-level resistance.\n\nAnother significant mechanism involves the upregulation of replication fork protection pathways. Cells may overexpress proteins such as RAD51 or BRCA2, or enhance the activity of fork protection factors like CtIP and BRIP1, which stabilize stalled replication forks and prevent their collapse into DSBs. By maintaining fork stability, these cells reduce the dependency on HR for survival. Additionally, increased expression of drug efflux pumps, particularly P-glycoprotein (ABCB1), can reduce intracellular concentrations of PARP inhibitors, leading to sub-therapeutic drug levels and subsequent resistance. Understanding these mechanisms is critical for developing combination strategies that target both PARP and alternative repair or survival pathways.\n\n### Open Question\n\nA critical open question in this field is the optimal sequencing and combination of PARP inhibitors with other targeted therapies, such as immune checkpoint inhibitors (ICIs) or PI3K/AKT/mTOR inhibitors, to overcome or prevent resistance. While PARP inhibitors induce immunogenic cell death and can upregulate PD-L1 expression, the clinical benefit of combining them with ICIs in BRCA-mutated ovarian cancer has been inconsistent in phase II and III trials. Determining the predictive biomarkers that identify patients who will benefit from this combination is essential. This matters for patient care because it could expand the therapeutic window for patients who develop resistance to PARP inhibitors alone, potentially offering a durable response without the immediate toxicity of platinum-based chemotherapy. Resolving this question requires robust biomarker-driven clinical trials to define the specific genomic and immunomic contexts in which synthetic lethality can be maximally exploited in combination regimens.",
+          "ttft_s": 0.546,
+          "total_s": 237.091,
+          "prompt_tokens": 301,
+          "completion_tokens": 1230,
+          "finish_reason": "stop",
+          "tok_per_s": 5.19
+        }
+      ],
+      "warmup": {
+        "output": "### Mechanism\n\nThe therapeutic efficacy of poly (ADP-ribose) polymerase (PARP) inhibitors in BRCA1/2-deficient malignancies is predicated on the principle of synthetic lethality, wherein the simultaneous disruption of two non-redundant DNA repair pathways leads to cell death. Under normal physiological conditions, PARP1 and PARP2 are recruited to sites of single-strand DNA breaks (SSBs) to facilitate base excision repair (BER) and single-strand break repair (SSBR). Upon PARP inhibition, these enzymes become trapped on the DNA, forming stable PARP-DNA complexes that act as physical obstacles to transcription and replication. This \"PARP trapping\" converts transient SSBs into persistent double-strand breaks (DSBs) during the S-phase of the cell cycle. In wild-type cells, these DSBs are efficiently repaired via homologous recombination (HR), a high-fidelity pathway heavily dependent on the BRCA1 and BRCA2 proteins. BRCA1 facilitates the resection of 5' DNA ends and the loading of RAD51 onto 3' single-stranded DNA, while BRCA2 directly mediates the RAD51 filament assembly required for strand invasion. In BRCA1/2-deficient tumors, the HR pathway is compromised, rendering cells unable to resolve PARP inhibitor-induced DSBs. Consequently, cells rely on error-prone alternative pathways, such as non-homologous end joining (NHEJ) or microhomology-mediated end joining (MMEJ), leading to genomic instability, chromosomal aberrations, and ultimately, mitotic catastrophe and apoptosis. This differential vulnerability allows for selective cytotoxicity in HR-deficient cells while sparing normal tissues that retain functional HR capacity.\n\n### Clinical Evidence\n\nThe clinical validation of PARP inhibitors as a class has been driven by several pivotal phase III trials demonstrating significant improvements in progression-free survival (PFS) in patients with germline BRCA1/2 (gBRCA)-mutated advanced ovarian, fallopian tube, or primary peritoneal cancer. Olaparib, the first PARP inhibitor approved for this indication, was evaluated in the SOLO-1 trial, which established its role as maintenance therapy following response to first-line platinum-based chemotherapy. In this study, olaparib significantly prolonged PFS compared to placebo, with a hazard ratio (HR) of 0.18 (95% CI, 0.11â0.30; P < 0.001), indicating an 82% reduction in the risk of disease progression or death. Furthermore, the SOLO-2 trial demonstrated the efficacy of olaparib as maintenance therapy in the recurrent setting, yielding a PFS HR of 0.30 (95% CI, 0.21â0.44; P < 0.001) in gBRCA-mutated patients.\n\nRucaparib received approval based on the ARIEL3 trial, which assessed its use as maintenance therapy in recurrent disease. The trial reported a PFS HR of 0.30 (95% CI, 0.21â0.43; P < 0.001) in the gBRCA-mutated cohort. More recently, niraparib was approved based on the NOVA trial, which showed a PFS HR of 0.27 (95% CI, 0.18â0.40; P < 0.001) in the gBRCA-mutated population. These consistent outcomes across multiple agents have solidified PARP inhibitors as a standard of care for HR-deficient ovarian cancer, significantly altering the treatment landscape and improving quality of life by delaying the need for subsequent lines of chemotherapy.\n\n### Resistance Mechanisms\n\nDespite initial efficacy, acquired resistance to PARP inhibitors is a major clinical challenge, driven by several distinct molecular mechanisms. The most well-characterized mechanism is the reversion of BRCA1/2 truncating mutations. Through secondary somatic mutations, such as frameshift or nonsense mutations, the tumor can restore the open reading frame of the BRCA gene, thereby re-establishing functional homologous recombination repair. This restores the cellâs ability to repair PARP inhibitor-induced DSBs, conferring high-level resistance.\n\nAnother significant mechanism involves the upregulation of replication fork protection pathways. Cells may overexpress proteins such as RAD51 or BRCA2, or enhance the activity of fork protection factors like CtIP and BRIP1, which stabilize stalled replication forks and prevent their collapse into DSBs. By maintaining fork stability, these cells reduce the dependency on HR for survival. Additionally, increased expression of drug efflux pumps, particularly P-glycoprotein (ABCB1), can reduce intracellular concentrations of PARP inhibitors, leading to sub-therapeutic drug levels and subsequent resistance. Understanding these mechanisms is critical for developing combination strategies that target both PARP and alternative repair or survival pathways.\n\n### Open Question\n\nA critical open question in this field is the optimal sequencing and combination of PARP inhibitors with other targeted therapies, such as immune checkpoint inhibitors (ICIs) or PI3K/AKT/mTOR inhibitors, to overcome or prevent resistance. While PARP inhibitors induce immunogenic cell death and can upregulate PD-L1 expression, the clinical benefit of combining them with ICIs in BRCA-mutated ovarian cancer has been inconsistent in phase II and III trials. Determining the predictive biomarkers that identify patients who will benefit from this combination is essential. This matters for patient care because it could expand the therapeutic window for patients who develop resistance to PARP inhibitors alone, potentially offering a durable response without the immediate toxicity of platinum-based chemotherapy. Resolving this question requires robust biomarker-driven clinical trials to define the specific genomic and immunomic contexts in which synthetic lethality can be maximally exploited in combination regimens.",
+        "ttft_s": 6.185,
+        "total_s": 245.513,
+        "prompt_tokens": 301,
+        "completion_tokens": 1230,
+        "finish_reason": "stop",
+        "tok_per_s": 5.01
+      },
+      "hot_ttft_s": 0.398,
+      "ttft_s": {
+        "mean": 0.546,
+        "min": 0.546,
+        "max": 0.546
+      },
+      "cold_ttft_s": 6.185,
+      "total_s": {
+        "mean": 237.091,
+        "min": 237.091,
+        "max": 237.091
+      },
+      "tok_per_s": {
+        "mean": 5.19,
+        "min": 5.19,
+        "max": 5.19
+      },
+      "prompt_tokens": 301,
+      "completion_tokens": {
+        "mean": 1230.0,
+        "min": 1230,
+        "max": 1230
+      },
+      "cache_speedup_ttft": 15.54,
+      "quality": {
+        "max": 6,
+        "scored": 6,
+        "checks": {
+          "word_count": {
+            "passed": true,
+            "word_count": 777,
+            "expected": "500-1200"
+          },
+          "sections": {
+            "passed": true,
+            "found": 4,
+            "expected": 4
+          },
+          "topic_hr_mechanism": {
+            "passed": true,
+            "hit_count": 8,
+            "keywords_matched": [
+              "homologous recombination",
+              "dsb",
+              "double-strand break",
+              "parp trapping",
+              "single-strand break",
+              "ssb",
+              "brca1",
+              "brca2"
+            ]
+          },
+          "topic_drug_names": {
+            "passed": true,
+            "hit_count": 4,
+            "keywords_matched": [
+              "olaparib",
+              "rucaparib",
+              "niraparib",
+              "parp inhibitor"
+            ]
+          },
+          "topic_resistance_term": {
+            "passed": true,
+            "hit_count": 4,
+            "keywords_matched": [
+              "reversion",
+              "fork protection",
+              "replication fork",
+              "drug efflux"
+            ]
+          },
+          "topic_outcome_metric": {
+            "passed": true,
+            "hit_count": 4,
+            "keywords_matched": [
+              "pfs",
+              "progression-free survival",
+              "hazard ratio",
+              "os"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "environment": {
+    "hostname": "yudeMacBook-Pro.local",
+    "platform": "Darwin 25.5.0 (arm64)",
+    "python": "3.14.6",
+    "llm_label": "m1pro-qwen38-27b-lite",
+    "llm_api_url": "http://127.0.0.1:8080/v1",
+    "llm_model": "Qwen3.8-27B-UD-Q4_K_XL.gguf",
+    "cpu_cores": "10 (8 Performance and 2 Efficiency)",
+    "chip": "Apple M1 Pro",
+    "memory_gb": 32.0,
+    "memory_gb_str": "32 GB",
+    "gpu": "Apple M1 Pro",
+    "llm_endpoint_models": [
+      {
+        "id": "Qwen3.8-27B-UD-Q4_K_XL.gguf",
+        "aliases": [
+          "Qwen3.8-27B-UD-Q4_K_XL.gguf"
+        ],
+        "tags": [],
+        "object": "model",
+        "created": 1786798627,
+        "owned_by": "llamacpp",
+        "meta": {
+          "vocab_type": 2,
+          "n_vocab": 248320,
+          "n_ctx": 16384,
+          "n_ctx_train": 262144,
+          "n_embd": 5120,
+          "n_params": 27320697856,
+          "size": 17912397824,
+          "ftype": "Q4_K - Small"
+        }
+      }
+    ],
+    "llm_engine": "unknown (llamacpp)",
+    "llm_context": "unknown"
+  },
+  "overall_score": {
+    "overall": 47.6,
+    "sub_scores": {
+      "quality": 79.2,
+      "throughput": 1.9,
+      "ttft": 74.6,
+      "stability": null
+    },
+    "weights": {
+      "quality": 0.5,
+      "throughput": 0.3,
+      "ttft": 0.1,
+      "stability": 0.1
+    },
+    "quality_count": 6,
+    "tps_median": 5.3,
+    "ttft_median": 0.38,
+    "prefill_ttft_mean": null,
+    "prefill_tok_per_s": null
+  },
+  "note": {
+    "non_standard_config": true,
+    "runs": 1,
+    "skipped_tasks": [
+      "mutation_call",
+      "pubmedqa",
+      "prefill_nonce"
+    ],
+    "reason": "M1 Pro 32GB, model occupies 17.9GB; long prefill (>10k tokens) takes >1h per call under memory pressure",
+    "hardware": "Apple M1 Pro 10-core (8P+2E), 32GB unified memory, ~200GB/s bandwidth",
+    "engine": "llama.cpp llama-server, -c 16384 -t 8, mmproj-F16",
+    "model": "Qwen3.8-27B-UD-Q4_K_XL.gguf (Q4_K_XL, 17.9GB)",
+    "date": "2026-08-15",
+    "caveat": "Overall score NOT comparable with full runs: missing stability sub-score and 3 tasks skipped",
+    "key_numbers": "decode 5.1-5.6 tok/s; hot TTFT 0.35-0.55s; cache speedup 13-64x; medmcqa 15/20; json_output 6/6; long_generation 6/6; protein_function 4/4"
+  }
+}
