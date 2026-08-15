@@ -42,6 +42,42 @@ LLM 做不了 7000+ nt 序列的字符级逐位对齐（每条序列 ~2000 token
 第一次跑时服务器已热（缓存命中，pubmedqa TTFT 2.6s），第二次是冷启动（全量 prefill，11.8s）。
 v2 协议已修复（cold/hot 分报），见下面缓存相关 FAQ。
 
+### Q: "2 台 DGX，按 token 输出，DGX 方案感觉会快点"——对吗？
+
+**单请求（单流 decode）不成立，多用户并发场景才成立。** 分开看：
+
+**单流 decode 实测（最干净的指标，`long_generation`：短 prompt 长输出，prefill 占比 <3%）：**
+
+| 方案 | tok/s |
+|------|-------|
+| M5 Max 单机（ds4-server，q2）| **41.7** |
+| DGX 2 节点 TP=2（vLLM 升级后）| 22.9 |
+
+单流 M5 快 **1.83×**。短任务 decode 侧同样落后（expression_genes 43 vs 25、protein_function 43 vs 21）。
+
+**为什么 TP=2 不加速单请求 decode？** decode 是 memory-bound：每生成一个 token 都要读一遍全部权重，
+瓶颈是显存/统一内存带宽，不是算力。TP=2 把权重切到两台机器、每台只读一半，
+但每个 token 都要跨 InfiniBag/以太网同步 activation——通信延迟吃掉带宽收益，
+单请求通常持平甚至更慢。TP 加速的是**大 batch**（一次前向算 16/32 个请求，
+通信被摊薄）和**大模型单机放不下**的场景。
+
+**逐任务表里 DGX 反超的项别误读。** 比如 pubmedqa tok/s M5 17.7 vs DGX 31.0（×1.75）——
+那不是 decode 快，是 DGX 的 NVFP4 KV cache 把 prefill 压到 0.76s，摊薄了 total。
+`tok/s = tokens / total_s`，total 里混着 prefill，跨机器 prefill 差 10 倍时这个数不可比。
+纯 decode 只看 `long_generation`。
+
+**那"感觉快"从哪来？** 三个真实来源：
+1. **TTFT 秒回**：DGX 升级后 0.62s 首字，交互体感"快"
+2. **DSpark 投机解码**：贪婪模式下某些任务吞吐 +36%
+3. **并发总吞吐**：这是 2×DGX 的真正价值——两条路：
+   - **独立部署**（不用 TP）：两台各自 serve，总吞吐 2×22.9 = 45.8 t/s ≈ M5 单机 41.7，但能同时服务两个用户
+   - **TP=2 + continuous batching**：多用户并发时总吞吐远超单机（batch 越大通信摊得越薄）
+
+**本 benchmark 的协议边界**：单请求顺序发送，天然测不出并发优势——这是协议设计
+（科研场景以单用户为主），不是 DGX 不行。要测并发需要多客户端变体（Roadmap 里有）。
+**选型结论**：单人用选 M5（单流快 1.8×、笔记本）；多人共享/批量服务选 2×DGX
+（并发吞吐和 1M 上下文是 Mac 给不了的）。
+
 ---
 
 ## 方法论
