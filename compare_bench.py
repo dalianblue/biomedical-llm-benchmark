@@ -73,8 +73,9 @@ def compute_overall_score(data):
             quality_scores.append(q01)
     quality_score = (sum(quality_scores) / len(quality_scores) * 100) if quality_scores else None
 
-    tps_values = [td["tok_per_s"]["mean"] for td in tasks.values()
-                  if isinstance(td.get("tok_per_s"), dict)
+    tps_values = [td["tok_per_s"]["mean"] for name, td in tasks.items()
+                  if name != "prefill_nonce"   # decode 极短，tok/s 无意义
+                  and isinstance(td.get("tok_per_s"), dict)
                   and td["tok_per_s"]["mean"] is not None]
     if tps_values:
         tps_sorted = sorted(tps_values)
@@ -82,8 +83,9 @@ def compute_overall_score(data):
     else:
         throughput_score = None
 
-    ttft_values = [td["ttft_s"]["mean"] for td in tasks.values()
-                   if isinstance(td.get("ttft_s"), dict)
+    ttft_values = [td["ttft_s"]["mean"] for name, td in tasks.items()
+                   if name != "prefill_nonce"  # 专项指标单独看，不混入混合负载 TTFT
+                   and isinstance(td.get("ttft_s"), dict)
                    and td["ttft_s"]["mean"] is not None]
     if ttft_values:
         ttft_sorted = sorted(ttft_values)
@@ -206,14 +208,18 @@ def main():
         print(f"   - {d.get('label', '?'):<20} {env.get('chip', '?'):<14}"
               f"  {env.get('llm_engine', '?'):<12}  ({Path(p).name})")
 
-    # 任务集合：所有结果出现的任务（按 TASKS 顺序优先）——必须与 test_dgx.py 的 9 个任务一致
+    # 任务集合：所有结果出现的任务（按 TASKS 顺序优先）——必须与 test_dgx.py 的任务一致
+    # prefill_nonce 是 prefill 专项（每 run 新前缀），不进普通 TTFT/吞吐对比图，
+    # 在排行表单列展示 prefill_tok_per_s
     TASK_ORDER = ["mutation_call", "expression_genes", "expression_matrix",
                   "expression_code", "protein_function",
                   "pubmedqa", "medmcqa", "json_output", "long_generation"]
+    PLOT_EXCLUDE = {"prefill_nonce"}
     seen = set()
     for _, d in results:
         seen.update(d.get("tasks", {}).keys())
-    task_order = [t for t in TASK_ORDER if t in seen] + sorted(seen - set(TASK_ORDER))
+    task_order = [t for t in TASK_ORDER if t in seen] + \
+                 sorted(seen - set(TASK_ORDER) - PLOT_EXCLUDE)
 
     # 三个指标的矩阵
     ttft_m = collect_metric_matrix(results, task_order,
@@ -380,18 +386,31 @@ def main():
     plt.close(fig)
 
     # 终端打印综合分排行表
-    print(f"\n{'=' * 78}")
+    print(f"\n{'=' * 100}")
     print(f"⭐ Overall score ranking (weights: {SCORE_WEIGHTS})")
-    print(f"{'=' * 78}")
-    print(f"{'rank':<6}{'label':<24}{'overall':<10}{'quality':<10}{'tput':<8}{'ttft':<8}{'stab':<8}")
-    print("-" * 78)
+    print(f"{'=' * 100}")
+    print(f"{'rank':<6}{'label':<24}{'overall':<10}{'quality':<10}{'tput':<8}{'ttft':<8}{'stab':<8}{'prefill':<12}")
+    print("-" * 100)
     medals = ["1st", "2nd", "3rd"] + [f"{i+1}th" for i in range(3, len(labels))]
+    # prefill 专项列：prefill_tok_per_s（tok/s，无缓存污染，跨引擎公平）
+    prefill_vals = []
+    for _, d in results:
+        pn = d.get("tasks", {}).get("prefill_nonce", {})
+        v = None
+        if isinstance(pn.get("ttft_s"), dict) and pn["ttft_s"].get("mean") and pn.get("prompt_tokens"):
+            v = round(pn["prompt_tokens"] / pn["ttft_s"]["mean"], 1)
+        prefill_vals.append(v)
+    # sorted order 对应（order 在标题区已定义）
+    sorted_prefill = [prefill_vals[i] for i in order]
     for rank, (lbl, sc) in enumerate(zip(sorted_labels, sorted_scores)):
         sub = sc["sub_scores"]
         fmt = lambda x: "-" if x is None else f"{x:.0f}"
+        pf = sorted_prefill[rank] if rank < len(sorted_prefill) else None
+        pf_s = f"{pf:.0f} t/s" if pf else "-"
         print(f"{medals[rank]:<6}{lbl:<24}{sc['overall']:<10.1f}"
               f"{fmt(sub['quality']):<10}{fmt(sub['throughput']):<8}"
-              f"{fmt(sub['ttft']):<8}{fmt(sub['stability']):<8}")
+              f"{fmt(sub['ttft']):<8}{fmt(sub['stability']):<8}{pf_s:<12}")
+    print(f"\n(prefill 列 = prefill_nonce 任务的隐含 prefill 吞吐，强制 cache miss，跨引擎公平)")
     print(f"\n📊 对比图已保存: {out}")
 
 

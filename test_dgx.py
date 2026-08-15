@@ -200,7 +200,7 @@ def _os_cpu_count():
 
 
 # ============ 9 个任务定义 ============
-def task_mutation_call(data):
+def task_mutation_call(data, run_idx=0):
     """长上下文 + 推理 + 有 ground truth。"""
     ref, mut, _ = data["mutation"]
     prompt = f"""You are a professional genomic variant annotator. Analyze the following full-length BRCA1 cDNA reference sequence and a simulated tumor sample mutated sequence. Complete the following tasks:
@@ -218,7 +218,7 @@ Mutated sequence:
     return prompt, 1500
 
 
-def task_expression_genes(data):
+def task_expression_genes(data, run_idx=0):
     """短输入 + 领域知识"""
     genes_tsv, summary_tsv, _ = data["expression"]
     # 只取 top30 基因，避免输入过长
@@ -241,7 +241,7 @@ As a single-cell genomics expert, briefly answer (≤400 words total):
     return prompt, 700
 
 
-def task_expression_matrix(data):
+def task_expression_matrix(data, run_idx=0):
     """表格数值推理"""
     _, _, matrix_tsv = data["expression"]
     # 取 top20 基因 × 前 10 cells 的子矩阵
@@ -268,7 +268,7 @@ Show your calculations briefly, then give the final answers in a clear list.
     return prompt, 800
 
 
-def task_expression_code(data):
+def task_expression_code(data, run_idx=0):
     """代码生成"""
     _, summary_tsv, _ = data["expression"]
     prompt = f"""Write a complete, runnable Python analysis script using `scanpy` and `pandas` for the following dataset.
@@ -291,7 +291,7 @@ Use clear comments. Do not include any external dataset beyond what is described
     return prompt, 1500
 
 
-def task_protein_function(data):
+def task_protein_function(data, run_idx=0):
     """短输入 + 领域知识"""
     p53_fasta, ss_tsv, summary_tsv = data["protein"]
     prompt = f"""Below is information about the human BRCA1 protein (UniProt P38398) and its p53-binding domain.
@@ -316,7 +316,7 @@ As a structural biology expert, briefly answer (≤400 words total):
 
 
 # ============ 公开医学 benchmark 任务 ============
-def task_pubmedqa(data):
+def task_pubmedqa(data, run_idx=0):
     """PubMedQA：读摘要 → 回答 yes/no/maybe。20 题，有 ground truth。"""
     items = data["benchmark"][0]
     blocks = []
@@ -341,7 +341,7 @@ Reply with EXACTLY one line per question in this format (no other text):
     return prompt, 200
 
 
-def task_medmcqa(data):
+def task_medmcqa(data, run_idx=0):
     """MedMCQA：医学专业多选题。20 题，有 ground truth (A/B/C/D)。"""
     items = data["benchmark"][1]
     blocks = []
@@ -365,7 +365,7 @@ Reply with EXACTLY one line per question in this format (no other text):
 
 
 # ============ JSON 结构化输出任务 ============
-def task_json_output(data):
+def task_json_output(data, run_idx=0):
     """测 JSON 输出可靠性：把 5 个变异（已知）输出成 JSON。
     生物信息流程强依赖结构化输出（wisp-science、自动化分析等）。"""
     events = """205 T>C
@@ -398,7 +398,46 @@ Rules:
     return prompt, 800
 
 
-def task_long_generation(data):
+def task_prefill_nonce(data, run_idx=0):
+    """真实 prefill 算力测试：长 prompt + 每 run 埋随机 nonce 强制 cache miss。
+
+    背景：ds4-server / vLLM 都有 KV 前缀缓存。同 prompt 重复发送时 TTFT
+    骤降（M5 Max 实测 11.8s → 2.5s），让 pubmedqa 等任务的 TTFT 混入缓存
+    红利、跨引擎不可比。本任务在 prompt 开头埋一个每 run 唯一的 nonce，
+    保证每一发都是完整 prefill——TTFT 就是纯 prefill 速度，无缓存污染。
+
+    prompt 主体复用 pubmedqa 的 20 题摘要（~33KB），保证长度与其他
+    长上下文任务一致；nonce 放在最前面（前缀缓存按前缀匹配，头部
+    不同即可让整条 miss）。max_tokens 压到 32：本任务只测 prefill，
+    decode 越短越好。
+    """
+    import random as _random
+    rng = _random.Random(9582019 + run_idx)  # 确定性：同一 run_idx 跨机器同 nonce
+    nonce = f"{rng.getrandbits(64):016x}"
+
+    items = data["benchmark"][0]  # pubmedqa 20 题
+    blocks = []
+    for i, q in enumerate(items, 1):
+        blocks.append(f"""## Question {i}/{len(items)}
+{q['context']}
+
+Question: {q['question']}
+
+Answer with exactly one of: yes / no / maybe
+""")
+    body = "\n".join(blocks)
+
+    prompt = f"""[cache-buster nonce: {nonce}]
+
+Below are {len(items)} biomedical questions. This is a prefill-throughput
+measurement; the nonce above is unique per run and only exists to defeat
+prefix caching.
+
+""" + body + "\nReply with a single line: OK"
+    return prompt, 32
+
+
+def task_long_generation(data, run_idx=0):
     """纯 decode 速度测试：短 prompt + 长输出（~1000 tokens）。
 
     这个任务最贴近真实生物医学写作负载（写综述 / 病例报告 / 方法部分），
@@ -500,6 +539,9 @@ TASKS = [
     ("medmcqa",           task_medmcqa,           200),
     ("json_output",       task_json_output,       800),
     ("long_generation",   task_long_generation,   1500),
+    # prefill 算力专项：每 run 埋唯一 nonce 强制 KV 前缀缓存 miss，
+    # TTFT 即纯 prefill 速度（对照 pubmedqa 的缓存混合值）
+    ("prefill_nonce",     task_prefill_nonce,     32),
 ]
 
 
@@ -691,15 +733,19 @@ def evaluate_expression_code(output, data):
 
     check("import_scanpy",       r"\bscanpy\b|\bsc\b\s*=|\bimport\s+scanpy")
     check("import_anndata",      r"\bAnnData\b|\banndata\b")
-    check("read_csv",            r"read_csv\s*\(.{0,100}compression")
+    # read_csv(...compression)：加 DOTALL——read_csv 的参数经常换行写，
+    # `.` 默认不匹配换行会漏掉合法的跨行调用（模型写 compression="gzip" 在第 4 行）
+    check("read_csv",            r"read_csv\s*\(.{0,200}compression", re.IGNORECASE | re.DOTALL)
     check("transpose",           r"\.T\b|transpose\s*\(\s*\)")
     check("qc_filter_cells",     r"(n_genes|detected_genes)\s*<\s*500|min_genes\s*=\s*500|filter_cells.{0,50}500")
     check("qc_filter_genes",     r"(n_cells|detected_cells)\s*<\s*3|min_cells\s*=\s*3|filter_genes.{0,50}3")
     check("mito_pct",            r"(pct_counts_mt|percent_mito|mt_pct|mt\.|MT-)\s*.{0,80}(0\.2|20)")
     check("normalize_log",       r"normalize_total\s*\(.{0,80}1e4|1\s*0\s*0\s*0\s*0.{0,80}log1p|log1p")
     check("hv_genes",            r"highly_variable_genes.{0,80}(2\s*0\s*0\s*0|n_top_genes)")
+    # PCA：同时接受 sc.tl.pca（旧 API）和 sc.pp.pca（scanpy 1.5+ 现行推荐 API），
+    # 两者都合法；只认 tl.pca 会误判用新 API 的正确代码
     check("pca_neighbors_umap_leiden",
-          r"(sc\.tl\.pca|tl\.pca).{0,500}(sc\.pp\.neighbors|pp\.neighbors).{0,500}(sc\.tl\.umap|tl\.umap).{0,500}(sc\.tl\.leiden|tl\.leiden)",
+          r"(sc\.tl\.pca|tl\.pca|sc\.pp\.pca|pp\.pca).{0,500}(sc\.pp\.neighbors|pp\.neighbors).{0,500}(sc\.tl\.umap|tl\.umap).{0,500}(sc\.tl\.leiden|tl\.leiden)",
           re.IGNORECASE | re.DOTALL)
     check("rank_genes",          r"rank_genes_groups")
     check("save_anndata",        r"\.write\s*\(|save\s*\(|to_h5ad|h5ad")
@@ -1102,8 +1148,12 @@ def compute_overall_score(all_results):
     quality_score = (sum(quality_scores) / len(quality_scores) * 100) if quality_scores else None
 
     # ---- 2. 吞吐：所有任务的 tok/s 平均后再打分 ----
+    # prefill_nonce 排除：它 max_tokens=32、decode 极短，tok/s 无意义，
+    # 它的价值全在 TTFT（纯 prefill 速度），混入会拉偏吞吐中位数。
     tps_values = []
     for tname, _, _ in TASKS:
+        if tname == "prefill_nonce":
+            continue
         td = tasks.get(tname, {})
         if "tok_per_s" in td and isinstance(td["tok_per_s"], dict):
             v = td["tok_per_s"]["mean"]
@@ -1118,8 +1168,13 @@ def compute_overall_score(all_results):
         throughput_score = None
 
     # ---- 3. TTFT：所有任务 TTFT 中位数 ----
+    # prefill_nonce 也排除（它是专项指标，单独看，见 prefill_tok_per_s）。
+    # 这里保留原语义：日常混合负载下的 TTFT（含缓存红利，代表迭代场景体感）；
+    # 纯 prefill 算力看 prefill_nonce 任务的 ttft_s。
     ttft_values = []
     for tname, _, _ in TASKS:
+        if tname == "prefill_nonce":
+            continue
         td = tasks.get(tname, {})
         if "ttft_s" in td and isinstance(td["ttft_s"], dict):
             v = td["ttft_s"]["mean"]
@@ -1164,6 +1219,17 @@ def compute_overall_score(all_results):
         "quality_count":  len(quality_scores),
         "tps_median":     round(tps_median, 2) if tps_values else None,
         "ttft_median":    round(ttft_median, 2) if ttft_values else None,
+        # prefill 专项（无缓存污染）：prefill_nonce 任务的 TTFT 均值与
+        # 隐含 prefill 吞吐 prompt_tokens/ttft。跨引擎公平比较就看这组。
+        "prefill_ttft_mean": (lambda td: (
+            round(td["ttft_s"]["mean"], 3)
+            if isinstance(td.get("ttft_s"), dict) and td["ttft_s"].get("mean") else None
+        ))(tasks.get("prefill_nonce", {})),
+        "prefill_tok_per_s": (lambda td: (
+            round(td["prompt_tokens"] / td["ttft_s"]["mean"], 1)
+            if isinstance(td.get("ttft_s"), dict) and td["ttft_s"].get("mean")
+            and td.get("prompt_tokens") else None
+        ))(tasks.get("prefill_nonce", {})),
     }
 
 
@@ -1397,14 +1463,26 @@ def main():
         print(f"\n{'─' * 70}")
         print(f"📋 Task: {task_name}  (max_tokens={max_tok})")
         print(f"{'─' * 70}")
-        prompt, _ = builder(data)
+
+        # builder 统一签名 (data, run_idx=0)。普通任务忽略 run_idx（prompt 固定）；
+        # prefill_nonce 任务按 run_idx 生成唯一 nonce，每 run 都是全新前缀。
+        prompt, _ = builder(data, run_idx=0)
         prompt_chars = len(prompt)
         print(f"   prompt: {prompt_chars} chars")
 
-        # 预热 1 次
+        # 预热 1 次。
+        # warmup 是本任务在当前 server 缓存状态下"第一发"的唯一天然样本
+        # （cold TTFT），必须记录进 JSON 而不是打完日志就丢——否则
+        # 后续无法区分 KV prefix cache 命中与真实 prefill 算力。
+        # nonce 任务的 warmup 用独立 nonce（run_idx=-1），也计为一次完整 prefill。
         print(f"   🔥 warmup...", end=" ", flush=True)
+        warm = None
         try:
-            warm = call_llm_stream(prompt, max_tok)
+            if task_name == "prefill_nonce":
+                warm_prompt, warm_tok = builder(data, run_idx=-1)
+            else:
+                warm_prompt, warm_tok = prompt, max_tok
+            warm = call_llm_stream(warm_prompt, warm_tok)
             print(f"done (ttft={warm['ttft_s']}s, total={warm['total_s']}s)")
         except Exception as e:
             print(f"FAILED: {e}")
@@ -1414,7 +1492,11 @@ def main():
         runs = []
         for i in range(RUNS):
             try:
-                r = call_llm_stream(prompt, max_tok)
+                if task_name == "prefill_nonce":
+                    run_prompt, run_tok = builder(data, run_idx=i)
+                else:
+                    run_prompt, run_tok = prompt, max_tok
+                r = call_llm_stream(run_prompt, run_tok)
                 runs.append(r)
                 print(f"   Run {i+1}/{RUNS}: ttft={r['ttft_s']:.3f}s  "
                       f"total={r['total_s']:.3f}s  "
@@ -1425,9 +1507,35 @@ def main():
                 print(f"   Run {i+1}/{RUNS}: FAILED: {e}")
                 runs.append({"error": str(e)})
 
+        # ---- cold / hot TTFT 分开采集 ----
+        # 背景：ds4-server 有 KV 磁盘前缀缓存、vLLM 有 automatic prefix caching。
+        # 同一 prompt 重复发送时 warmup/run1 可能命中缓存（TTFT 骤降），
+        # 与真实 prefill 算力混在一起会让 TTFT 不可比。
+        #
+        #   cold_ttft_s = warmup 的 TTFT：任务在当前 server 生命周期内的第一发。
+        #     注意：若 server 此前跑过同 prompt（磁盘缓存仍热），这一发也会命中，
+        #     所以 cold 的准确语义是"本 benchmark 进程内首发"，跨进程缓存命中
+        #     由 prefill_nonce 任务兜底测量。
+        #   hot_ttft_s  = 5 发重复请求后的最后一发（run 完立即补一发）：
+        #     同 prompt 第 N 次发送，缓存必然最热，对应"科研迭代"场景的真实体感。
+        #     prefill_nonce 任务跳过：它的每一发都是全新前缀，"热"无意义
+        #     （它的 TTFT 全部等价于 cold，正是设计目的）。
+        hot_ttft = None
+        if task_name != "prefill_nonce":
+            try:
+                hot = call_llm_stream(prompt, max_tok)
+                hot_ttft = hot["ttft_s"]
+                print(f"   🔁 hot-ttft probe: {hot_ttft:.3f}s")
+            except Exception as e:
+                print(f"   🔁 hot-ttft probe FAILED: {e}")
+
         # 聚合统计
         ok = [r for r in runs if "error" not in r]
         summary = {"runs": len(runs), "ok": len(ok), "samples": runs}
+        if warm is not None:
+            summary["warmup"] = warm          # 完整保留，含 ttft_s / prompt_tokens
+        if hot_ttft is not None:
+            summary["hot_ttft_s"] = hot_ttft
         if ok:
             def stat(key):
                 xs = [r[key] for r in ok]
@@ -1437,10 +1545,15 @@ def main():
                     "max": round(max(xs), 3),
                 }
             summary["ttft_s"] = stat("ttft_s")
+            summary["cold_ttft_s"] = warm["ttft_s"] if warm else None
             summary["total_s"] = stat("total_s")
             summary["tok_per_s"] = stat("tok_per_s")
             summary["prompt_tokens"] = ok[0]["prompt_tokens"]
             summary["completion_tokens"] = stat("completion_tokens")
+            # 缓存命中率信号：hot/cold 比值 >2 视为"TTFT 受缓存显著影响"，
+            # 汇总表会标注，避免把缓存红利误读为 prefill 算力
+            if warm and hot_ttft and warm["ttft_s"] and warm["ttft_s"] > 0:
+                summary["cache_speedup_ttft"] = round(warm["ttft_s"] / hot_ttft, 2)
 
         # 质量评估（如有）
         if task_name in EVALUATORS and ok:
@@ -1452,17 +1565,19 @@ def main():
         all_results["tasks"][task_name] = summary
 
     # ============ 汇总表 ============
-    print(f"\n{'=' * 70}")
+    print(f"\n{'=' * 100}")
     print(f"📊 汇总（{LLM_LABEL} / {MODEL_NAME}）")
-    print(f"{'=' * 70}")
-    print(f"{'task':<22}{'ttft(s)':<14}{'total(s)':<14}{'tok/s':<14}{'quality':<24}")
-    print("-" * 88)
+    print(f"{'=' * 100}")
+    print(f"{'task':<22}{'ttft(s)':<10}{'cold':<8}{'hot':<8}{'total(s)':<12}{'tok/s':<10}{'quality':<20}")
+    print("-" * 100)
     for task_name, _, _ in TASKS:
         t = all_results["tasks"].get(task_name, {})
         if "ttft_s" not in t:
-            print(f"{task_name:<22}{'FAILED':<14}{'-':<14}{'-':<14}{'-':<24}")
+            print(f"{task_name:<22}{'FAILED':<10}{'-':<8}{'-':<8}{'-':<12}{'-':<10}{'-':<20}")
             continue
         ttft = t["ttft_s"]["mean"]
+        cold = t.get("cold_ttft_s")
+        hot = t.get("hot_ttft_s")
         total = t["total_s"]["mean"]
         tps = t["tok_per_s"]["mean"]
         q = "-"
@@ -1473,7 +1588,16 @@ def main():
                 q = f"P={qv.get('precision',0)} R={qv.get('recall',0)}"
             elif "scored" in qv:
                 q = f"{qv['scored']}/{qv['max']}"
-        print(f"{task_name:<22}{ttft:<14}{total:<14}{tps:<14}{q:<24}")
+        cold_s = f"{cold:.2f}" if cold else "-"
+        hot_s = f"{hot:.2f}" if hot else "-"
+        # nonce 任务没有 hot；cold 列显示 '-'（warmup 也是新 nonce，就是 run 均值本身）
+        if task_name == "prefill_nonce":
+            cold_s, hot_s = "-", "n/a"
+        print(f"{task_name:<22}{ttft:<10}{cold_s:<8}{hot_s:<8}{total:<12}{tps:<10}{q:<20}")
+        # 缓存加速比提示（hot 存在且比值大时）
+        sp = t.get("cache_speedup_ttft")
+        if sp and sp >= 2:
+            print(f"{'':<22}└─ cache_speedup(ttft) x{sp}  ← TTFT 显著受 KV 前缀缓存影响")
 
     # ============ 综合评分 ============
     score = compute_overall_score(all_results)
