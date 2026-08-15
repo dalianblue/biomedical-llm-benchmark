@@ -12,7 +12,7 @@ Three machines, two chip architectures, two inference engines — all running th
 
 - 📄 **Full report / 完整报告:** [`results/biomedical_benchmark_report_v3.html`](results/biomedical_benchmark_report_v3.html)
   (open locally, or [preview on HTMLPreview](https://htmlpreview.github.io/?https://github.com/dalianblue/biomedical-llm-benchmark/main/results/biomedical_benchmark_report_v3.html))
-- 🧪 9 biomedical tasks / 9 个生物医学任务 · 4 result runs / 4 份跑分结果
+- 🧪 10 biomedical tasks / 10 个生物医学任务（v2 协议含 prefill 专项）· 6 result runs / 6 份跑分结果
 - 🔒 Frozen inputs (`test_data/`, seed=42) — no network at runtime / 输入冻结，运行时无需联网
 
 ---
@@ -28,17 +28,24 @@ Three machines, two chip architectures, two inference engines — all running th
 本测试同时衡量**性能**（TTFT、吞吐）和**质量**（对照 ground truth 的准确率），覆盖 9 个任务，
 最终生成一张横向对比图。
 
-### 结果速览（4 次跑分）
+### 结果速览（6 次跑分）
 
 完整报告见 [`results/biomedical_benchmark_report_v3.html`](results/biomedical_benchmark_report_v3.html)。
 综合分 = `质量×50% + 吞吐×30% + TTFT×10% + 稳定性×10%`。
 
-| 跑次 | 机器 | 引擎 | runs/task | 综合分 | 质量 | 吞吐 | TTFT |
-|------|------|------|-----------|--------|------|------|------|
-| 1 | M3 Max | ds4-server | 5 | **54.9** | 70.6 | 24.6 | 22.3 |
-| 2 | M5 Max | ds4-server | 5 | **72.9** | 71.7 | 70.4 | 59.7 |
-| 3 | DGX Spark（升级前） | vLLM | 2 | **67.1** | 75.8 | 45.3 | 55.5 |
-| 4 | DGX Spark（升级后） | vLLM | 5 | **73.5** | 76.9 | 61.8 | 65.7 |
+| 跑次 | 机器 | 引擎 | runs/task | 综合分 | 质量 | 吞吐 | TTFT | 备注 |
+|------|------|------|-----------|--------|------|------|------|------|
+| 1 | M3 Max | ds4-server | 5 | **54.9** | 70.6 | 24.6 | 22.3 | |
+| 2 | M5 Max | ds4-server | 5 | **74.0** | 73.8 | 70.4 | 59.7 | evaluator 修复后重放¹ |
+| 3 | DGX Spark（升级前） | vLLM | 2 | **67.1** | 75.8 | 45.3 | 55.5 | |
+| 4 | DGX Spark（升级后） | vLLM | 5 | **73.5** | 76.9 | 61.8 | 65.7 | |
+| 5 | M5 Max（复现） | ds4-server | 5 | **73.2** | 73.8 | 69.2 | 55.4 | 与跑次 2 差 0.8 分² |
+| 6 | M5 Max（v2 协议） | ds4-server | 5 | **74.4** | 73.8 | 70.8 | 62.3 | +prefill 专项 615 t/s³ |
+
+> ¹ `expression_code` 的 evaluator 两个正则误判修复（跨行 `read_csv` 参数、`sc.pp.pca` 新 API），
+>   用保存的输出重放后 10/12 → 12/12。见 [docs/findings/kv-cache-ttft.md](docs/findings/kv-cache-ttft.md)。
+> ² 同机两天后复现，除 TTFT 外全部指标一致；TTFT 差异由 KV 缓存冷热导致（见下）。
+> ³ v2 协议新增 `prefill_nonce` 任务：nonce 强制缓存 miss，纯 prefill 吞吐 615 tok/s（M5 Max）。
 
 ### 核心结论
 
@@ -48,6 +55,7 @@ Three machines, two chip architectures, two inference engines — all running th
 - **DGX 升级前后的跃升来自软件，不是硬件。** Mia 升级后的 recipe 把 GB10 专用路径全接上了：Anemll 的 GB10 vLLM 0.25 移植版、DSpark 投机解码（`MTP_NUM_TOKENS=5`）、NVFP4 DS-MLA KV cache（修好长 prefill 的就是它——`pubmedqa` TTFT 21.59s → 0.76s）、外加 2 节点 TP=2。第 2 次跑分才是 DGX 的可信数字（5 runs 对 2 runs，warmup 更充分）。
 - **有两个任务是诚实的设计翻车。** `mutation_call`（所有机器 P=0 R=0——LLM 做不了字符级对齐，用 BLAST/BWA）和 `expression_matrix`（1–2/4——LLM 做不了精确算术，让它写 pandas）。其余 5 个任务全场满分。
 - **UX 视角：交互式科研里 TTFT 的体感权重比分数里的 10% 更高。** 综合分把 TTFT 压到 10% 是为了兼顾批量场景，但写代码、查文献这种交互探索，体感分水岭是 <1s 秒回 / 1–3s 能感觉到等 / >5s 打断思路。DGX 升级后 0.62s、M5 Max 0.85s 都在"秒回"区，M3 Max 6.12s 在"打断思路"区——所以**单人交互用，一个 TTFT 稳定 <1s 的机器比吞吐更高但首字要等的机器更舒服**，挑机器时建议在脑子里把 TTFT 权重往上抬一档。详见报告 §01。
+- **TTFT 会被 KV 前缀缓存"污染"，冷热必须分开看。** ds4-server / vLLM 都有前缀缓存：同一 prompt 重复发送 TTFT 骤降（M5 Max 实测 pubmedqa 冷 11.8s → 热 2.5s，protein_function 加速比高达 ×45）。同机两天两次跑分 TTFT 子分差 4 分、总分差 0.8，全部来自服务器缓存冷热，不是性能变化。v2 协议已修复：warmup 指标存档、cold/hot TTFT 分报、新增 `prefill_nonce` 任务（nonce 强制 miss）测纯 prefill 算力（M5 Max = 615 tok/s）。跨机器对比 TTFT 前，先对齐服务器缓存状态。详见 [docs/findings/kv-cache-ttft.md](docs/findings/kv-cache-ttft.md)。
 
 ### 快速开始（单机，约 15–30 分钟）
 
@@ -138,7 +146,7 @@ Local_LLM_test/
 
 基准客户端不需要 GPU/CUDA/PyTorch——它只发 HTTP 请求。
 
-### 9 个任务
+### 10 个任务
 
 每个任务瞄准一种能力维度。最右列带**质量评估**的有 ground truth 自动评估器。
 
@@ -153,8 +161,29 @@ Local_LLM_test/
 | 7 | `medmcqa` | ~4 KB（20 道选择题） | 医学领域知识（4 选 1） | 准确率 vs 标注答案 |
 | 8 | `json_output` | ~625 B（5 个已知变异） | 结构化输出可靠性 | 6 项 schema/正确性检查 |
 | 9 | `long_generation` | ~1 KB（综述 prompt） | **持续 decode 吞吐**——就 PARP/BRCA 写 600–800 字综述 | 长度 + 4 章节 + 主题覆盖 |
+| 10 | `prefill_nonce` | ~33 KB（pubmedqa 主体 + 唯一 nonce） | **纯 prefill 算力**——每 run 埋唯一 nonce 强制 KV 前缀缓存 miss，TTFT 即无缓存污染的 prefill 速度 | —（专项指标，不计分） |
 
 **关于任务 1**：输入最长的一题（两条 7088 nt 全长序列），对 prefill 压力最大，也是长上下文表现最敏感的任务。
+
+### Cold / Hot TTFT 与 KV 前缀缓存
+
+ds4-server（磁盘 KV 缓存）和 vLLM（automatic prefix caching）都有**前缀缓存**：
+同一 prompt 重复发送时 TTFT 会骤降（M5 Max 实测 11.8s → 2.5s，最大加速比 ×45）。
+这是引擎的真实能力，不是作弊——科研迭代场景（agent 反复发相似上下文）确实受益——
+但如果 benchmark 不区分冷热，TTFT 就既不代表"首次喂新数据"也不代表"日常迭代"，
+跨引擎对比也会失真（谁的服务器历史热、谁的引擎缓存命中率高，都是偶然）。
+
+因此 v2 协议把 TTFT 拆成三份，全部写进 JSON：
+
+| 指标 | 采集方式 | 含义 |
+|------|----------|------|
+| `cold_ttft_s` | 每任务 warmup 那一发（完整记录在 `tasks.<name>.warmup`） | 本 benchmark 进程内首发；注意跨进程磁盘缓存仍可能命中 |
+| `ttft_s`（均值） | 5 次正式 run | 混合负载 TTFT（综合分用这个，代表迭代场景体感） |
+| `hot_ttft_s` | 5 发后立即补一发 | 缓存必然最热，日常迭代的真实体感 |
+| `cache_speedup_ttft` | `cold / hot` | ≥2 时汇总表自动标注"TTFT 显著受缓存影响" |
+| `prefill_tok_per_s` | 任务 10（nonce 强制 miss） | **跨引擎公平的纯 prefill 吞吐** |
+
+完整分析见 [`docs/findings/kv-cache-ttft.md`](docs/findings/kv-cache-ttft.md)。
 
 ### 配置（环境变量）
 
@@ -274,20 +303,30 @@ Three machines in this comparison (all running the same DeepSeek V4 Flash 0731 w
 - **dgx-spark**: NVIDIA DGX Spark (GB10) / 128 GB, `vLLM` — ran twice, before & after a vLLM recipe upgrade (see [MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark](https://github.com/MiaAI-Lab/DeepSeek-v4-Flash-DSpark-2x-DGX-Spark))
 
 The benchmark measures **performance** (TTFT, throughput) AND **quality**
-(accuracy against ground truth) across 9 tasks, then produces a single
+(accuracy against ground truth) across 10 tasks, then produces a single
 side-by-side chart for cross-machine comparison.
 
-### Results at a glance (4 runs)
+### Results at a glance (6 runs)
 
 Full write-up: [`results/biomedical_benchmark_report_v3.html`](results/biomedical_benchmark_report_v3.html).
 Overall score = `quality×50% + throughput×30% + ttft×10% + stability×10%`.
 
-| Run | Machine | Engine | runs/task | Overall | Quality | Throughput | TTFT |
-|-----|---------|--------|-----------|---------|---------|------------|------|
-| 1 | M3 Max | ds4-server | 5 | **54.9** | 70.6 | 24.6 | 22.3 |
-| 2 | M5 Max | ds4-server | 5 | **72.9** | 71.7 | 70.4 | 59.7 |
-| 3 | DGX Spark (before upgrade) | vLLM | 2 | **67.1** | 75.8 | 45.3 | 55.5 |
-| 4 | DGX Spark (after upgrade) | vLLM | 5 | **73.5** | 76.9 | 61.8 | 65.7 |
+| Run | Machine | Engine | runs/task | Overall | Quality | Throughput | TTFT | Note |
+|-----|---------|--------|-----------|---------|---------|------------|------|------|
+| 1 | M3 Max | ds4-server | 5 | **54.9** | 70.6 | 24.6 | 22.3 | |
+| 2 | M5 Max | ds4-server | 5 | **74.0** | 73.8 | 70.4 | 59.7 | replayed after evaluator fix¹ |
+| 3 | DGX Spark (before upgrade) | vLLM | 2 | **67.1** | 75.8 | 45.3 | 55.5 | |
+| 4 | DGX Spark (after upgrade) | vLLM | 5 | **73.5** | 76.9 | 61.8 | 65.7 | |
+| 5 | M5 Max (repro) | ds4-server | 5 | **73.2** | 73.8 | 69.2 | 55.4 | 0.8 pts from run 2² |
+| 6 | M5 Max (v2 protocol) | ds4-server | 5 | **74.4** | 73.8 | 70.8 | 62.3 | +prefill probe 615 t/s³ |
+
+> ¹ Two `expression_code` evaluator regexes fixed (multi-line `read_csv` args,
+>   `sc.pp.pca` modern API); replayed from saved outputs: 10/12 → 12/12.
+>   See [docs/findings/kv-cache-ttft.md](docs/findings/kv-cache-ttft.md).
+> ² Same machine re-run two days later; everything matched except TTFT, which
+>   moved with KV cache warmth (see next takeaway).
+> ³ v2 protocol adds the `prefill_nonce` task (nonce forces cache miss):
+>   pure prefill throughput 615 tok/s on M5 Max.
 
 ### Key takeaways
 
@@ -297,6 +336,7 @@ Overall score = `quality×50% + throughput×30% + ttft×10% + stability×10%`.
 - **The DGX before→after jump came from software, not hardware.** Mia's upgraded recipe wired up the GB10-specific paths: Anemll's GB10 vLLM 0.25 port, DSpark speculative decoding (`MTP_NUM_TOKENS=5`), NVFP4 DS-MLA KV cache (this is what fixed long prefill — `pubmedqa` TTFT 21.59s → 0.76s), and 2-node TP=2. The run-2 score is the trustworthy DGX number (5 runs vs 2, proper warmup).
 - **Two tasks were honest design failures.** `mutation_call` (P=0 R=0 on all machines — LLMs can't do character-level alignment, use BLAST/BWA) and `expression_matrix` (1–2/4 — LLMs can't do exact arithmetic, have them write pandas instead). Five other tasks scored full marks everywhere.
 - **UX angle: in interactive research, TTFT's felt weight is higher than its 10% in the score.** The 10% is there to serve batch workloads, but for coding / lit lookup the bands that matter are <1s (instant) / 1–3s (noticeable) / >5s (breaks flow). DGX-upgraded (0.62s) and M5 Max (0.85s) sit in the instant zone; M3 Max (6.12s) is in the flow-breaking zone — so **for single-user interactive use, a sub-1s-TTFT machine beats one with higher throughput but a slower first token**. Mentally up-weight TTFT when picking a machine for interactive work. See report §01.
+- **TTFT is polluted by KV prefix caching — read cold and hot separately.** ds4-server / vLLM both cache prompt prefixes: repeat requests see TTFT collapse (M5 Max pubmedqa cold 11.8s → hot 2.5s; protein_function speedup ×45). Two same-machine runs two days apart differed by 0.8 overall — entirely cache warmth, not performance. The v2 protocol fixes this: warmup metrics archived, cold/hot TTFT reported separately, and a new `prefill_nonce` task (unique nonce per run → forced cache miss) measures pure prefill compute (M5 Max = 615 tok/s). Align server cache state before comparing TTFT across machines. Full analysis: [docs/findings/kv-cache-ttft.md](docs/findings/kv-cache-ttft.md).
 
 ### Quick start (single machine, ~15–30 min)
 
@@ -396,7 +436,7 @@ No external downloads needed at runtime — all task inputs are bundled in
 
 No GPU/CUDA/PyTorch needed on the benchmark client — it just sends HTTP.
 
-### The 9 tasks
+### The 10 tasks
 
 Each task targets a different capability dimension. Tasks with **Quality** in the
 rightmost column have automated evaluators with ground truth.
@@ -412,9 +452,32 @@ rightmost column have automated evaluators with ground truth.
 | 7 | `medmcqa` | ~4 KB (20 MCQs) | Medical domain knowledge (4-choice) | Accuracy vs labeled answers |
 | 8 | `json_output` | ~625 B (5 known variants) | Structured output reliability | 6 schema/correctness checks |
 | 9 | `long_generation` | ~1 KB (review prompt) | **Sustained decode throughput** — write a 600-800 word review on PARP/BRCA | Length + 4 sections + topic coverage |
+| 10 | `prefill_nonce` | ~33 KB (pubmedqa body + unique nonce) | **Pure prefill compute** — unique nonce per run forces a KV prefix-cache miss, so TTFT is cache-free prefill speed | — (dedicated metric, not scored) |
 
 **Note on task 1**: the longest-input task (two full 7088 nt sequences), so it
 stresses prefill the most and is the most sensitive to long-context performance.
+
+### Cold / hot TTFT and KV prefix caching
+
+ds4-server (disk KV cache) and vLLM (automatic prefix caching) both cache prompt
+prefixes: repeat requests see TTFT collapse (M5 Max measured 11.8s → 2.5s on
+pubmedqa; up to ×45 speedup on protein_function). That's a real engine
+capability, not cheating — iterative research genuinely benefits — but a
+benchmark that doesn't separate cold from hot produces a TTFT that means
+neither "first time you feed new data" nor "everyday iteration", and
+cross-engine comparisons drift with whichever server happened to be warm.
+
+The v2 protocol therefore splits TTFT into separately reported values:
+
+| Metric | How collected | Meaning |
+|--------|---------------|---------|
+| `cold_ttft_s` | the task's warmup request (fully archived in `tasks.<name>.warmup`) | first send within this benchmark process; cross-process disk cache can still hit |
+| `ttft_s` (mean) | the 5 scored runs | mixed-load TTFT (used by the score; approximates iterative UX) |
+| `hot_ttft_s` | one extra probe right after the 5 runs | cache guaranteed hot; everyday iteration feel |
+| `cache_speedup_ttft` | `cold / hot` | flagged in the summary when ≥2× |
+| `prefill_tok_per_s` | task 10 (forced miss via nonce) | **fair cross-engine pure-prefill throughput** |
+
+Full analysis: [`docs/findings/kv-cache-ttft.md`](docs/findings/kv-cache-ttft.md).
 
 ### Configuration (environment variables)
 
