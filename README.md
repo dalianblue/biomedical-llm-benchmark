@@ -13,7 +13,7 @@ Three machines, two chip architectures, two inference engines — all running th
 - 📄 **Full report / 完整报告:** [`results/biomedical_benchmark_report_v3.html`](results/biomedical_benchmark_report_v3.html)
 - ❓ **FAQ / 常见问题:** [`FAQ.md`](FAQ.md)（结果怎么读、缓存影响、量化与质量、复现要求）
   (open locally, or [preview on HTMLPreview](https://htmlpreview.github.io/?https://github.com/dalianblue/biomedical-llm-benchmark/main/results/biomedical_benchmark_report_v3.html))
-- 🧪 10 biomedical tasks / 10 个生物医学任务（v2 协议含 prefill 专项）· 6 result runs / 6 份跑分结果 + 2 community runs / 2 份社区跑分
+- 🧪 10 biomedical tasks / 10 个生物医学任务（v2 协议含 prefill 专项）· 6 result runs / 6 份跑分结果 + 4 community runs / 4 份社区跑分
 - 🔒 Frozen inputs (`test_data/`, seed=42) — no network at runtime / 输入冻结，运行时无需联网
 
 ---
@@ -54,8 +54,18 @@ Three machines, two chip architectures, two inference engines — all running th
 |------|------|------|------|------|-----------|-----------------|------|
 | `m1pro-qwen38-27b-lite` | M1 Pro | llama.cpp | Qwen3.8-27B Q4_K_XL | lite⁴ | 5.1–5.6 | — | |
 | `m3max-qwen38-27b-q4kx-llamacpp` | M3 Max / 128 GB | llama.cpp | Qwen3.8-27B Q4_K_XL | v2，10 任务 ×5 | 6.5–7.3 | **92**（8.1K tokens TTFT 88s） | |
+| `9950x-5090-vllm0271-modelopt-qwen38-27b-nvfp4` | Ryzen 9 9950X + RTX 5090 / 32 GB | vLLM 0.27.1 | Qwen3.8-27B NVFP4 (ModelOpt) | v2，10 任务 ×5 | 68–77 | **12112** | 综合分 **82.9**，全榜第一 |
+| `9950x-4090-vllm0271-modelopt-qwen38-27b-nvfp4-marlin` | 同机 RTX 4090 / 48 GB | vLLM 0.27.1 | 同一 NVFP4 模型（Marlin 回退内核） | v2，10 任务 ×5 | 41–51 | **2842** | 综合分 77.4 |
 
 > ⁴ 非标准配置：RUNS=1、跳过 3 个长 prefill 任务，已在提交里注明。
+
+**首份社区 GPU 跑分（kankj）：同机同模型的 5090 vs 4090 对照——第一份跨 GPU 归因数据。**
+同一台 9950X 主机、同一份 ModelOpt NVFP4 Qwen3.8-27B 权重，RTX 5090 走原生 NVFP4 内核，
+RTX 4090 不支持 FP4 硬件路径、回退到 Marlin 内核：解码 ×1.5（75.5 vs 50.1 tok/s 中位）、
+纯 prefill ×4.3（12112 vs 2842 tok/s）、综合分差 5.5——**内核支持度的影响不亚于显卡本身**，
+买卡跑量化模型前先确认目标格式有原生 kernel。横向看：5090 的 prefill 是 M5 Max ds4-server
+（615 tok/s）的 ~20 倍、llama.cpp M3 Max（92 tok/s）的 ~130 倍，82.9 也是全榜（含本仓库自测）
+第一个破 80 的成绩；而质量分 71.5–72.5 依旧挤在所有跑分的窄带里——再次印证"质量由模型决定"。
 
 **同机对照（M3 Max）：llama.cpp + Qwen3.8-27B vs ds4-server + DeepSeek V4 Flash。**
 生成密集任务上 ds4-server 快约 2 倍（13–14 vs 6.5–7 tok/s），纯 prefill 更是差距悬殊
@@ -354,8 +364,20 @@ Overall score = `quality×50% + throughput×30% + ttft×10% + stability×10%`.
 |------------|---------|--------|-------|----------|--------------|--------------------|------|
 | `m1pro-qwen38-27b-lite` | M1 Pro | llama.cpp | Qwen3.8-27B Q4_K_XL | lite⁴ | 5.1–5.6 | — | |
 | `m3max-qwen38-27b-q4kx-llamacpp` | M3 Max / 128 GB | llama.cpp | Qwen3.8-27B Q4_K_XL | v2, 10 tasks ×5 | 6.5–7.3 | **92** (88s TTFT on 8.1K tokens) | |
+| `9950x-5090-vllm0271-modelopt-qwen38-27b-nvfp4` | Ryzen 9 9950X + RTX 5090 / 32 GB | vLLM 0.27.1 | Qwen3.8-27B NVFP4 (ModelOpt) | v2, 10 tasks ×5 | 68–77 | **12112** | overall **82.9**, top of the board |
+| `9950x-4090-vllm0271-modelopt-qwen38-27b-nvfp4-marlin` | same host, RTX 4090 / 48 GB | vLLM 0.27.1 | same NVFP4 model (Marlin fallback kernel) | v2, 10 tasks ×5 | 41–51 | **2842** | overall 77.4 |
 
 > ⁴ Non-standard config: RUNS=1, 3 long-prefill tasks skipped; flagged in the submission.
+
+**First community GPU submission (kankj): a same-machine 5090 vs 4090 A/B — the first cross-GPU attribution data.**
+Same 9950X host, same ModelOpt NVFP4 Qwen3.8-27B weights; the RTX 5090 uses native NVFP4
+kernels while the RTX 4090 lacks FP4 hardware support and falls back to Marlin: decode ×1.5
+(75.5 vs 50.1 tok/s median), pure prefill ×4.3 (12112 vs 2842 tok/s), 5.5 overall-score gap —
+**kernel support matters as much as the card itself**; check for a native kernel for your target
+format before buying. Cross-machine: the 5090's prefill is ~20× M5 Max ds4-server (615 tok/s)
+and ~130× llama.cpp M3 Max (92 tok/s), and 82.9 is the first score above 80 on the whole board
+(our own runs included); quality (71.5–72.5) stays in the same narrow band as every other run —
+more evidence that quality is model-bound.
 
 **Same-machine A/B (M3 Max): llama.cpp + Qwen3.8-27B vs ds4-server + DeepSeek V4 Flash.**
 ds4-server is ~2× faster on generation-heavy tasks (13–14 vs 6.5–7 tok/s), and the prefill
