@@ -13,7 +13,7 @@ Three machines, two chip architectures, two inference engines — all running th
 - 📄 **Full report / 完整报告:** [`results/biomedical_benchmark_report_v3.html`](results/biomedical_benchmark_report_v3.html)
 - ❓ **FAQ / 常见问题:** [`FAQ.md`](FAQ.md)（结果怎么读、缓存影响、量化与质量、复现要求）
   (open locally, or [preview on HTMLPreview](https://htmlpreview.github.io/?https://github.com/dalianblue/biomedical-llm-benchmark/main/results/biomedical_benchmark_report_v3.html))
-- 🧪 10 biomedical tasks / 10 个生物医学任务（v2 协议含 prefill 专项）· 6 result runs / 6 份跑分结果
+- 🧪 10 biomedical tasks / 10 个生物医学任务（v2 协议含 prefill 专项）· 6 result runs / 6 份跑分结果 + 2 community runs / 2 份社区跑分
 - 🔒 Frozen inputs (`test_data/`, seed=42) — no network at runtime / 输入冻结，运行时无需联网
 
 ---
@@ -47,6 +47,25 @@ Three machines, two chip architectures, two inference engines — all running th
 >   用保存的输出重放后 10/12 → 12/12。见 [docs/findings/kv-cache-ttft.md](docs/findings/kv-cache-ttft.md)。
 > ² 同机两天后复现，除 TTFT 外全部指标一致；TTFT 差异由 KV 缓存冷热导致（见下）。
 > ³ v2 协议新增 `prefill_nonce` 任务：nonce 强制缓存 miss，纯 prefill 吞吐 615 tok/s（M5 Max）。
+
+### 社区跑分（`results/community/`）
+
+| 提交 | 机器 | 引擎 | 模型 | 协议 | 解码 tok/s | 纯 prefill tok/s | 备注 |
+|------|------|------|------|------|-----------|-----------------|------|
+| `m1pro-qwen38-27b-lite` | M1 Pro | llama.cpp | Qwen3.8-27B Q4_K_XL | lite⁴ | 5.1–5.6 | — | |
+| `m3max-qwen38-27b-q4kx-llamacpp` | M3 Max / 128 GB | llama.cpp | Qwen3.8-27B Q4_K_XL | v2，10 任务 ×5 | 6.5–7.3 | **92**（8.1K tokens TTFT 88s） | |
+
+> ⁴ 非标准配置：RUNS=1、跳过 3 个长 prefill 任务，已在提交里注明。
+
+**同机对照（M3 Max）：llama.cpp + Qwen3.8-27B vs ds4-server + DeepSeek V4 Flash。**
+生成密集任务上 ds4-server 快约 2 倍（13–14 vs 6.5–7 tok/s），纯 prefill 更是差距悬殊
+（llama.cpp 92 tok/s，M5 Max 上的 ds4-server 615 tok/s）——llama.cpp 在 Apple Silicon 上
+"解码尚可、prefill 拉胯"：KV 缓存命中后 TTFT 0.37s 很漂亮，但缓存一 miss，8K prompt 要等
+80–90s。注意这是**引擎×模型双变量**对比（dense 27B vs flash），速度差不能全记在引擎头上；
+而质量维度上唯一有评分的 `mutation_call` 双方都接近 0 分（recall 0.05 vs 0.00，噪声级），
+本基准**区分不出这两个模型的差距**——可见的差异只有输出纪律：DS4 简洁守格式（QA 任务
+79 token 干净收尾），Qwen 冗长、3 个任务撞 `max_tokens` 上限。另：ds4-server 那次跑分的
+`pubmedqa` 1.35 tok/s 为异常值（同模型其它任务 13–14 tok/s），疑似当时服务器受干扰。
 
 ### 核心结论
 
@@ -328,6 +347,28 @@ Overall score = `quality×50% + throughput×30% + ttft×10% + stability×10%`.
 >   moved with KV cache warmth (see next takeaway).
 > ³ v2 protocol adds the `prefill_nonce` task (nonce forces cache miss):
 >   pure prefill throughput 615 tok/s on M5 Max.
+
+### Community runs (`results/community/`)
+
+| Submission | Machine | Engine | Model | Protocol | Decode tok/s | Pure prefill tok/s | Note |
+|------------|---------|--------|-------|----------|--------------|--------------------|------|
+| `m1pro-qwen38-27b-lite` | M1 Pro | llama.cpp | Qwen3.8-27B Q4_K_XL | lite⁴ | 5.1–5.6 | — | |
+| `m3max-qwen38-27b-q4kx-llamacpp` | M3 Max / 128 GB | llama.cpp | Qwen3.8-27B Q4_K_XL | v2, 10 tasks ×5 | 6.5–7.3 | **92** (88s TTFT on 8.1K tokens) | |
+
+> ⁴ Non-standard config: RUNS=1, 3 long-prefill tasks skipped; flagged in the submission.
+
+**Same-machine A/B (M3 Max): llama.cpp + Qwen3.8-27B vs ds4-server + DeepSeek V4 Flash.**
+ds4-server is ~2× faster on generation-heavy tasks (13–14 vs 6.5–7 tok/s), and the prefill
+gap is far wider (llama.cpp 92 tok/s vs 615 tok/s for ds4-server on M5 Max) — on Apple
+Silicon, llama.cpp is "decode decent, prefill terrible": 0.37s hot TTFT when the KV cache
+hits, but 80–90s on an 8K prompt once it misses. Note this A/B changes **two variables at
+once** (engine + model: dense 27B vs flash), so the speed gap isn't purely the engine's
+fault; and on quality, the only graded task (`mutation_call`) scores ~0 for both
+(recall 0.05 vs 0.00 — noise level), so this benchmark **cannot separate the two models**.
+The visible difference is output discipline: DS4 answers concisely in format (79-token
+stop-terminated QA answers), Qwen runs verbose and hits the `max_tokens` cap on 3 tasks.
+Also: the ds4-server run's `pubmedqa` 1.35 tok/s is an outlier (13–14 tok/s on its other
+tasks) — likely server interference at that point in the run.
 
 ### Key takeaways
 
